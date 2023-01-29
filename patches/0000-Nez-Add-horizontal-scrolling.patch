@@ -1,0 +1,350 @@
+From ab46b313d14da4c089fb4f11f77ca3e76cffd66f Mon Sep 17 00:00:00 2001
+From: Jaakko Hannikainen <jgke@jgke.fi>
+Date: Sun, 8 Jan 2023 22:10:27 +0200
+Subject: [PATCH] Add horizontal scrolling (?)
+
+---
+ Nez.ImGui/Core/ImGuiManager.Impl.cs      |  5 ++-
+ Nez.Portable/Input/Input.cs              | 12 ++++++
+ Nez.Portable/UI/Base/IInputListener.cs   |  6 +++
+ Nez.Portable/UI/Containers/ScrollPane.cs | 15 ++++++-
+ Nez.Portable/UI/Containers/SplitPane.cs  |  5 +++
+ Nez.Portable/UI/Containers/TabPane.cs    |  5 +++
+ Nez.Portable/UI/Containers/Tree.cs       |  5 +++
+ Nez.Portable/UI/Stage.cs                 | 51 +++++++++++++++++-------
+ Nez.Portable/UI/Widgets/Button.cs        |  5 +++
+ Nez.Portable/UI/Widgets/ListBox.cs       |  5 +++
+ Nez.Portable/UI/Widgets/NumberField.cs   |  5 +++
+ Nez.Portable/UI/Widgets/SelectBox.cs     |  5 +++
+ Nez.Portable/UI/Widgets/Slider.cs        |  5 +++
+ Nez.Portable/UI/Widgets/TextField.cs     |  5 +++
+ Nez.Portable/UI/Widgets/Window.cs        |  5 +++
+ 15 files changed, 122 insertions(+), 17 deletions(-)
+
+diff --git a/Nez.ImGui/Core/ImGuiManager.Impl.cs b/Nez.ImGui/Core/ImGuiManager.Impl.cs
+index 877595e1..523aa67e 100644
+--- a/Nez.ImGui/Core/ImGuiManager.Impl.cs
++++ b/Nez.ImGui/Core/ImGuiManager.Impl.cs
+@@ -147,7 +147,8 @@ namespace Nez.ImGuiTools
+ 						ButtonState.Released,
+ 						ButtonState.Released,
+ 						ButtonState.Released,
+-						ButtonState.Released
++						ButtonState.Released,
++						DisableMouseWheelWhenGameWindowUnfocused ? 0 : Input.HorizontalaMouseWheel
+ 					);
+ 					Input.SetCurrentMouseState(mouseState);
+ 
+@@ -258,7 +259,7 @@ namespace Nez.ImGuiTools
+ 			var newMouseState = new MouseState((int) unNormalizedPos.X, (int) unNormalizedPos.Y,
+ 				mouseState.ScrollWheelValue,
+ 				mouseState.LeftButton, mouseState.MiddleButton, mouseState.RightButton, mouseState.XButton1,
+-				mouseState.XButton2);
++				mouseState.XButton2, mouseState.HorizontalScrollWheelValue);
+ 			Input.SetCurrentMouseState(newMouseState);
+ 		}
+ 
+diff --git a/Nez.Portable/Input/Input.cs b/Nez.Portable/Input/Input.cs
+index cb0cf517..fa7e2f09 100644
+--- a/Nez.Portable/Input/Input.cs
++++ b/Nez.Portable/Input/Input.cs
+@@ -344,6 +344,18 @@ namespace Nez
+ 		/// <value>The mouse wheel delta.</value>
+ 		public static int MouseWheelDelta => _currentMouseState.ScrollWheelValue - _previousMouseState.ScrollWheelValue;
+ 
++		/// <summary>
++		/// gets the raw HorizontalScrollWheelValue
++		/// </summary>
++		/// <value>The horizontal mouse wheel.</value>
++		public static int HorizontalaMouseWheel => _currentMouseState.HorizontalScrollWheelValue;
++
++		/// <summary>
++		/// gets the delta HorizontalScrollWheelValue
++		/// </summary>
++		/// <value>The horizontal mouse wheel delta.</value>
++		public static int HorizontalMouseWheelDelta => _currentMouseState.HorizontalScrollWheelValue - _previousMouseState.HorizontalScrollWheelValue;
++
+ 		/// <summary>
+ 		/// unscaled mouse position. This is the actual screen space value
+ 		/// </summary>
+diff --git a/Nez.Portable/UI/Base/IInputListener.cs b/Nez.Portable/UI/Base/IInputListener.cs
+index 726e4ec5..da804971 100644
+--- a/Nez.Portable/UI/Base/IInputListener.cs
++++ b/Nez.Portable/UI/Base/IInputListener.cs
+@@ -46,5 +46,11 @@ namespace Nez.UI
+ 		/// </summary>
+ 		/// <returns>The mouse scrolled.</returns>
+ 		bool OnMouseScrolled(int mouseWheelDelta);
++
++		/// <summary>
++		/// if true is returned the scroll event will be consumed by the Element
++		/// </summary>
++		/// <returns>The mouse scrolled.</returns>
++		bool OnHorizontalMouseScrolled(int mouseWheelDelta);
+ 	}
+ }
+\ No newline at end of file
+diff --git a/Nez.Portable/UI/Containers/ScrollPane.cs b/Nez.Portable/UI/Containers/ScrollPane.cs
+index 4cfbb6d5..b1a5bc32 100644
+--- a/Nez.Portable/UI/Containers/ScrollPane.cs
++++ b/Nez.Portable/UI/Containers/ScrollPane.cs
+@@ -1,4 +1,4 @@
+-﻿using Microsoft.Xna.Framework;
++using Microsoft.Xna.Framework;
+ using System;
+ 
+ 
+@@ -480,6 +480,19 @@ namespace Nez.UI
+ 			return true;
+ 		}
+ 
++		bool IInputListener.OnHorizontalMouseScrolled(int mouseWheelDelta)
++		{
++			if (_scrollX)
++			{
++				ResetFade();
++
++				var scrollDirectionMultiplier = _useNaturalScrolling ? -1 : 1;
++				SetScrollX(_amountX + mouseWheelDelta * _scrollSpeed * scrollDirectionMultiplier);
++			}
++
++			return _scrollX;
++		}
++
+ 		#endregion
+ 
+ 
+diff --git a/Nez.Portable/UI/Containers/SplitPane.cs b/Nez.Portable/UI/Containers/SplitPane.cs
+index e799f595..26a3561f 100644
+--- a/Nez.Portable/UI/Containers/SplitPane.cs
++++ b/Nez.Portable/UI/Containers/SplitPane.cs
+@@ -152,6 +152,11 @@ namespace Nez.UI
+ 			return false;
+ 		}
+ 
++		bool IInputListener.OnHorizontalMouseScrolled(int mouseWheelDelta)
++		{
++			return false;
++		}
++
+ 		#endregion
+ 
+ 
+diff --git a/Nez.Portable/UI/Containers/TabPane.cs b/Nez.Portable/UI/Containers/TabPane.cs
+index 62bce45c..10310b6a 100644
+--- a/Nez.Portable/UI/Containers/TabPane.cs
++++ b/Nez.Portable/UI/Containers/TabPane.cs
+@@ -276,6 +276,11 @@ namespace Nez.UI
+ 		{
+ 			return true;
+ 		}
++
++		bool IInputListener.OnHorizontalMouseScrolled(int mouseWheelDelta)
++		{
++			return false;
++		}
+ 	}
+ 
+ 	public class TabButtonStyle
+diff --git a/Nez.Portable/UI/Containers/Tree.cs b/Nez.Portable/UI/Containers/Tree.cs
+index b3e55ad1..7094b1dd 100644
+--- a/Nez.Portable/UI/Containers/Tree.cs
++++ b/Nez.Portable/UI/Containers/Tree.cs
+@@ -524,6 +524,11 @@ namespace Nez.UI.Containers
+ 		{
+ 			return true;
+ 		}
++
++		bool IInputListener.OnHorizontalMouseScrolled(int mouseWheelDelta)
++		{
++			return false;
++		}
+ 	}
+ 
+ 	public class TreeStyle
+diff --git a/Nez.Portable/UI/Stage.cs b/Nez.Portable/UI/Stage.cs
+index 03632d31..d428c703 100644
+--- a/Nez.Portable/UI/Stage.cs
++++ b/Nez.Portable/UI/Stage.cs
+@@ -357,22 +357,37 @@ namespace Nez.UI
+ 		/// <returns>The mouse wheel.</returns>
+ 		/// <param name="mouseOverElement">Mouse over element.</param>
+ 		void HandleMouseWheel(Element mouseOverElement)
+-		{
+-			// bail out if we have no mouse wheel motion
+-			if (Input.MouseWheelDelta == 0)
+-				return;
+-
+-			// check the deepest Element first then check all of its parents that are IInputListeners
+-			var listener = mouseOverElement as IInputListener;
+-			if (listener != null && listener.OnMouseScrolled(Input.MouseWheelDelta))
+-				return;
++		{
++			if (Input.MouseWheelDelta != 0)
++			{
++				// check the deepest Element first then check all of its parents that are IInputListeners
++				var listener = mouseOverElement as IInputListener;
++				if (listener == null || !listener.OnMouseScrolled(Input.MouseWheelDelta))
++				{
++					while (mouseOverElement.parent != null)
++					{
++						mouseOverElement = mouseOverElement.parent;
++						listener = mouseOverElement as IInputListener;
++						if (listener != null && listener.OnMouseScrolled(Input.MouseWheelDelta))
++							break;
++					}
++				}
++			}
+ 
+-			while (mouseOverElement.parent != null)
++			if (Input.HorizontalaMouseWheel != 0)
+ 			{
+-				mouseOverElement = mouseOverElement.parent;
+-				listener = mouseOverElement as IInputListener;
+-				if (listener != null && listener.OnMouseScrolled(Input.MouseWheelDelta))
+-					return;
++				// check the deepest Element first then check all of its parents that are IInputListeners
++				var listener = mouseOverElement as IInputListener;
++				if (listener == null || !listener.OnHorizontalMouseScrolled(Input.HorizontalMouseWheelDelta))
++				{
++					while (mouseOverElement.parent != null)
++					{
++						mouseOverElement = mouseOverElement.parent;
++						listener = mouseOverElement as IInputListener;
++						if (listener != null && listener.OnHorizontalMouseScrolled(Input.HorizontalMouseWheelDelta))
++							break;
++					}
++				}
+ 			}
+ 		}
+ 
+@@ -477,6 +492,14 @@ namespace Nez.UI
+ 			}
+ 		}
+ 
++		/// <summary>
++		/// Removes the listener from being notified for all touchDragged and touchUp events for the specified pointer and button. Note
++		/// the listener may never receive a touchUp event if this method is used.
++		/// </summary>
++		public void AddInputFocusListener(Element element)
++		{
++			_inputFocusListeners.Add(element);
++		}
+ 
+ 		/// <summary>
+ 		/// Removes the listener from being notified for all touchDragged and touchUp events for the specified pointer and button. Note
+diff --git a/Nez.Portable/UI/Widgets/Button.cs b/Nez.Portable/UI/Widgets/Button.cs
+index b95a9262..0eb3db0c 100644
+--- a/Nez.Portable/UI/Widgets/Button.cs
++++ b/Nez.Portable/UI/Widgets/Button.cs
+@@ -161,6 +161,11 @@ namespace Nez.UI
+ 			return false;
+ 		}
+ 
++		bool IInputListener.OnHorizontalMouseScrolled(int mouseWheelDelta)
++		{
++			return false;
++		}
++
+ 		#endregion
+ 
+ 
+diff --git a/Nez.Portable/UI/Widgets/ListBox.cs b/Nez.Portable/UI/Widgets/ListBox.cs
+index 1b404b6b..531d240f 100644
+--- a/Nez.Portable/UI/Widgets/ListBox.cs
++++ b/Nez.Portable/UI/Widgets/ListBox.cs
+@@ -117,6 +117,11 @@ namespace Nez.UI
+ 			return false;
+ 		}
+ 
++		bool IInputListener.OnHorizontalMouseScrolled(int mouseWheelDelta)
++		{
++			return false;
++		}
++
+ 
+ 		int GetItemIndexUnderMousePosition(Vector2 mousePos)
+ 		{
+diff --git a/Nez.Portable/UI/Widgets/NumberField.cs b/Nez.Portable/UI/Widgets/NumberField.cs
+index 17723f1a..1c5ab726 100644
+--- a/Nez.Portable/UI/Widgets/NumberField.cs
++++ b/Nez.Portable/UI/Widgets/NumberField.cs
+@@ -197,6 +197,11 @@ namespace Nez.UI
+ 
+ 			return true;
+ 		}
++
++		bool IInputListener.OnHorizontalMouseScrolled(int mouseWheelDelta)
++		{
++			return false;
++		}
+ 	}
+ 
+ 	public class NumberFieldStyle : TextFieldStyle
+diff --git a/Nez.Portable/UI/Widgets/SelectBox.cs b/Nez.Portable/UI/Widgets/SelectBox.cs
+index 199195e4..4d9e661f 100644
+--- a/Nez.Portable/UI/Widgets/SelectBox.cs
++++ b/Nez.Portable/UI/Widgets/SelectBox.cs
+@@ -200,6 +200,11 @@ namespace Nez.UI
+ 			return false;
+ 		}
+ 
++		bool IInputListener.OnHorizontalMouseScrolled(int mouseWheelDelta)
++		{
++			return false;
++		}
++
+ 		#endregion
+ 
+ 
+diff --git a/Nez.Portable/UI/Widgets/Slider.cs b/Nez.Portable/UI/Widgets/Slider.cs
+index bee0819f..c695babb 100644
+--- a/Nez.Portable/UI/Widgets/Slider.cs
++++ b/Nez.Portable/UI/Widgets/Slider.cs
+@@ -107,6 +107,11 @@ namespace Nez.UI
+ 			return false;
+ 		}
+ 
++		bool IInputListener.OnHorizontalMouseScrolled(int mouseWheelDelta)
++		{
++			return false;
++		}
++
+ 		#endregion
+ 
+ 
+diff --git a/Nez.Portable/UI/Widgets/TextField.cs b/Nez.Portable/UI/Widgets/TextField.cs
+index 97c881a8..001a9075 100644
+--- a/Nez.Portable/UI/Widgets/TextField.cs
++++ b/Nez.Portable/UI/Widgets/TextField.cs
+@@ -178,6 +178,11 @@ namespace Nez.UI
+ 			return false;
+ 		}
+ 
++		bool IInputListener.OnHorizontalMouseScrolled(int mouseWheelDelta)
++		{
++			return false;
++		}
++
+ 		#endregion
+ 
+ 
+diff --git a/Nez.Portable/UI/Widgets/Window.cs b/Nez.Portable/UI/Widgets/Window.cs
+index 1b51f9a0..e52a5591 100644
+--- a/Nez.Portable/UI/Widgets/Window.cs
++++ b/Nez.Portable/UI/Widgets/Window.cs
+@@ -205,6 +205,11 @@ namespace Nez.UI
+ 			return false;
+ 		}
+ 
++		bool IInputListener.OnHorizontalMouseScrolled(int mouseWheelDelta)
++		{
++			return false;
++		}
++
+ 		#endregion
+ 
+ 
+-- 
+2.37.2
+

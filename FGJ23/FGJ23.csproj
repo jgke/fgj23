@@ -1,0 +1,85 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net6.0</TargetFramework>
+		<PublishReadyToRun>false</PublishReadyToRun>
+		<TieredCompilation>false</TieredCompilation>
+		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+		<RootNamespace>FGJ23</RootNamespace>
+	</PropertyGroup>
+	<PropertyGroup>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+                <ApplicationIcon>Content/Icon.ico</ApplicationIcon>
+                <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<ItemGroup>
+                <None Remove="Content\Icon.ico" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Content\Icon.ico" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Nez\Nez.Portable\Nez.MG38.csproj" />
+		<ProjectReference Include="..\Nez\Nez.Persistence\Nez.MG38.Persistence.csproj" />
+		<ProjectReference Include="..\Nez\Nez.ImGui\Nez.MG38.ImGui.csproj" />
+		<ProjectReference Include="..\MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.csproj" />
+	</ItemGroup>
+
+	<!-- Includes Content folder, Nez default effects and textures -->
+	<ItemGroup>
+		<Content Include="../Nez/DefaultContent/MG3.8.1Effects/**/*.mgfxo">
+			<Link>Content/nez/effects/%(RecursiveDir)%(Filename)%(Extension)</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+
+		</Content>
+		<Content Include="../Nez/DefaultContent/textures/**/*.xnb">
+			<Link>Content/nez/textures/%(RecursiveDir)%(Filename)%(Extension)</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+
+		</Content>
+
+	</ItemGroup>
+
+	<!-- Include the Content directory (except for .fx files, since we use .fxb at runtime) -->
+	<ItemGroup>
+		<Content Include="Content\**\*" Exclude="**\*.fx">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+
+		</Content>
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="Google.Protobuf" Version="3.18.0" />
+	  <PackageReference Include="GtkSharp" Version="3.24.24.38" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	  <PackageReference Include="Serilog" Version="2.10.0" />
+	  <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
+	  <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
+	  <PackageReference Include="Serilog.Sinks.Debug" Version="2.0.0" />
+	  <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" />
+	</ItemGroup>
+	<ItemGroup>
+		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Update="ContentPaths.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>ContentPaths.tt</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+	<ItemGroup>
+	  <None Update="ContentPaths.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	    <LastGenOutput>ContentPaths.cs</LastGenOutput>
+	  </None>
+	</ItemGroup>
+	<ItemGroup>
+	    <None Include="Audio\audio\Build\Desktop\*" Link="Content\fmod\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
+	<ItemGroup>
+	    <None Include="vendor\fmod\linux_x86_64\**" Link="\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+	    <None Include="vendor\fmod\win_x64\**" Link="\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+	    <None Include="vendor\fmod\osx_x86_64\**" Link="\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
+</Project>

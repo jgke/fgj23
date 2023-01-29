@@ -1,0 +1,2355 @@
+From 9f3e3777480888e7c301d5185757b5f31dbf7967 Mon Sep 17 00:00:00 2001
+From: Jaakko Hannikainen <jgke@jgke.fi>
+Date: Sun, 8 Jan 2023 22:22:27 +0200
+Subject: [PATCH] Convert Nez to FixedUpdate/DrawUpdate
+
+---
+ .../CDT/Delaunay/Sweep/DTSweep.cs             |  2 +-
+ .../Decomposition/CDT/TriangulationContext.cs |  2 +-
+ .../Controllers/AbstractForceController.cs    |  4 +-
+ .../Farseer/Controllers/BuoyancyController.cs |  2 +-
+ .../Farseer/Controllers/Controller.cs         |  2 +-
+ .../Farseer/Controllers/GravityController.cs  |  2 +-
+ .../Controllers/VelocityLimitController.cs    |  2 +-
+ .../Farseer/Dynamics/BreakableBody.cs         |  2 +-
+ .../Farseer/Dynamics/ContactManager.cs        |  2 +-
+ .../Farseer/Dynamics/Contacts/Contact.cs      |  2 +-
+ Nez.FarseerPhysics/Farseer/Dynamics/World.cs  |  8 +--
+ .../Nez.MG38.FarseerPhysics.csproj            |  4 +-
+ Nez.FarseerPhysics/Nez/Common/FSWorld.cs      |  2 +-
+ .../Nez/HighLevel/Components/FSRigidBody.cs   |  2 +-
+ .../Components/Joints/FSMouseJoint.cs         |  2 +-
+ .../Nez/LowLevel/Components/FSGenericBody.cs  |  4 +-
+ .../Renderables/FSRenderableBody.cs           |  2 +-
+ Nez.ImGui/Core/ImGuiManager.Impl.cs           |  2 +-
+ Nez.ImGui/Nez.MG38.ImGui.csproj               |  2 +-
+ Nez.Persistence/Nez.MG38.Persistence.csproj   |  2 +-
+ .../Actions/BehaviorTreeReference.cs          |  2 +-
+ .../AI/BehaviorTree/Actions/ExecuteAction.cs  |  2 +-
+ .../AI/BehaviorTree/Actions/LogAction.cs      |  2 +-
+ .../AI/BehaviorTree/Actions/WaitAction.cs     |  2 +-
+ Nez.Portable/AI/BehaviorTree/Behavior.cs      |  4 +-
+ .../AI/BehaviorTree/Composites/Composite.cs   |  2 +-
+ .../AI/BehaviorTree/Composites/Parallel.cs    |  2 +-
+ .../Composites/ParallelSelector.cs            |  2 +-
+ .../AI/BehaviorTree/Composites/Selector.cs    |  2 +-
+ .../AI/BehaviorTree/Composites/Sequence.cs    |  2 +-
+ .../BehaviorTree/Conditionals/IConditional.cs |  2 +-
+ .../Conditionals/RandomProbability.cs         |  2 +-
+ .../AI/BehaviorTree/Decorators/AlwaysFail.cs  |  4 +-
+ .../BehaviorTree/Decorators/AlwaysSucceed.cs  |  4 +-
+ .../Decorators/ConditionalDecorator.cs        |  4 +-
+ .../AI/BehaviorTree/Decorators/Inverter.cs    |  2 +-
+ .../AI/BehaviorTree/Decorators/Repeater.cs    |  2 +-
+ .../AI/BehaviorTree/Decorators/UntilFail.cs   |  4 +-
+ .../BehaviorTree/Decorators/UntilSuccess.cs   |  2 +-
+ Nez.Portable/AI/FSM/SimpleStateMachine.cs     |  5 +-
+ Nez.Portable/AI/FSM/State.cs                  |  2 +-
+ Nez.Portable/AI/FSM/StateMachine.cs           |  4 +-
+ Nez.Portable/Assets/Tiled/TiledTypes/Map.cs   |  4 +-
+ .../Assets/Tiled/TiledTypes/Tileset.cs        |  2 +-
+ Nez.Portable/Core.cs                          | 49 +++++++++++++----
+ Nez.Portable/Debug/Console/DebugConsole.cs    |  4 +-
+ Nez.Portable/Debug/Inspector/InspectorList.cs |  4 +-
+ .../Inspector/Inspectors/BoolInspector.cs     |  2 +-
+ .../Inspector/Inspectors/ColorInspector.cs    |  2 +-
+ .../Inspector/Inspectors/EffectInspector.cs   |  4 +-
+ .../Inspector/Inspectors/EnumInspector.cs     |  2 +-
+ .../Inspector/Inspectors/FloatInspector.cs    |  2 +-
+ .../Debug/Inspector/Inspectors/Inspector.cs   |  2 +-
+ .../Inspector/Inspectors/IntInspector.cs      |  2 +-
+ .../Inspector/Inspectors/MethodInspector.cs   |  2 +-
+ .../Inspector/Inspectors/StringInspector.cs   |  2 +-
+ .../Inspector/Inspectors/StructInspector.cs   |  4 +-
+ .../Inspector/Inspectors/Vector2Inspector.cs  |  2 +-
+ .../Debug/Inspector/RuntimeInspector.cs       | 10 ++--
+ Nez.Portable/ECS/Components/CameraShake.cs    |  5 +-
+ Nez.Portable/ECS/Components/ColorCycler.cs    |  5 +-
+ Nez.Portable/ECS/Components/FollowCamera.cs   | 15 +++---
+ Nez.Portable/ECS/Components/IUpdatable.cs     |  5 +-
+ .../ECS/Components/Physics/ArcadeRigidbody.cs |  5 +-
+ Nez.Portable/ECS/Components/Physics/Mover.cs  |  2 +-
+ .../ECS/Components/Physics/TiledMapMover.cs   |  4 +-
+ .../ECS/Components/Renderables/IRenderable.cs |  4 +-
+ .../Renderables/Particles/Particle.cs         |  2 +-
+ .../Renderables/Particles/ParticleEmitter.cs  |  4 +-
+ .../Renderables/RenderableComponent.cs        |  4 +-
+ .../ECS/Components/Renderables/SpringGrid.cs  | 10 ++--
+ .../Sprites/ScrollingSpriteRenderer.cs        |  2 +-
+ .../Renderables/Sprites/SpriteAnimator.cs     |  2 +-
+ .../Renderables/Sprites/SpriteRenderer.cs     | 22 ++++----
+ .../Renderables/Sprites/SpriteTrail.cs        |  6 +--
+ .../Renderables/TiledMapRenderer.cs           | 10 ++--
+ .../ECS/Components/Renderables/TrailRibbon.cs |  2 +-
+ .../ECS/Components/Renderables/UICanvas.cs    |  4 +-
+ .../Components/Text/FramesPerSecondCounter.cs |  2 +-
+ Nez.Portable/ECS/Entity.cs                    | 18 ++++++-
+ .../ECS/InternalUtils/ComponentList.cs        | 17 ++++--
+ Nez.Portable/ECS/InternalUtils/EntityList.cs  | 17 ++++--
+ Nez.Portable/ECS/Scene.cs                     | 22 ++++++--
+ Nez.Portable/ECS/SceneComponent.cs            |  8 ++-
+ Nez.Portable/ECS/Transform.cs                 | 54 ++++++++++++++-----
+ Nez.Portable/Graphics/Renderers/Renderer.cs   |  4 +-
+ .../Graphics/Textures/RenderTarget.cs         |  2 +-
+ Nez.Portable/Input/GamePadData.cs             |  2 +-
+ Nez.Portable/Input/Input.cs                   |  8 +--
+ Nez.Portable/Input/TouchInput.cs              |  2 +-
+ Nez.Portable/Input/Virtual/VirtualAxis.cs     |  6 +--
+ Nez.Portable/Input/Virtual/VirtualButton.cs   |  4 +-
+ Nez.Portable/Input/Virtual/VirtualInput.cs    |  4 +-
+ .../Input/Virtual/VirtualIntegerAxis.cs       |  4 +-
+ Nez.Portable/Input/Virtual/VirtualJoystick.cs |  6 +--
+ Nez.Portable/Math/SubpixelFloat.cs            |  2 +-
+ Nez.Portable/Math/SubpixelVector2.cs          |  6 +--
+ Nez.Portable/Nez.MG38.csproj                  | 15 +++---
+ Nez.Portable/Physics/ColliderTriggerHelper.cs |  2 +-
+ Nez.Portable/Physics/Verlet/VerletWorld.cs    |  2 +-
+ Nez.Portable/UI/Containers/ScrollPane.cs      |  4 +-
+ Nez.Portable/UI/Stage.cs                      |  2 +-
+ Nez.Portable/UI/Widgets/SelectBoxList.cs      |  4 +-
+ .../Utils/Coroutines/CoroutineManager.cs      |  2 +-
+ Nez.Portable/Utils/GlobalManager.cs           |  8 ++-
+ Nez.Portable/Utils/Time.cs                    | 15 +++++-
+ Nez.Portable/Utils/Timers/TimerManager.cs     |  2 +-
+ Nez.Portable/Utils/Tweens/TweenManager.cs     |  2 +-
+ patch-applied                                 |  1 +
+ 109 files changed, 360 insertions(+), 210 deletions(-)
+ create mode 100644 patch-applied
+
+diff --git a/Nez.FarseerPhysics/Farseer/Common/Decomposition/CDT/Delaunay/Sweep/DTSweep.cs b/Nez.FarseerPhysics/Farseer/Common/Decomposition/CDT/Delaunay/Sweep/DTSweep.cs
+index f7f7e1fc..96e4be35 100644
+--- a/Nez.FarseerPhysics/Farseer/Common/Decomposition/CDT/Delaunay/Sweep/DTSweep.cs
++++ b/Nez.FarseerPhysics/Farseer/Common/Decomposition/CDT/Delaunay/Sweep/DTSweep.cs
+@@ -100,7 +100,7 @@ namespace FarseerPhysics.Common.Decomposition.CDT.Delaunay.Sweep
+ 					}
+ 				}
+ 
+-				tcx.Update(null);
++				tcx.FixedUpdate(null);
+ 			}
+ 		}
+ 
+diff --git a/Nez.FarseerPhysics/Farseer/Common/Decomposition/CDT/TriangulationContext.cs b/Nez.FarseerPhysics/Farseer/Common/Decomposition/CDT/TriangulationContext.cs
+index 66fd0702..228d64cd 100644
+--- a/Nez.FarseerPhysics/Farseer/Common/Decomposition/CDT/TriangulationContext.cs
++++ b/Nez.FarseerPhysics/Farseer/Common/Decomposition/CDT/TriangulationContext.cs
+@@ -69,7 +69,7 @@ namespace FarseerPhysics.Common.Decomposition.CDT
+ 		public abstract TriangulationConstraint NewConstraint(TriangulationPoint a, TriangulationPoint b);
+ 
+ 		//[MethodImpl(MethodImplOptions.Synchronized)]
+-		public void Update(string message)
++		public void FixedUpdate(string message)
+ 		{
+ 		}
+ 
+diff --git a/Nez.FarseerPhysics/Farseer/Controllers/AbstractForceController.cs b/Nez.FarseerPhysics/Farseer/Controllers/AbstractForceController.cs
+index bd0e07a9..291a1667 100644
+--- a/Nez.FarseerPhysics/Farseer/Controllers/AbstractForceController.cs
++++ b/Nez.FarseerPhysics/Farseer/Controllers/AbstractForceController.cs
+@@ -268,7 +268,7 @@ namespace FarseerPhysics.Controllers
+ 		/// Depending on the TimingMode perform timing logic and call ApplyForce()
+ 		/// </summary>
+ 		/// <param name="dt"></param>
+-		public override void Update(float dt)
++		public override void FixedUpdate(float dt)
+ 		{
+ 			switch (TimingMode)
+ 			{
+@@ -319,7 +319,7 @@ namespace FarseerPhysics.Controllers
+ 		}
+ 
+ 		/// <summary>
+-		/// Apply the force supplying strength (wich is modified in Update() 
++		/// Apply the force supplying strength (wich is modified in FixedUpdate()
+ 		/// according to the TimingMode
+ 		/// </summary>
+ 		/// <param name="dt"></param>
+diff --git a/Nez.FarseerPhysics/Farseer/Controllers/BuoyancyController.cs b/Nez.FarseerPhysics/Farseer/Controllers/BuoyancyController.cs
+index a2c2f1e3..ef1a23fe 100644
+--- a/Nez.FarseerPhysics/Farseer/Controllers/BuoyancyController.cs
++++ b/Nez.FarseerPhysics/Farseer/Controllers/BuoyancyController.cs
+@@ -73,7 +73,7 @@ namespace FarseerPhysics.Controllers
+ 			}
+ 		}
+ 
+-		public override void Update(float dt)
++		public override void FixedUpdate(float dt)
+ 		{
+ 			_uniqueBodies.Clear();
+ 			World.QueryAABB(fixture =>
+diff --git a/Nez.FarseerPhysics/Farseer/Controllers/Controller.cs b/Nez.FarseerPhysics/Farseer/Controllers/Controller.cs
+index f0c48eba..6cd5ec41 100644
+--- a/Nez.FarseerPhysics/Farseer/Controllers/Controller.cs
++++ b/Nez.FarseerPhysics/Farseer/Controllers/Controller.cs
+@@ -71,6 +71,6 @@ namespace FarseerPhysics.Controllers
+ 			return base.IsActiveOn(body);
+ 		}
+ 
+-		public abstract void Update(float dt);
++		public abstract void FixedUpdate(float dt);
+ 	}
+ }
+\ No newline at end of file
+diff --git a/Nez.FarseerPhysics/Farseer/Controllers/GravityController.cs b/Nez.FarseerPhysics/Farseer/Controllers/GravityController.cs
+index 61732e41..1455f4aa 100644
+--- a/Nez.FarseerPhysics/Farseer/Controllers/GravityController.cs
++++ b/Nez.FarseerPhysics/Farseer/Controllers/GravityController.cs
+@@ -40,7 +40,7 @@ namespace FarseerPhysics.Controllers
+ 			this.Bodies = new List<Body>();
+ 		}
+ 
+-		public override void Update(float dt)
++		public override void FixedUpdate(float dt)
+ 		{
+ 			var f = Vector2.Zero;
+ 
+diff --git a/Nez.FarseerPhysics/Farseer/Controllers/VelocityLimitController.cs b/Nez.FarseerPhysics/Farseer/Controllers/VelocityLimitController.cs
+index d2cad5b7..8d5920bc 100644
+--- a/Nez.FarseerPhysics/Farseer/Controllers/VelocityLimitController.cs
++++ b/Nez.FarseerPhysics/Farseer/Controllers/VelocityLimitController.cs
+@@ -79,7 +79,7 @@ namespace FarseerPhysics.Controllers
+ 			}
+ 		}
+ 
+-		public override void Update(float dt)
++		public override void FixedUpdate(float dt)
+ 		{
+ 			foreach (Body body in _bodies)
+ 			{
+diff --git a/Nez.FarseerPhysics/Farseer/Dynamics/BreakableBody.cs b/Nez.FarseerPhysics/Farseer/Dynamics/BreakableBody.cs
+index dd8ad371..a0a81bff 100644
+--- a/Nez.FarseerPhysics/Farseer/Dynamics/BreakableBody.cs
++++ b/Nez.FarseerPhysics/Farseer/Dynamics/BreakableBody.cs
+@@ -82,7 +82,7 @@ namespace FarseerPhysics.Dynamics
+ 			}
+ 		}
+ 
+-		public void Update()
++		public void FixedUpdate()
+ 		{
+ 			if (_break)
+ 			{
+diff --git a/Nez.FarseerPhysics/Farseer/Dynamics/ContactManager.cs b/Nez.FarseerPhysics/Farseer/Dynamics/ContactManager.cs
+index 6d0520a0..d37bcefa 100644
+--- a/Nez.FarseerPhysics/Farseer/Dynamics/ContactManager.cs
++++ b/Nez.FarseerPhysics/Farseer/Dynamics/ContactManager.cs
+@@ -338,7 +338,7 @@ namespace FarseerPhysics.Dynamics
+ 				}
+ 
+ 				// The contact persists.
+-				c.Update(this);
++				c.FixedUpdate(this);
+ 			}
+ 
+ #if USE_ACTIVE_CONTACT_SET
+diff --git a/Nez.FarseerPhysics/Farseer/Dynamics/Contacts/Contact.cs b/Nez.FarseerPhysics/Farseer/Dynamics/Contacts/Contact.cs
+index 4f13146e..491dae87 100644
+--- a/Nez.FarseerPhysics/Farseer/Dynamics/Contacts/Contact.cs
++++ b/Nez.FarseerPhysics/Farseer/Dynamics/Contacts/Contact.cs
+@@ -235,7 +235,7 @@ namespace FarseerPhysics.Dynamics.Contacts
+ 		/// Note: do not assume the fixture AABBs are overlapping or are valid.
+ 		/// </summary>
+ 		/// <param name="contactManager">The contact manager.</param>
+-		internal void Update(ContactManager contactManager)
++		internal void FixedUpdate(ContactManager contactManager)
+ 		{
+ 			var bodyA = FixtureA.Body;
+ 			var bodyB = FixtureB.Body;
+diff --git a/Nez.FarseerPhysics/Farseer/Dynamics/World.cs b/Nez.FarseerPhysics/Farseer/Dynamics/World.cs
+index eb00bf19..abddc636 100644
+--- a/Nez.FarseerPhysics/Farseer/Dynamics/World.cs
++++ b/Nez.FarseerPhysics/Farseer/Dynamics/World.cs
+@@ -907,7 +907,7 @@ namespace FarseerPhysics.Dynamics
+ 				bB0.Advance(minAlpha);
+ 
+ 				// The TOI contact likely has some new contact points.
+-				minContact.Update(ContactManager);
++				minContact.FixedUpdate(ContactManager);
+ 				minContact.toiFlag = false;
+ 				++minContact._toiCount;
+ 
+@@ -973,7 +973,7 @@ namespace FarseerPhysics.Dynamics
+ 								other.Advance(minAlpha);
+ 
+ 							// Update the contact points
+-							contact.Update(ContactManager);
++							contact.FixedUpdate(ContactManager);
+ 
+ 							// Was the contact disabled by the user?
+ 							if (contact.Enabled == false)
+@@ -1209,7 +1209,7 @@ namespace FarseerPhysics.Dynamics
+ 
+ 			// Update controllers
+ 			for (var i = 0; i < ControllerList.Count; i++)
+-				ControllerList[i].Update(dt);
++				ControllerList[i].FixedUpdate(dt);
+ 
+ 			if (Settings.EnableDiagnostics)
+ 				ControllersUpdateTime = _watch.ElapsedTicks - (AddRemoveTime + NewContactsTime);
+@@ -1242,7 +1242,7 @@ namespace FarseerPhysics.Dynamics
+ 				ClearForces();
+ 
+ 			for (var i = 0; i < BreakableBodyList.Count; i++)
+-				BreakableBodyList[i].Update();
++				BreakableBodyList[i].FixedUpdate();
+ 
+ 			_invDt0 = step.Inv_dt;
+ 
+diff --git a/Nez.FarseerPhysics/Nez.MG38.FarseerPhysics.csproj b/Nez.FarseerPhysics/Nez.MG38.FarseerPhysics.csproj
+index 63651a03..a5f94328 100644
+--- a/Nez.FarseerPhysics/Nez.MG38.FarseerPhysics.csproj
++++ b/Nez.FarseerPhysics/Nez.MG38.FarseerPhysics.csproj
+@@ -8,7 +8,7 @@
+ 		<RootNamespace>Nez.Farseer</RootNamespace>
+ 		<AssemblyName>Nez.FarseerPhysics</AssemblyName>
+ 		<OutputType>Library</OutputType>
+-		<TargetFramework>netstandard2.0</TargetFramework>
++		<TargetFramework>net6.0</TargetFramework>
+ 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+ 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+ 		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+@@ -29,4 +29,4 @@
+ 		<PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
+ 	</ItemGroup>
+ 	<Import Sdk="Microsoft.NET.Sdk" Project="Sdk.targets" />
+-</Project>
+\ No newline at end of file
++</Project>
+diff --git a/Nez.FarseerPhysics/Nez/Common/FSWorld.cs b/Nez.FarseerPhysics/Nez/Common/FSWorld.cs
+index bf831e8f..142717da 100644
+--- a/Nez.FarseerPhysics/Nez/Common/FSWorld.cs
++++ b/Nez.FarseerPhysics/Nez/Common/FSWorld.cs
+@@ -62,7 +62,7 @@ namespace Nez.Farseer
+ 		}
+ 
+ 
+-		public override void Update()
++		public override void FixedUpdate()
+ 		{
+ 			if (EnableMousePicking)
+ 			{
+diff --git a/Nez.FarseerPhysics/Nez/HighLevel/Components/FSRigidBody.cs b/Nez.FarseerPhysics/Nez/HighLevel/Components/FSRigidBody.cs
+index 92913922..a5f7fc30 100644
+--- a/Nez.FarseerPhysics/Nez/HighLevel/Components/FSRigidBody.cs
++++ b/Nez.FarseerPhysics/Nez/HighLevel/Components/FSRigidBody.cs
+@@ -196,7 +196,7 @@ namespace Nez.Farseer
+ 		#endregion
+ 
+ 
+-		public virtual void Update()
++		public virtual void FixedUpdate()
+ 		{
+ 			if (Body == null || !Body.IsAwake)
+ 				return;
+diff --git a/Nez.FarseerPhysics/Nez/HighLevel/Components/Joints/FSMouseJoint.cs b/Nez.FarseerPhysics/Nez/HighLevel/Components/Joints/FSMouseJoint.cs
+index 7960f3c6..d97ee640 100644
+--- a/Nez.FarseerPhysics/Nez/HighLevel/Components/Joints/FSMouseJoint.cs
++++ b/Nez.FarseerPhysics/Nez/HighLevel/Components/Joints/FSMouseJoint.cs
+@@ -49,7 +49,7 @@ namespace Nez.Farseer
+ 		#endregion
+ 
+ 
+-		public virtual void Update()
++		public virtual void FixedUpdate()
+ 		{
+ 			if (_joint != null)
+ 			{
+diff --git a/Nez.FarseerPhysics/Nez/LowLevel/Components/FSGenericBody.cs b/Nez.FarseerPhysics/Nez/LowLevel/Components/FSGenericBody.cs
+index f7370220..2a51df1a 100644
+--- a/Nez.FarseerPhysics/Nez/LowLevel/Components/FSGenericBody.cs
++++ b/Nez.FarseerPhysics/Nez/LowLevel/Components/FSGenericBody.cs
+@@ -35,7 +35,7 @@ namespace Nez.Farseer
+ 
+ 			// always sync position ASAP in case any joints are added without global constraints
+ 			if (Body != null)
+-				((IUpdatable) this).Update();
++				((IUpdatable) this).FixedUpdate();
+ 			else
+ 				Body = new Body(world, Transform.Position * FSConvert.DisplayToSim, Transform.Rotation);
+ 		}
+@@ -63,7 +63,7 @@ namespace Nez.Farseer
+ 		}
+ 
+ 
+-		public virtual void Update()
++		public virtual void FixedUpdate()
+ 		{
+ 			if (!Body.IsAwake)
+ 				return;
+diff --git a/Nez.FarseerPhysics/Nez/LowLevel/Components/Renderables/FSRenderableBody.cs b/Nez.FarseerPhysics/Nez/LowLevel/Components/Renderables/FSRenderableBody.cs
+index 5b75ebe2..df20228f 100644
+--- a/Nez.FarseerPhysics/Nez/LowLevel/Components/Renderables/FSRenderableBody.cs
++++ b/Nez.FarseerPhysics/Nez/LowLevel/Components/Renderables/FSRenderableBody.cs
+@@ -66,7 +66,7 @@ namespace Nez.Farseer
+ 		}
+ 
+ 
+-		public virtual void Update()
++		public virtual void FixedUpdate()
+ 		{
+ 			if (!Body.IsAwake)
+ 				return;
+diff --git a/Nez.ImGui/Core/ImGuiManager.Impl.cs b/Nez.ImGui/Core/ImGuiManager.Impl.cs
+index 523aa67e..25e65694 100644
+--- a/Nez.ImGui/Core/ImGuiManager.Impl.cs
++++ b/Nez.ImGui/Core/ImGuiManager.Impl.cs
+@@ -285,7 +285,7 @@ namespace Nez.ImGuiTools
+ 				Core.Scene.FinalRenderDelegate = null;
+ 		}
+ 
+-		public override void Update()
++		public override void FixedUpdate()
+ 		{
+ 			// we have to do our layout in update so that if the game window is not focused or being displayed we can wipe
+ 			// the Input, essentially letting ImGui consume it
+diff --git a/Nez.ImGui/Nez.MG38.ImGui.csproj b/Nez.ImGui/Nez.MG38.ImGui.csproj
+index 23d12477..12c08aaa 100644
+--- a/Nez.ImGui/Nez.MG38.ImGui.csproj
++++ b/Nez.ImGui/Nez.MG38.ImGui.csproj
+@@ -10,7 +10,7 @@
+ 		<OutputType>Library</OutputType>
+ 		<RootNamespace>Nez.ImGuiTools</RootNamespace>
+ 		<AssemblyName>Nez.ImGui</AssemblyName>
+-        <TargetFramework>netstandard2.0</TargetFramework>
++        <TargetFramework>net6.0</TargetFramework>
+ 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+ 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+ 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+diff --git a/Nez.Persistence/Nez.MG38.Persistence.csproj b/Nez.Persistence/Nez.MG38.Persistence.csproj
+index dab80589..45cd94cc 100644
+--- a/Nez.Persistence/Nez.MG38.Persistence.csproj
++++ b/Nez.Persistence/Nez.MG38.Persistence.csproj
+@@ -8,7 +8,7 @@
+ 		<OutputType>Library</OutputType>
+ 		<RootNamespace>Nez.Persistence</RootNamespace>
+ 		<AssemblyName>Nez.Persistence</AssemblyName>
+-		<TargetFramework>netstandard2.0</TargetFramework>
++		<TargetFramework>net6.0</TargetFramework>
+ 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+ 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+ 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+diff --git a/Nez.Portable/AI/BehaviorTree/Actions/BehaviorTreeReference.cs b/Nez.Portable/AI/BehaviorTree/Actions/BehaviorTreeReference.cs
+index c1bd0ade..58363417 100644
+--- a/Nez.Portable/AI/BehaviorTree/Actions/BehaviorTreeReference.cs
++++ b/Nez.Portable/AI/BehaviorTree/Actions/BehaviorTreeReference.cs
+@@ -14,7 +14,7 @@
+ 		}
+ 
+ 
+-		public override TaskStatus Update(T context)
++		public override TaskStatus FixedUpdate(T context)
+ 		{
+ 			_childTree.Tick();
+ 			return TaskStatus.Success;
+diff --git a/Nez.Portable/AI/BehaviorTree/Actions/ExecuteAction.cs b/Nez.Portable/AI/BehaviorTree/Actions/ExecuteAction.cs
+index 868af31c..33f05c34 100644
+--- a/Nez.Portable/AI/BehaviorTree/Actions/ExecuteAction.cs
++++ b/Nez.Portable/AI/BehaviorTree/Actions/ExecuteAction.cs
+@@ -17,7 +17,7 @@ namespace Nez.AI.BehaviorTrees
+ 		}
+ 
+ 
+-		public override TaskStatus Update(T context)
++		public override TaskStatus FixedUpdate(T context)
+ 		{
+ 			Insist.IsNotNull(_action, "action must not be null");
+ 
+diff --git a/Nez.Portable/AI/BehaviorTree/Actions/LogAction.cs b/Nez.Portable/AI/BehaviorTree/Actions/LogAction.cs
+index 5a82e921..08f26387 100644
+--- a/Nez.Portable/AI/BehaviorTree/Actions/LogAction.cs
++++ b/Nez.Portable/AI/BehaviorTree/Actions/LogAction.cs
+@@ -22,7 +22,7 @@
+ 		}
+ 
+ 
+-		public override TaskStatus Update(T context)
++		public override TaskStatus FixedUpdate(T context)
+ 		{
+ 			if (IsError)
+ 				Debug.Error(Text);
+diff --git a/Nez.Portable/AI/BehaviorTree/Actions/WaitAction.cs b/Nez.Portable/AI/BehaviorTree/Actions/WaitAction.cs
+index 47e640e7..263fad8c 100644
+--- a/Nez.Portable/AI/BehaviorTree/Actions/WaitAction.cs
++++ b/Nez.Portable/AI/BehaviorTree/Actions/WaitAction.cs
+@@ -26,7 +26,7 @@
+ 		}
+ 
+ 
+-		public override TaskStatus Update(T context)
++		public override TaskStatus FixedUpdate(T context)
+ 		{
+ 			// we cant use Time.deltaTime due to the tree ticking at its own rate so we store the start time instead
+ 			if (_startTime == 0)
+diff --git a/Nez.Portable/AI/BehaviorTree/Behavior.cs b/Nez.Portable/AI/BehaviorTree/Behavior.cs
+index 0a0f0384..2b277eb0 100644
+--- a/Nez.Portable/AI/BehaviorTree/Behavior.cs
++++ b/Nez.Portable/AI/BehaviorTree/Behavior.cs
+@@ -8,7 +8,7 @@
+ 		public TaskStatus Status = TaskStatus.Invalid;
+ 
+ 
+-		public abstract TaskStatus Update(T context);
++		public abstract TaskStatus FixedUpdate(T context);
+ 
+ 
+ 		/// <summary>
+@@ -45,7 +45,7 @@
+ 			if (Status == TaskStatus.Invalid)
+ 				OnStart();
+ 
+-			Status = Update(context);
++			Status = FixedUpdate(context);
+ 
+ 			if (Status != TaskStatus.Running)
+ 				OnEnd();
+diff --git a/Nez.Portable/AI/BehaviorTree/Composites/Composite.cs b/Nez.Portable/AI/BehaviorTree/Composites/Composite.cs
+index 8a5d788c..350aa750 100644
+--- a/Nez.Portable/AI/BehaviorTree/Composites/Composite.cs
++++ b/Nez.Portable/AI/BehaviorTree/Composites/Composite.cs
+@@ -153,7 +153,7 @@ namespace Nez.AI.BehaviorTrees
+ 			if (node is ConditionalDecorator<T>)
+ 				return (node as ConditionalDecorator<T>).ExecuteConditional(context, true);
+ 			else
+-				return node.Update(context);
++				return node.FixedUpdate(context);
+ 		}
+ 	}
+ }
+\ No newline at end of file
+diff --git a/Nez.Portable/AI/BehaviorTree/Composites/Parallel.cs b/Nez.Portable/AI/BehaviorTree/Composites/Parallel.cs
+index 2c3eec81..df358066 100644
+--- a/Nez.Portable/AI/BehaviorTree/Composites/Parallel.cs
++++ b/Nez.Portable/AI/BehaviorTree/Composites/Parallel.cs
+@@ -8,7 +8,7 @@
+ 	/// </summary>
+ 	public class Parallel<T> : Composite<T>
+ 	{
+-		public override TaskStatus Update(T context)
++		public override TaskStatus FixedUpdate(T context)
+ 		{
+ 			var didAllSucceed = true;
+ 			for (var i = 0; i < _children.Count; i++)
+diff --git a/Nez.Portable/AI/BehaviorTree/Composites/ParallelSelector.cs b/Nez.Portable/AI/BehaviorTree/Composites/ParallelSelector.cs
+index 534444bc..acc3b6f7 100644
+--- a/Nez.Portable/AI/BehaviorTree/Composites/ParallelSelector.cs
++++ b/Nez.Portable/AI/BehaviorTree/Composites/ParallelSelector.cs
+@@ -8,7 +8,7 @@
+ 	/// </summary>
+ 	public class ParallelSelector<T> : Composite<T>
+ 	{
+-		public override TaskStatus Update(T context)
++		public override TaskStatus FixedUpdate(T context)
+ 		{
+ 			var didAllFail = true;
+ 			for (var i = 0; i < _children.Count; i++)
+diff --git a/Nez.Portable/AI/BehaviorTree/Composites/Selector.cs b/Nez.Portable/AI/BehaviorTree/Composites/Selector.cs
+index fa9df9ff..11657d3b 100644
+--- a/Nez.Portable/AI/BehaviorTree/Composites/Selector.cs
++++ b/Nez.Portable/AI/BehaviorTree/Composites/Selector.cs
+@@ -12,7 +12,7 @@
+ 		}
+ 
+ 
+-		public override TaskStatus Update(T context)
++		public override TaskStatus FixedUpdate(T context)
+ 		{
+ 			// first, we handle conditinoal aborts if we are not already on the first child
+ 			if (_currentChildIndex != 0)
+diff --git a/Nez.Portable/AI/BehaviorTree/Composites/Sequence.cs b/Nez.Portable/AI/BehaviorTree/Composites/Sequence.cs
+index d3af0116..3db53ac2 100644
+--- a/Nez.Portable/AI/BehaviorTree/Composites/Sequence.cs
++++ b/Nez.Portable/AI/BehaviorTree/Composites/Sequence.cs
+@@ -12,7 +12,7 @@
+ 		}
+ 
+ 
+-		public override TaskStatus Update(T context)
++		public override TaskStatus FixedUpdate(T context)
+ 		{
+ 			// first, we handle conditional aborts if we are not already on the first child
+ 			if (_currentChildIndex != 0)
+diff --git a/Nez.Portable/AI/BehaviorTree/Conditionals/IConditional.cs b/Nez.Portable/AI/BehaviorTree/Conditionals/IConditional.cs
+index 61186809..7a1b9f02 100644
+--- a/Nez.Portable/AI/BehaviorTree/Conditionals/IConditional.cs
++++ b/Nez.Portable/AI/BehaviorTree/Conditionals/IConditional.cs
+@@ -5,6 +5,6 @@
+ 	/// </summary>
+ 	public interface IConditional<T>
+ 	{
+-		TaskStatus Update(T context);
++		TaskStatus FixedUpdate(T context);
+ 	}
+ }
+\ No newline at end of file
+diff --git a/Nez.Portable/AI/BehaviorTree/Conditionals/RandomProbability.cs b/Nez.Portable/AI/BehaviorTree/Conditionals/RandomProbability.cs
+index 0d2162df..f4e6ccc9 100644
+--- a/Nez.Portable/AI/BehaviorTree/Conditionals/RandomProbability.cs
++++ b/Nez.Portable/AI/BehaviorTree/Conditionals/RandomProbability.cs
+@@ -18,7 +18,7 @@
+ 		}
+ 
+ 
+-		public override TaskStatus Update(T context)
++		public override TaskStatus FixedUpdate(T context)
+ 		{
+ 			if (Random.NextFloat() > _successProbability)
+ 				return TaskStatus.Success;
+diff --git a/Nez.Portable/AI/BehaviorTree/Decorators/AlwaysFail.cs b/Nez.Portable/AI/BehaviorTree/Decorators/AlwaysFail.cs
+index e2d5eeab..ea09eb5f 100644
+--- a/Nez.Portable/AI/BehaviorTree/Decorators/AlwaysFail.cs
++++ b/Nez.Portable/AI/BehaviorTree/Decorators/AlwaysFail.cs
+@@ -5,11 +5,11 @@
+ 	/// </summary>
+ 	public class AlwaysFail<T> : Decorator<T>
+ 	{
+-		public override TaskStatus Update(T context)
++		public override TaskStatus FixedUpdate(T context)
+ 		{
+ 			Insist.IsNotNull(Child, "child must not be null");
+ 
+-			var status = Child.Update(context);
++			var status = Child.FixedUpdate(context);
+ 
+ 			if (status == TaskStatus.Running)
+ 				return TaskStatus.Running;
+diff --git a/Nez.Portable/AI/BehaviorTree/Decorators/AlwaysSucceed.cs b/Nez.Portable/AI/BehaviorTree/Decorators/AlwaysSucceed.cs
+index d41302da..2abe9f42 100644
+--- a/Nez.Portable/AI/BehaviorTree/Decorators/AlwaysSucceed.cs
++++ b/Nez.Portable/AI/BehaviorTree/Decorators/AlwaysSucceed.cs
+@@ -5,11 +5,11 @@
+ 	/// </summary>
+ 	public class AlwaysSucceed<T> : Decorator<T>
+ 	{
+-		public override TaskStatus Update(T context)
++		public override TaskStatus FixedUpdate(T context)
+ 		{
+ 			Insist.IsNotNull(Child, "child must not be null");
+ 
+-			var status = Child.Update(context);
++			var status = Child.FixedUpdate(context);
+ 
+ 			if (status == TaskStatus.Running)
+ 				return TaskStatus.Running;
+diff --git a/Nez.Portable/AI/BehaviorTree/Decorators/ConditionalDecorator.cs b/Nez.Portable/AI/BehaviorTree/Decorators/ConditionalDecorator.cs
+index 1e6dbc16..b7a83804 100644
+--- a/Nez.Portable/AI/BehaviorTree/Decorators/ConditionalDecorator.cs
++++ b/Nez.Portable/AI/BehaviorTree/Decorators/ConditionalDecorator.cs
+@@ -36,7 +36,7 @@
+ 		}
+ 
+ 
+-		public override TaskStatus Update(T context)
++		public override TaskStatus FixedUpdate(T context)
+ 		{
+ 			Insist.IsNotNull(Child, "child must not be null");
+ 
+@@ -60,7 +60,7 @@
+ 		internal TaskStatus ExecuteConditional(T context, bool forceUpdate = false)
+ 		{
+ 			if (forceUpdate || _shouldReevaluate || _conditionalStatus == TaskStatus.Invalid)
+-				_conditionalStatus = _conditional.Update(context);
++				_conditionalStatus = _conditional.FixedUpdate(context);
+ 			return _conditionalStatus;
+ 		}
+ 	}
+diff --git a/Nez.Portable/AI/BehaviorTree/Decorators/Inverter.cs b/Nez.Portable/AI/BehaviorTree/Decorators/Inverter.cs
+index 4934ec1a..a341bb0b 100644
+--- a/Nez.Portable/AI/BehaviorTree/Decorators/Inverter.cs
++++ b/Nez.Portable/AI/BehaviorTree/Decorators/Inverter.cs
+@@ -5,7 +5,7 @@
+ 	/// </summary>
+ 	public class Inverter<T> : Decorator<T>
+ 	{
+-		public override TaskStatus Update(T context)
++		public override TaskStatus FixedUpdate(T context)
+ 		{
+ 			Insist.IsNotNull(Child, "child must not be null");
+ 
+diff --git a/Nez.Portable/AI/BehaviorTree/Decorators/Repeater.cs b/Nez.Portable/AI/BehaviorTree/Decorators/Repeater.cs
+index 41a9629e..7133a941 100644
+--- a/Nez.Portable/AI/BehaviorTree/Decorators/Repeater.cs
++++ b/Nez.Portable/AI/BehaviorTree/Decorators/Repeater.cs
+@@ -44,7 +44,7 @@
+ 		}
+ 
+ 
+-		public override TaskStatus Update(T context)
++		public override TaskStatus FixedUpdate(T context)
+ 		{
+ 			Insist.IsNotNull(Child, "child must not be null");
+ 
+diff --git a/Nez.Portable/AI/BehaviorTree/Decorators/UntilFail.cs b/Nez.Portable/AI/BehaviorTree/Decorators/UntilFail.cs
+index 40a2095a..89d8eb41 100644
+--- a/Nez.Portable/AI/BehaviorTree/Decorators/UntilFail.cs
++++ b/Nez.Portable/AI/BehaviorTree/Decorators/UntilFail.cs
+@@ -5,11 +5,11 @@
+ 	/// </summary>
+ 	public class UntilFail<T> : Decorator<T>
+ 	{
+-		public override TaskStatus Update(T context)
++		public override TaskStatus FixedUpdate(T context)
+ 		{
+ 			Insist.IsNotNull(Child, "child must not be null");
+ 
+-			var status = Child.Update(context);
++			var status = Child.FixedUpdate(context);
+ 
+ 			if (status != TaskStatus.Failure)
+ 				return TaskStatus.Running;
+diff --git a/Nez.Portable/AI/BehaviorTree/Decorators/UntilSuccess.cs b/Nez.Portable/AI/BehaviorTree/Decorators/UntilSuccess.cs
+index f34da2c4..5ce09042 100644
+--- a/Nez.Portable/AI/BehaviorTree/Decorators/UntilSuccess.cs
++++ b/Nez.Portable/AI/BehaviorTree/Decorators/UntilSuccess.cs
+@@ -5,7 +5,7 @@
+ 	/// </summary>
+ 	public class UntilSuccess<T> : Decorator<T>
+ 	{
+-		public override TaskStatus Update(T context)
++		public override TaskStatus FixedUpdate(T context)
+ 		{
+ 			Insist.IsNotNull(Child, "child must not be null");
+ 
+diff --git a/Nez.Portable/AI/FSM/SimpleStateMachine.cs b/Nez.Portable/AI/FSM/SimpleStateMachine.cs
+index 40f0c2d4..0ba8eeea 100644
+--- a/Nez.Portable/AI/FSM/SimpleStateMachine.cs
++++ b/Nez.Portable/AI/FSM/SimpleStateMachine.cs
+@@ -77,13 +77,14 @@ namespace Nez.AI.FSM
+ 				ConfigureAndCacheState(e);
+ 		}
+ 
+-		public virtual void Update()
++		public virtual void FixedUpdate()
+ 		{
+ 			elapsedTimeInState += Time.DeltaTime;
+ 
+ 			if (_stateMethods.Tick != null)
+ 				_stateMethods.Tick();
+ 		}
++		public virtual void DrawUpdate() {}
+ 
+ 		void ConfigureAndCacheState(TEnum stateEnum)
+ 		{
+@@ -106,4 +107,4 @@ namespace Nez.AI.FSM
+ 			return null;
+ 		}
+ 	}
+-}
+\ No newline at end of file
++}
+diff --git a/Nez.Portable/AI/FSM/State.cs b/Nez.Portable/AI/FSM/State.cs
+index 30e66daf..a96d3e29 100644
+--- a/Nez.Portable/AI/FSM/State.cs
++++ b/Nez.Portable/AI/FSM/State.cs
+@@ -42,7 +42,7 @@
+ 		/// called every frame this state is the active state
+ 		/// </summary>
+ 		/// <param name="deltaTime">Delta time.</param>
+-		public abstract void Update(float deltaTime);
++		public abstract void FixedUpdate(float deltaTime);
+ 
+ 
+ 		/// <summary>
+diff --git a/Nez.Portable/AI/FSM/StateMachine.cs b/Nez.Portable/AI/FSM/StateMachine.cs
+index b0115f19..b0e363a4 100644
+--- a/Nez.Portable/AI/FSM/StateMachine.cs
++++ b/Nez.Portable/AI/FSM/StateMachine.cs
+@@ -42,11 +42,11 @@ namespace Nez.AI.FSM
+ 		/// <summary>
+ 		/// ticks the state machine with the provided delta time
+ 		/// </summary>
+-		public virtual void Update(float deltaTime)
++		public virtual void FixedUpdate(float deltaTime)
+ 		{
+ 			ElapsedTimeInState += deltaTime;
+ 			_currentState.Reason();
+-			_currentState.Update(deltaTime);
++			_currentState.FixedUpdate(deltaTime);
+ 		}
+ 
+ 		/// <summary>
+diff --git a/Nez.Portable/Assets/Tiled/TiledTypes/Map.cs b/Nez.Portable/Assets/Tiled/TiledTypes/Map.cs
+index d2abf434..bb923228 100644
+--- a/Nez.Portable/Assets/Tiled/TiledTypes/Map.cs
++++ b/Nez.Portable/Assets/Tiled/TiledTypes/Map.cs
+@@ -54,10 +54,10 @@ namespace Nez.Tiled
+         /// <summary>
+         /// currently only used to tick all the Tilesets so they can update their animated tiles
+         /// </summary>
+-        public void Update()
++        public void FixedUpdate()
+         {
+             foreach (var tileset in Tilesets)
+-                tileset.Update();
++                tileset.FixedUpdate();
+         }
+ 
+ 		#region IDisposable Support
+diff --git a/Nez.Portable/Assets/Tiled/TiledTypes/Tileset.cs b/Nez.Portable/Assets/Tiled/TiledTypes/Tileset.cs
+index 53873550..32ff9e47 100644
+--- a/Nez.Portable/Assets/Tiled/TiledTypes/Tileset.cs
++++ b/Nez.Portable/Assets/Tiled/TiledTypes/Tileset.cs
+@@ -25,7 +25,7 @@ namespace Nez.Tiled
+ 		/// </summary>
+ 		public Dictionary<int, RectangleF> TileRegions;
+ 
+-		public void Update()
++		public void FixedUpdate()
+ 		{
+ 			foreach (var kvPair in Tiles)
+ 				kvPair.Value.UpdateAnimatedTiles();
+diff --git a/Nez.Portable/Core.cs b/Nez.Portable/Core.cs
+index 541df5b7..f95f2db5 100644
+--- a/Nez.Portable/Core.cs
++++ b/Nez.Portable/Core.cs
+@@ -145,7 +145,7 @@ namespace Nez
+ 				PreferredBackBufferWidth = width,
+ 				PreferredBackBufferHeight = height,
+ 				IsFullScreen = isFullScreen,
+-				SynchronizeWithVerticalRetrace = true,
++				SynchronizeWithVerticalRetrace = false,
+ #if MONOGAME_38
+ 				PreferHalfPixelOffset = true
+ #endif
+@@ -219,7 +219,7 @@ namespace Nez
+ 			Graphics.Instance = new Graphics(font);
+ 		}
+ 
+-		protected override void Update(GameTime gameTime)
++		protected override void FixedUpdate(GameTime gameTime)
+ 		{
+ 			if (PauseOnFocusLost && !IsActive)
+ 			{
+@@ -228,8 +228,8 @@ namespace Nez
+ 			}
+ 
+ 			// update all our systems and global managers
+-			Time.Update((float) gameTime.ElapsedGameTime.TotalSeconds);
+-			Input.Update();
++			Time.FixedUpdate(gameTime);
++			Input.FixedUpdate();
+ 
+ 			if (ExitOnEscapeKeypress &&
+ 			    (Input.IsKeyDown(Keys.Escape) || Input.GamePads[0].IsButtonReleased(Buttons.Back)))
+@@ -243,7 +243,7 @@ namespace Nez
+ 				for (var i = _globalManagers.Length - 1; i >= 0; i--)
+ 				{
+ 					if (_globalManagers.Buffer[i].Enabled)
+-						_globalManagers.Buffer[i].Update();
++						_globalManagers.Buffer[i].FixedUpdate();
+ 				}
+ 
+ 				// read carefully:
+@@ -254,7 +254,7 @@ namespace Nez
+ 				    (_sceneTransition != null &&
+ 				     (!_sceneTransition._loadsNewScene || _sceneTransition._isNewSceneLoaded)))
+ 				{
+-					_scene.Update();
++					_scene.FixedUpdate();
+ 				}
+ 
+ 				if (_nextScene != null)
+@@ -274,10 +274,41 @@ namespace Nez
+ #if FNA
+ 			// MonoGame only updates old-school XNA Components in Update which we dont care about. FNA's core FrameworkDispatcher needs
+ 			// Update called though so we do so here.
+-			FrameworkDispatcher.Update();
++			FrameworkDispatcher.FixedUpdate();
+ #endif
+ 		}
+ 
++		protected override void DrawUpdate(GameTime gameTime)
++		{
++			if (PauseOnFocusLost && !IsActive)
++			{
++				SuppressDraw();
++				return;
++			}
++
++			Time.UpdateAlpha(gameTime);
++
++			if (_scene != null)
++			{
++				for (var i = _globalManagers.Length - 1; i >= 0; i--)
++				{
++					if (_globalManagers.Buffer[i].Enabled)
++						_globalManagers.Buffer[i].DrawUpdate();
++				}
++
++				// read carefully:
++				// - we do not update the Scene while a SceneTransition is happening
++				// 		- unless it is SceneTransition that doesn't change Scenes (no reason not to update)
++				//		- or it is a SceneTransition that has already switched to the new Scene (the new Scene needs to do its thing)
++				if (_sceneTransition == null ||
++				    (_sceneTransition != null &&
++				     (!_sceneTransition._loadsNewScene || _sceneTransition._isNewSceneLoaded)))
++				{
++					_scene.DrawUpdate();
++				}
++			}
++		}
++
+ 		protected override void Draw(GameTime gameTime)
+ 		{
+ 			if (PauseOnFocusLost && !IsActive)
+@@ -336,7 +367,7 @@ namespace Nez
+ 		void EndDebugUpdate()
+ 		{
+ #if DEBUG
+-			DebugConsole.Instance.Update();
++			DebugConsole.Instance.FixedUpdate();
+ 			drawCalls = 0;
+ #endif
+ 		}
+@@ -496,4 +527,4 @@ namespace Nez
+ 
+ 		#endregion
+ 	}
+-}
+\ No newline at end of file
++}
+diff --git a/Nez.Portable/Debug/Console/DebugConsole.cs b/Nez.Portable/Debug/Console/DebugConsole.cs
+index 8383cda9..eaf779fb 100644
+--- a/Nez.Portable/Debug/Console/DebugConsole.cs
++++ b/Nez.Portable/Debug/Console/DebugConsole.cs
+@@ -158,7 +158,7 @@ namespace Nez.Console
+ 
+ 		#region Updating and Rendering
+ 
+-		internal void Update()
++		internal void FixedUpdate()
+ 		{
+ 			if (IsOpen)
+ 				UpdateOpen();
+@@ -509,7 +509,7 @@ namespace Nez.Console
+ #if DEBUG
+ 			if (_runtimeInspector != null)
+ 			{
+-				_runtimeInspector.Update();
++				_runtimeInspector.FixedUpdate();
+ 				_runtimeInspector.Render();
+ 			}
+ #endif
+diff --git a/Nez.Portable/Debug/Inspector/InspectorList.cs b/Nez.Portable/Debug/Inspector/InspectorList.cs
+index a8c70e86..7598e643 100644
+--- a/Nez.Portable/Debug/Inspector/InspectorList.cs
++++ b/Nez.Portable/Debug/Inspector/InspectorList.cs
+@@ -71,10 +71,10 @@ namespace Nez
+ 		}
+ 
+ 
+-		public void Update()
++		public void FixedUpdate()
+ 		{
+ 			foreach (var i in _inspectors)
+-				i.Update();
++				i.FixedUpdate();
+ 		}
+ 	}
+ }
+diff --git a/Nez.Portable/Debug/Inspector/Inspectors/BoolInspector.cs b/Nez.Portable/Debug/Inspector/Inspectors/BoolInspector.cs
+index 25831711..9948e3da 100644
+--- a/Nez.Portable/Debug/Inspector/Inspectors/BoolInspector.cs
++++ b/Nez.Portable/Debug/Inspector/Inspectors/BoolInspector.cs
+@@ -23,7 +23,7 @@ namespace Nez
+ 		}
+ 
+ 
+-		public override void Update()
++		public override void FixedUpdate()
+ 		{
+ 			_checkbox.IsChecked = GetValue<bool>();
+ 		}
+diff --git a/Nez.Portable/Debug/Inspector/Inspectors/ColorInspector.cs b/Nez.Portable/Debug/Inspector/Inspectors/ColorInspector.cs
+index 2856a08b..eb47acf4 100644
+--- a/Nez.Portable/Debug/Inspector/Inspectors/ColorInspector.cs
++++ b/Nez.Portable/Debug/Inspector/Inspectors/ColorInspector.cs
+@@ -90,7 +90,7 @@ namespace Nez
+ 		}
+ 
+ 
+-		public override void Update()
++		public override void FixedUpdate()
+ 		{
+ 			var value = GetValue<Color>();
+ 			_textFieldR.SetText(value.R.ToString());
+diff --git a/Nez.Portable/Debug/Inspector/Inspectors/EffectInspector.cs b/Nez.Portable/Debug/Inspector/Inspectors/EffectInspector.cs
+index ee183ad4..fe8090f0 100644
+--- a/Nez.Portable/Debug/Inspector/Inspectors/EffectInspector.cs
++++ b/Nez.Portable/Debug/Inspector/Inspectors/EffectInspector.cs
+@@ -54,10 +54,10 @@ namespace Nez
+ 		}
+ 
+ 
+-		public override void Update()
++		public override void FixedUpdate()
+ 		{
+ 			foreach (var i in _inspectors)
+-				i.Update();
++				i.FixedUpdate();
+ 		}
+ 	}
+ }
+diff --git a/Nez.Portable/Debug/Inspector/Inspectors/EnumInspector.cs b/Nez.Portable/Debug/Inspector/Inspectors/EnumInspector.cs
+index 9f3ce8fc..8854912d 100644
+--- a/Nez.Portable/Debug/Inspector/Inspectors/EnumInspector.cs
++++ b/Nez.Portable/Debug/Inspector/Inspectors/EnumInspector.cs
+@@ -31,7 +31,7 @@ namespace Nez
+ 		}
+ 
+ 
+-		public override void Update()
++		public override void FixedUpdate()
+ 		{
+ 			_selectBox.SetSelected(GetValue<object>().ToString());
+ 		}
+diff --git a/Nez.Portable/Debug/Inspector/Inspectors/FloatInspector.cs b/Nez.Portable/Debug/Inspector/Inspectors/FloatInspector.cs
+index 0ba90781..bed95be4 100644
+--- a/Nez.Portable/Debug/Inspector/Inspectors/FloatInspector.cs
++++ b/Nez.Portable/Debug/Inspector/Inspectors/FloatInspector.cs
+@@ -52,7 +52,7 @@ namespace Nez
+ 		}
+ 
+ 
+-		public override void Update()
++		public override void FixedUpdate()
+ 		{
+ 			if (_textField != null)
+ 				_textField.SetText(GetValue<float>().ToString(CultureInfo.InvariantCulture));
+diff --git a/Nez.Portable/Debug/Inspector/Inspectors/Inspector.cs b/Nez.Portable/Debug/Inspector/Inspectors/Inspector.cs
+index b14136dc..058c7f1d 100644
+--- a/Nez.Portable/Debug/Inspector/Inspectors/Inspector.cs
++++ b/Nez.Portable/Debug/Inspector/Inspectors/Inspector.cs
+@@ -367,7 +367,7 @@ namespace Nez
+ 		/// <summary>
+ 		/// used to update the UI for the Inspector
+ 		/// </summary>
+-		public abstract void Update();
++		public abstract void FixedUpdate();
+ 	}
+ }
+ #endif
+\ No newline at end of file
+diff --git a/Nez.Portable/Debug/Inspector/Inspectors/IntInspector.cs b/Nez.Portable/Debug/Inspector/Inspectors/IntInspector.cs
+index ba3f8725..b313ffd0 100644
+--- a/Nez.Portable/Debug/Inspector/Inspectors/IntInspector.cs
++++ b/Nez.Portable/Debug/Inspector/Inspectors/IntInspector.cs
+@@ -51,7 +51,7 @@ namespace Nez
+ 		}
+ 
+ 
+-		public override void Update()
++		public override void FixedUpdate()
+ 		{
+ 			if (_textField != null)
+ 				_textField.SetText(GetValue<int>().ToString());
+diff --git a/Nez.Portable/Debug/Inspector/Inspectors/MethodInspector.cs b/Nez.Portable/Debug/Inspector/Inspectors/MethodInspector.cs
+index 30a4b988..68066e3e 100644
+--- a/Nez.Portable/Debug/Inspector/Inspectors/MethodInspector.cs
++++ b/Nez.Portable/Debug/Inspector/Inspectors/MethodInspector.cs
+@@ -73,7 +73,7 @@ namespace Nez
+ 		}
+ 
+ 
+-		public override void Update()
++		public override void FixedUpdate()
+ 		{
+ 		}
+ 
+diff --git a/Nez.Portable/Debug/Inspector/Inspectors/StringInspector.cs b/Nez.Portable/Debug/Inspector/Inspectors/StringInspector.cs
+index df3181df..d9fd611c 100644
+--- a/Nez.Portable/Debug/Inspector/Inspectors/StringInspector.cs
++++ b/Nez.Portable/Debug/Inspector/Inspectors/StringInspector.cs
+@@ -21,7 +21,7 @@ namespace Nez
+ 		}
+ 
+ 
+-		public override void Update()
++		public override void FixedUpdate()
+ 		{
+ 			_textField.SetText(GetValue<string>());
+ 		}
+diff --git a/Nez.Portable/Debug/Inspector/Inspectors/StructInspector.cs b/Nez.Portable/Debug/Inspector/Inspectors/StructInspector.cs
+index 1ee16476..a6deac6c 100644
+--- a/Nez.Portable/Debug/Inspector/Inspectors/StructInspector.cs
++++ b/Nez.Portable/Debug/Inspector/Inspectors/StructInspector.cs
+@@ -59,10 +59,10 @@ namespace Nez
+ 		}
+ 
+ 
+-		public override void Update()
++		public override void FixedUpdate()
+ 		{
+ 			foreach (var i in _inspectors)
+-				i.Update();
++				i.FixedUpdate();
+ 		}
+ 	}
+ }
+diff --git a/Nez.Portable/Debug/Inspector/Inspectors/Vector2Inspector.cs b/Nez.Portable/Debug/Inspector/Inspectors/Vector2Inspector.cs
+index 237a9fe3..491779d2 100644
+--- a/Nez.Portable/Debug/Inspector/Inspectors/Vector2Inspector.cs
++++ b/Nez.Portable/Debug/Inspector/Inspectors/Vector2Inspector.cs
+@@ -55,7 +55,7 @@ namespace Nez
+ 		}
+ 
+ 
+-		public override void Update()
++		public override void FixedUpdate()
+ 		{
+ 			var value = GetValue<Vector2>();
+ 			_textFieldX.SetText(value.X.ToString(CultureInfo.InvariantCulture));
+diff --git a/Nez.Portable/Debug/Inspector/RuntimeInspector.cs b/Nez.Portable/Debug/Inspector/RuntimeInspector.cs
+index 9e0b124c..1ef86645 100644
+--- a/Nez.Portable/Debug/Inspector/RuntimeInspector.cs
++++ b/Nez.Portable/Debug/Inspector/RuntimeInspector.cs
+@@ -66,21 +66,21 @@ namespace Nez
+ 		}
+ 
+ 
+-		public void Update()
++		public void FixedUpdate()
+ 		{
+ 			// if we have an Entity this is an Entity inspector else it is a PostProcessor inspector
+ 			if (_entity != null)
+ 			{
+ 				// update transform, which has a null Component
+-				GetOrCreateInspectorList((Component) null).Update();
++				GetOrCreateInspectorList((Component) null).FixedUpdate();
+ 
+ 				for (var i = 0; i < _entity.Components.Count; i++)
+-					GetOrCreateInspectorList(_entity.Components[i]).Update();
++					GetOrCreateInspectorList(_entity.Components[i]).FixedUpdate();
+ 			}
+ 			else
+ 			{
+ 				for (var i = 0; i < Core.Scene._postProcessors.Length; i++)
+-					GetOrCreateInspectorList(Core.Scene._postProcessors.Buffer[i]).Update();
++					GetOrCreateInspectorList(Core.Scene._postProcessors.Buffer[i]).FixedUpdate();
+ 			}
+ 		}
+ 
+@@ -89,7 +89,7 @@ namespace Nez
+ 		{
+ 			// manually start a fresh batch and call the UICanvas Component lifecycle methods since it isnt attached to the Scene
+ 			Graphics.Instance.Batcher.Begin();
+-			(ui as IUpdatable).Update();
++			(ui as IUpdatable).FixedUpdate();
+ 			ui.Render(Graphics.Instance.Batcher, _camera);
+ 			Graphics.Instance.Batcher.End();
+ 		}
+diff --git a/Nez.Portable/ECS/Components/CameraShake.cs b/Nez.Portable/ECS/Components/CameraShake.cs
+index e6a9acad..acb030ca 100644
+--- a/Nez.Portable/ECS/Components/CameraShake.cs
++++ b/Nez.Portable/ECS/Components/CameraShake.cs
+@@ -36,7 +36,7 @@ namespace Nez
+ 		}
+ 
+ 
+-		public virtual void Update()
++		public virtual void FixedUpdate()
+ 		{
+ 			if (Math.Abs(_shakeIntensity) > 0f)
+ 			{
+@@ -63,5 +63,6 @@ namespace Nez
+ 
+ 			Entity.Scene.Camera.Position += _shakeOffset;
+ 		}
++		public virtual void DrawUpdate() {}
+ 	}
+-}
+\ No newline at end of file
++}
+diff --git a/Nez.Portable/ECS/Components/ColorCycler.cs b/Nez.Portable/ECS/Components/ColorCycler.cs
+index 2c4b155c..eadd66db 100644
+--- a/Nez.Portable/ECS/Components/ColorCycler.cs
++++ b/Nez.Portable/ECS/Components/ColorCycler.cs
+@@ -70,7 +70,7 @@ namespace Nez
+ 		}
+ 
+ 
+-		public virtual void Update()
++		public virtual void FixedUpdate()
+ 		{
+ 			var color = _spriteRenderer.Color;
+ 
+@@ -97,6 +97,7 @@ namespace Nez
+ 
+ 			_spriteRenderer.Color = color;
+ 		}
++                public virtual void DrawUpdate() {}
+ 
+ 
+ 		float EvaluateWaveFunction()
+@@ -136,4 +137,4 @@ namespace Nez
+ 			return (y * Amplitude) + Offset;
+ 		}
+ 	}
+-}
+\ No newline at end of file
++}
+diff --git a/Nez.Portable/ECS/Components/FollowCamera.cs b/Nez.Portable/ECS/Components/FollowCamera.cs
+index 706b087e..69165dfa 100644
+--- a/Nez.Portable/ECS/Components/FollowCamera.cs
++++ b/Nez.Portable/ECS/Components/FollowCamera.cs
+@@ -102,7 +102,7 @@ namespace Nez
+ 			Core.Emitter.RemoveObserver(CoreEvents.GraphicsDeviceReset, OnGraphicsDeviceReset);
+ 		}
+ 
+-		public virtual void Update()
++		private void Update()
+ 		{
+ 			// calculate the current deadzone around the camera
+ 			// Camera.Position is the center of the camera view
+@@ -126,16 +126,19 @@ namespace Nez
+ 
+ 			if (_targetEntity != null)
+ 				UpdateFollow();
+-			
++
+ 			Camera.Position = Vector2.Lerp(Camera.Position, Camera.Position + _desiredPositionDelta, FollowLerp);
+-			Camera.Entity.Transform.RoundPosition();
+ 
+ 			if (MapLockEnabled)
+ 			{
+ 				Camera.Position = ClampToMapSize(Camera.Position);
+ 				Camera.Entity.Transform.RoundPosition();
+ 			}
+-		}
++                        Entity.PreviousTransform.CopyFrom(Entity.Transform);
++                        Entity.GraphicsTransform.CopyFrom(Entity.Transform);
++                }
++		public virtual void DrawUpdate() { Update(); }
++		public virtual void FixedUpdate() {}
+ 
+ 		/// <summary>
+ 		/// Clamps the camera so it never leaves the visible area of the map.
+@@ -174,8 +177,8 @@ namespace Nez
+ 
+ 			if (_cameraStyle == CameraStyle.LockOn)
+ 			{
+-				var targetX = _targetEntity.Transform.Position.X;
+-				var targetY = _targetEntity.Transform.Position.Y;
++				var targetX = _targetEntity.GraphicsTransform.Position.X;
++				var targetY = _targetEntity.GraphicsTransform.Position.Y;
+ 
+ 				// x-axis
+ 				if (_worldSpaceDeadzone.X > targetX || _worldSpaceDeadzone.X < targetX)
+diff --git a/Nez.Portable/ECS/Components/IUpdatable.cs b/Nez.Portable/ECS/Components/IUpdatable.cs
+index c71f53c7..10e760ea 100644
+--- a/Nez.Portable/ECS/Components/IUpdatable.cs
++++ b/Nez.Portable/ECS/Components/IUpdatable.cs
+@@ -12,7 +12,8 @@ namespace Nez
+ 		bool Enabled { get; }
+ 		int UpdateOrder { get; }
+ 
+-		void Update();
++		void FixedUpdate();
++		void DrawUpdate();
+ 	}
+ 
+ 
+@@ -26,4 +27,4 @@ namespace Nez
+ 			return a.UpdateOrder.CompareTo(b.UpdateOrder);
+ 		}
+ 	}
+-}
+\ No newline at end of file
++}
+diff --git a/Nez.Portable/ECS/Components/Physics/ArcadeRigidbody.cs b/Nez.Portable/ECS/Components/Physics/ArcadeRigidbody.cs
+index f0e4a787..e9b78021 100644
+--- a/Nez.Portable/ECS/Components/Physics/ArcadeRigidbody.cs
++++ b/Nez.Portable/ECS/Components/Physics/ArcadeRigidbody.cs
+@@ -160,7 +160,7 @@ namespace Nez
+ 			Debug.WarnIf(_collider == null, "ArcadeRigidbody has no Collider. ArcadeRigidbody requires a Collider!");
+ 		}
+ 
+-		public virtual void Update()
++		public virtual void FixedUpdate()
+ 		{
+ 			if (IsImmovable || _collider == null)
+ 			{
+@@ -207,6 +207,7 @@ namespace Nez
+ 				}
+ 			}
+ 		}
++                public virtual void DrawUpdate() {}
+ 
+ 		/// <summary>
+ 		/// separates two overlapping rigidbodies. Handles the case of either being immovable as well.
+@@ -288,4 +289,4 @@ namespace Nez
+ 			                   coefficientOfFriction * tangentialVelocityComponent;
+ 		}
+ 	}
+-}
+\ No newline at end of file
++}
+diff --git a/Nez.Portable/ECS/Components/Physics/Mover.cs b/Nez.Portable/ECS/Components/Physics/Mover.cs
+index be2891c7..d1fb066c 100644
+--- a/Nez.Portable/ECS/Components/Physics/Mover.cs
++++ b/Nez.Portable/ECS/Components/Physics/Mover.cs
+@@ -138,7 +138,7 @@ namespace Nez
+ 
+ 			// 3. do an overlap check of all Colliders that are triggers with all broadphase colliders, triggers or not.
+ 			//    Any overlaps result in trigger events.
+-			_triggerHelper?.Update();
++			_triggerHelper?.FixedUpdate();
+ 		}
+ 
+ 		/// <summary>
+diff --git a/Nez.Portable/ECS/Components/Physics/TiledMapMover.cs b/Nez.Portable/ECS/Components/Physics/TiledMapMover.cs
+index b119b6c2..7a63e020 100644
+--- a/Nez.Portable/ECS/Components/Physics/TiledMapMover.cs
++++ b/Nez.Portable/ECS/Components/Physics/TiledMapMover.cs
+@@ -72,8 +72,8 @@ namespace Nez.Tiled
+ 				SlopeAngle = 0f;
+ 
+ 				// deal with subpixel movement, storing off any non-integar remainder for the next frame
+-				_movementRemainderX.Update(ref motion.X);
+-				_movementRemainderY.Update(ref motion.Y);
++				_movementRemainderX.FixedUpdate(ref motion.X);
++				_movementRemainderY.FixedUpdate(ref motion.Y);
+ 
+ 				// due to subpixel movement we might end up with 0 gravity when we really want there to be at least 1 pixel so slopes can work
+ 				if (Below && motion.Y == 0 && _movementRemainderY.Remainder > 0)
+diff --git a/Nez.Portable/ECS/Components/Renderables/IRenderable.cs b/Nez.Portable/ECS/Components/Renderables/IRenderable.cs
+index 1277bae0..9b1aa9ab 100644
+--- a/Nez.Portable/ECS/Components/Renderables/IRenderable.cs
++++ b/Nez.Portable/ECS/Components/Renderables/IRenderable.cs
+@@ -57,6 +57,8 @@ namespace Nez
+ 		/// <returns><c>true</c>, if visible from camera was ised, <c>false</c> otherwise.</returns>
+ 		bool IsVisibleFromCamera(Camera camera);
+ 
++		void DrawUpdate();
++
+ 		/// <summary>
+ 		/// called by a Renderer. The Camera can be used for culling and the Batcher instance to draw with.
+ 		/// </summary>
+@@ -97,4 +99,4 @@ namespace Nez
+ 			return res;
+ 		}
+ 	}
+-}
+\ No newline at end of file
++}
+diff --git a/Nez.Portable/ECS/Components/Renderables/Particles/Particle.cs b/Nez.Portable/ECS/Components/Renderables/Particles/Particle.cs
+index a907b0f1..5f12f9dc 100644
+--- a/Nez.Portable/ECS/Components/Renderables/Particles/Particle.cs
++++ b/Nez.Portable/ECS/Components/Renderables/Particles/Particle.cs
+@@ -140,7 +140,7 @@ namespace Nez.Particles
+ 		/// updates the particle. Returns true when the particle is no longer alive
+ 		/// </summary>
+ 		/// <param name="emitterConfig">Emitter config.</param>
+-		public bool Update(ParticleEmitterConfig emitterConfig, ref ParticleCollisionConfig collisionConfig,
++		public bool FixedUpdate(ParticleEmitterConfig emitterConfig, ref ParticleCollisionConfig collisionConfig,
+ 		                   Vector2 rootPosition)
+ 		{
+ 			// PART 1: reduce the life span of the particle
+diff --git a/Nez.Portable/ECS/Components/Renderables/Particles/ParticleEmitter.cs b/Nez.Portable/ECS/Components/Renderables/Particles/ParticleEmitter.cs
+index c7ea29d6..279b9096 100644
+--- a/Nez.Portable/ECS/Components/Renderables/Particles/ParticleEmitter.cs
++++ b/Nez.Portable/ECS/Components/Renderables/Particles/ParticleEmitter.cs
+@@ -113,7 +113,7 @@ namespace Nez.Particles
+ 		}
+ 
+ 
+-		public virtual void Update()
++		public virtual void FixedUpdate()
+ 		{
+ 			if (_isPaused)
+ 				return;
+@@ -170,7 +170,7 @@ namespace Nez.Particles
+ 				var currentParticle = _particles[i];
+ 
+ 				// if update returns true that means the particle is done
+-				if (currentParticle.Update(_emitterConfig, ref CollisionConfig, rootPosition))
++				if (currentParticle.FixedUpdate(_emitterConfig, ref CollisionConfig, rootPosition))
+ 				{
+ 					Pool<Particle>.Free(currentParticle);
+ 					_particles.RemoveAt(i);
+diff --git a/Nez.Portable/ECS/Components/Renderables/RenderableComponent.cs b/Nez.Portable/ECS/Components/Renderables/RenderableComponent.cs
+index 874a9773..e118a4d0 100644
+--- a/Nez.Portable/ECS/Components/Renderables/RenderableComponent.cs
++++ b/Nez.Portable/ECS/Components/Renderables/RenderableComponent.cs
+@@ -132,6 +132,8 @@ namespace Nez
+ 		/// <param name="camera">Camera.</param>
+ 		public abstract void Render(Batcher batcher, Camera camera);
+ 
++                public virtual void DrawUpdate() {}
++
+ 		/// <summary>
+ 		/// renders the bounds only if there is no collider. Always renders a square on the origin.
+ 		/// </summary>
+@@ -305,4 +307,4 @@ namespace Nez
+ 			return $"[RenderableComponent] {GetType()}, renderLayer: {RenderLayer}]";
+ 		}
+ 	}
+-}
+\ No newline at end of file
++}
+diff --git a/Nez.Portable/ECS/Components/Renderables/SpringGrid.cs b/Nez.Portable/ECS/Components/Renderables/SpringGrid.cs
+index 395dbbb9..a93668ce 100644
+--- a/Nez.Portable/ECS/Components/Renderables/SpringGrid.cs
++++ b/Nez.Portable/ECS/Components/Renderables/SpringGrid.cs
+@@ -42,7 +42,7 @@ namespace Nez
+ 			}
+ 
+ 
+-			public void Update()
++			public void FixedUpdate()
+ 			{
+ 				Velocity += _acceleration;
+ 				Position += Velocity;
+@@ -75,7 +75,7 @@ namespace Nez
+ 			}
+ 
+ 
+-			public void Update()
++			public void FixedUpdate()
+ 			{
+ 				var x = End1.Position - End2.Position;
+ 
+@@ -309,16 +309,16 @@ namespace Nez
+ 		#endregion
+ 
+ 
+-		public virtual void Update()
++		public virtual void FixedUpdate()
+ 		{
+ 			_screenSize.X = Screen.Width;
+ 			_screenSize.Y = Screen.Height;
+ 
+ 			foreach (var spring in _springs)
+-				spring.Update();
++				spring.FixedUpdate();
+ 
+ 			foreach (var mass in _points)
+-				mass.Update();
++				mass.FixedUpdate();
+ 		}
+ 
+ 		public override void Render(Batcher batcher, Camera camera)
+diff --git a/Nez.Portable/ECS/Components/Renderables/Sprites/ScrollingSpriteRenderer.cs b/Nez.Portable/ECS/Components/Renderables/Sprites/ScrollingSpriteRenderer.cs
+index 723e4558..bf9a6219 100644
+--- a/Nez.Portable/ECS/Components/Renderables/Sprites/ScrollingSpriteRenderer.cs
++++ b/Nez.Portable/ECS/Components/Renderables/Sprites/ScrollingSpriteRenderer.cs
+@@ -53,7 +53,7 @@ namespace Nez.Sprites
+ 		{
+ 		}
+ 
+-		public virtual void Update()
++		public virtual void FixedUpdate()
+ 		{
+ 			_scrollX += ScrollSpeedX * Time.DeltaTime;
+ 			_scrollY += ScrollSpeedY * Time.DeltaTime;
+diff --git a/Nez.Portable/ECS/Components/Renderables/Sprites/SpriteAnimator.cs b/Nez.Portable/ECS/Components/Renderables/Sprites/SpriteAnimator.cs
+index ebcee1f9..b4afc5bc 100644
+--- a/Nez.Portable/ECS/Components/Renderables/Sprites/SpriteAnimator.cs
++++ b/Nez.Portable/ECS/Components/Renderables/Sprites/SpriteAnimator.cs
+@@ -97,7 +97,7 @@ namespace Nez.Sprites
+ 
+ 		public SpriteAnimator(Sprite sprite) => SetSprite(sprite);
+ 
+-		public virtual void Update()
++		public virtual void FixedUpdate()
+ 		{
+ 			if (AnimationState != State.Running || CurrentAnimation == null)
+ 				return;
+diff --git a/Nez.Portable/ECS/Components/Renderables/Sprites/SpriteRenderer.cs b/Nez.Portable/ECS/Components/Renderables/Sprites/SpriteRenderer.cs
+index a51011f8..21940bce 100644
+--- a/Nez.Portable/ECS/Components/Renderables/Sprites/SpriteRenderer.cs
++++ b/Nez.Portable/ECS/Components/Renderables/Sprites/SpriteRenderer.cs
+@@ -17,8 +17,8 @@ namespace Nez.Sprites
+ 				if (_areBoundsDirty)
+ 				{
+ 					if (_sprite != null)
+-						_bounds.CalculateBounds(Entity.Transform.Position, _localOffset, _origin,
+-							Entity.Transform.Scale, Entity.Transform.Rotation, _sprite.SourceRect.Width,
++						_bounds.CalculateBounds(Entity.GraphicsTransform.Position, _localOffset, _origin,
++							Entity.GraphicsTransform.Scale, Entity.GraphicsTransform.Rotation, _sprite.SourceRect.Width,
+ 							_sprite.SourceRect.Height);
+ 					_areBoundsDirty = false;
+ 				}
+@@ -43,10 +43,10 @@ namespace Nez.Sprites
+ 		/// <value>The origin normalized.</value>
+ 		public Vector2 OriginNormalized
+ 		{
+-			get => new Vector2(_origin.X / Width * Entity.Transform.Scale.X,
+-				_origin.Y / Height * Entity.Transform.Scale.Y);
+-			set => SetOrigin(new Vector2(value.X * Width / Entity.Transform.Scale.X,
+-				value.Y * Height / Entity.Transform.Scale.Y));
++			get => new Vector2(_origin.X / Width * Entity.GraphicsTransform.Scale.X,
++				_origin.Y / Height * Entity.GraphicsTransform.Scale.Y);
++			set => SetOrigin(new Vector2(value.X * Width / Entity.GraphicsTransform.Scale.X,
++				value.Y * Height / Entity.GraphicsTransform.Scale.Y));
+ 		}
+ 
+ 		/// <summary>
+@@ -142,8 +142,8 @@ namespace Nez.Sprites
+ 		/// </summary>
+ 		public SpriteRenderer SetOriginNormalized(Vector2 value)
+ 		{
+-			SetOrigin(new Vector2(value.X * Width / Entity.Transform.Scale.X,
+-				value.Y * Height / Entity.Transform.Scale.Y));
++			SetOrigin(new Vector2(value.X * Width / Entity.GraphicsTransform.Scale.X,
++				value.Y * Height / Entity.GraphicsTransform.Scale.Y));
+ 			return this;
+ 		}
+ 
+@@ -187,8 +187,8 @@ namespace Nez.Sprites
+ 
+ 		public override void Render(Batcher batcher, Camera camera)
+ 		{
+-			batcher.Draw(Sprite, Entity.Transform.Position + LocalOffset, Color,
+-				Entity.Transform.Rotation, Origin, Entity.Transform.Scale, SpriteEffects, _layerDepth);
++			batcher.Draw(Sprite, Entity.GraphicsTransform.Position + LocalOffset, Color,
++				Entity.GraphicsTransform.Rotation, Origin, Entity.GraphicsTransform.Scale, SpriteEffects, _layerDepth);
+ 		}
+ 	}
+-}
+\ No newline at end of file
++}
+diff --git a/Nez.Portable/ECS/Components/Renderables/Sprites/SpriteTrail.cs b/Nez.Portable/ECS/Components/Renderables/Sprites/SpriteTrail.cs
+index e982a8af..b1f84a71 100644
+--- a/Nez.Portable/ECS/Components/Renderables/Sprites/SpriteTrail.cs
++++ b/Nez.Portable/ECS/Components/Renderables/Sprites/SpriteTrail.cs
+@@ -66,7 +66,7 @@ namespace Nez.Sprites
+ 			/// returns true when the fade out is complete
+ 			/// </summary>
+ 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+-			public bool Update()
++			public bool FixedUpdate()
+ 			{
+ 				_elapsedTime += Time.DeltaTime;
+ 
+@@ -272,7 +272,7 @@ namespace Nez.Sprites
+ 			}
+ 		}
+ 
+-		public virtual void Update()
++		public virtual void FixedUpdate()
+ 		{
+ 			if (_isFirstInstance)
+ 			{
+@@ -292,7 +292,7 @@ namespace Nez.Sprites
+ 			// update any live instances
+ 			for (var i = _liveSpriteTrailInstances.Count - 1; i >= 0; i--)
+ 			{
+-				if (_liveSpriteTrailInstances[i].Update())
++				if (_liveSpriteTrailInstances[i].FixedUpdate())
+ 				{
+ 					_availableSpriteTrailInstances.Push(_liveSpriteTrailInstances[i]);
+ 					_liveSpriteTrailInstances.RemoveAt(i);
+diff --git a/Nez.Portable/ECS/Components/Renderables/TiledMapRenderer.cs b/Nez.Portable/ECS/Components/Renderables/TiledMapRenderer.cs
+index b2365dfb..b7e04216 100644
+--- a/Nez.Portable/ECS/Components/Renderables/TiledMapRenderer.cs
++++ b/Nez.Portable/ECS/Components/Renderables/TiledMapRenderer.cs
+@@ -121,24 +121,24 @@ namespace Nez
+ 
+ 		public override void OnRemovedFromEntity() => RemoveColliders();
+ 
+-		public virtual void Update()
++		public virtual void FixedUpdate()
+ 		{
+ 			if (AutoUpdateTilesets)
+-				TiledMap.Update();
++				TiledMap.FixedUpdate();
+ 		}
+ 
+ 		public override void Render(Batcher batcher, Camera camera)
+ 		{
+ 			if (LayerIndicesToRender == null)
+ 			{
+-				TiledRendering.RenderMap(TiledMap, batcher, Entity.Transform.Position + _localOffset, Transform.Scale, LayerDepth, camera.Bounds);
++				TiledRendering.RenderMap(TiledMap, batcher, Entity.GraphicsTransform.Position + _localOffset, Entity.GraphicsTransform.Scale, LayerDepth, camera.Bounds);
+ 			}
+ 			else
+ 			{
+ 				for (var i = 0; i < TiledMap.Layers.Count; i++)
+ 				{
+ 					if (TiledMap.Layers[i].Visible && LayerIndicesToRender.Contains(i))
+-						TiledRendering.RenderLayer(TiledMap.Layers[i], batcher, Entity.Transform.Position + _localOffset, Transform.Scale, LayerDepth, camera.Bounds);
++						TiledRendering.RenderLayer(TiledMap.Layers[i], batcher, Entity.GraphicsTransform.Position + _localOffset, Entity.GraphicsTransform.Scale, LayerDepth, camera.Bounds);
+ 				}
+ 			}
+ 		}
+@@ -146,7 +146,7 @@ namespace Nez
+ 		public override void DebugRender(Batcher batcher)
+ 		{
+ 			foreach (var group in TiledMap.ObjectGroups)
+-				TiledRendering.RenderObjectGroup(group, batcher, Entity.Transform.Position + _localOffset, Transform.Scale, LayerDepth);
++				TiledRendering.RenderObjectGroup(group, batcher, Entity.Transform.Position + _localOffset, Entity.Transform.Scale, LayerDepth);
+ 
+ 			if (_colliders != null)
+ 			{
+diff --git a/Nez.Portable/ECS/Components/Renderables/TrailRibbon.cs b/Nez.Portable/ECS/Components/Renderables/TrailRibbon.cs
+index 74ad3f4b..2230957c 100644
+--- a/Nez.Portable/ECS/Components/Renderables/TrailRibbon.cs
++++ b/Nez.Portable/ECS/Components/Renderables/TrailRibbon.cs
+@@ -161,7 +161,7 @@ namespace Nez
+ 		}
+ 
+ 
+-		public virtual void Update()
++		public virtual void FixedUpdate()
+ 		{
+ 			// remove last node and put it at the front with new settings
+ 			var seg = _segments.Last.Value;
+diff --git a/Nez.Portable/ECS/Components/Renderables/UICanvas.cs b/Nez.Portable/ECS/Components/Renderables/UICanvas.cs
+index 1cf49e64..d7b8c221 100644
+--- a/Nez.Portable/ECS/Components/Renderables/UICanvas.cs
++++ b/Nez.Portable/ECS/Components/Renderables/UICanvas.cs
+@@ -51,9 +51,9 @@ namespace Nez
+ 		}
+ 
+ 
+-		public virtual void Update()
++		public virtual void FixedUpdate()
+ 		{
+-			Stage.Update();
++			Stage.FixedUpdate();
+ 		}
+ 
+ 
+diff --git a/Nez.Portable/ECS/Components/Text/FramesPerSecondCounter.cs b/Nez.Portable/ECS/Components/Text/FramesPerSecondCounter.cs
+index 38081e2b..5eff1ba5 100644
+--- a/Nez.Portable/ECS/Components/Text/FramesPerSecondCounter.cs
++++ b/Nez.Portable/ECS/Components/Text/FramesPerSecondCounter.cs
+@@ -119,7 +119,7 @@ namespace Nez
+ 			_sampleBuffer.Clear();
+ 		}
+ 
+-		public virtual void Update()
++		public virtual void FixedUpdate()
+ 		{
+ 			if (Time.UnscaledDeltaTime == 0.0f)
+ 				return;
+diff --git a/Nez.Portable/ECS/Entity.cs b/Nez.Portable/ECS/Entity.cs
+index cb054edc..bd59d84a 100644
+--- a/Nez.Portable/ECS/Entity.cs
++++ b/Nez.Portable/ECS/Entity.cs
+@@ -32,6 +32,9 @@ namespace Nez
+ 		/// </summary>
+ 		public readonly Transform Transform;
+ 
++		public readonly Transform PreviousTransform = new Transform(null);
++		public readonly Transform GraphicsTransform = new Transform(null);
++
+ 		/// <summary>
+ 		/// list of all the components currently attached to this entity
+ 		/// </summary>
+@@ -386,7 +389,18 @@ namespace Nez
+ 		/// <summary>
+ 		/// called each frame as long as the Entity is enabled
+ 		/// </summary>
+-		public virtual void Update() => Components.Update();
++		public virtual void FixedUpdate() {
++                    PreviousTransform.CopyFrom(Transform);
++                    Components.FixedUpdate();
++                }
++
++		/// <summary>
++		/// called each frame as long as the Entity is enabled
++		/// </summary>
++		public virtual void DrawUpdate() {
++                    GraphicsTransform.SetWithLerp(PreviousTransform, Transform, Time.Alpha);
++                    Components.DrawUpdate();
++                }
+ 
+ 		/// <summary>
+ 		/// called if Core.debugRenderEnabled is true by the default renderers. Custom renderers can choose to call it or not.
+@@ -536,4 +550,4 @@ namespace Nez
+ 			return string.Format("[Entity: name: {0}, tag: {1}, enabled: {2}, depth: {3}]", Name, Tag, Enabled, UpdateOrder);
+ 		}
+ 	}
+-}
+\ No newline at end of file
++}
+diff --git a/Nez.Portable/ECS/InternalUtils/ComponentList.cs b/Nez.Portable/ECS/InternalUtils/ComponentList.cs
+index 6fef812c..7a9931e8 100644
+--- a/Nez.Portable/ECS/InternalUtils/ComponentList.cs
++++ b/Nez.Portable/ECS/InternalUtils/ComponentList.cs
+@@ -264,13 +264,24 @@ namespace Nez
+ 		}
+ 
+ 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+-		internal void Update()
++		internal void FixedUpdate()
+ 		{
+ 			UpdateLists();
+ 			for (var i = 0; i < _updatableComponents.Length; i++)
+ 			{
+ 				if (_updatableComponents.Buffer[i].Enabled && (_updatableComponents.Buffer[i] as Component).Enabled)
+-					_updatableComponents.Buffer[i].Update();
++					_updatableComponents.Buffer[i].FixedUpdate();
++			}
++		}
++
++		[MethodImpl(MethodImplOptions.AggressiveInlining)]
++		internal void DrawUpdate()
++		{
++			UpdateLists();
++			for (var i = 0; i < _updatableComponents.Length; i++)
++			{
++				if (_updatableComponents.Buffer[i].Enabled && (_updatableComponents.Buffer[i] as Component).Enabled)
++					_updatableComponents.Buffer[i].DrawUpdate();
+ 			}
+ 		}
+ 
+@@ -312,4 +323,4 @@ namespace Nez
+ 			}
+ 		}
+ 	}
+-}
+\ No newline at end of file
++}
+diff --git a/Nez.Portable/ECS/InternalUtils/EntityList.cs b/Nez.Portable/ECS/InternalUtils/EntityList.cs
+index d7690ab1..20241324 100644
+--- a/Nez.Portable/ECS/InternalUtils/EntityList.cs
++++ b/Nez.Portable/ECS/InternalUtils/EntityList.cs
+@@ -156,13 +156,24 @@ namespace Nez
+ 		}
+ 
+ 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+-		internal void Update()
++		internal void FixedUpdate()
+ 		{
+ 			for (var i = 0; i < _entities.Length; i++)
+ 			{
+ 				var entity = _entities.Buffer[i];
+ 				if (entity.Enabled && (entity.UpdateInterval == 1 || Time.FrameCount % entity.UpdateInterval == 0))
+-					entity.Update();
++					entity.FixedUpdate();
++			}
++		}
++
++		[MethodImpl(MethodImplOptions.AggressiveInlining)]
++		internal void DrawUpdate()
++		{
++			for (var i = 0; i < _entities.Length; i++)
++			{
++				var entity = _entities.Buffer[i];
++				if (entity.Enabled)
++					entity.DrawUpdate();
+ 			}
+ 		}
+ 
+@@ -346,4 +357,4 @@ namespace Nez
+ 
+ 		#endregion
+ 	}
+-}
+\ No newline at end of file
++}
+diff --git a/Nez.Portable/ECS/Scene.cs b/Nez.Portable/ECS/Scene.cs
+index ac9b028e..73e0fd8d 100644
+--- a/Nez.Portable/ECS/Scene.cs
++++ b/Nez.Portable/ECS/Scene.cs
+@@ -383,7 +383,7 @@ namespace Nez
+ 			Unload();
+ 		}
+ 
+-		public virtual void Update()
++		public virtual void FixedUpdate()
+ 		{
+ 			// we set the RenderTarget here so that the Viewport will match the RenderTarget properly
+ 			Core.GraphicsDevice.SetRenderTarget(_sceneRenderTarget);
+@@ -395,16 +395,32 @@ namespace Nez
+ 			for (var i = _sceneComponents.Length - 1; i >= 0; i--)
+ 			{
+ 				if (_sceneComponents.Buffer[i].Enabled)
+-					_sceneComponents.Buffer[i].Update();
++					_sceneComponents.Buffer[i].FixedUpdate();
+ 			}
+ 
+ 			// update our Entities
+-			Entities.Update();
++			Entities.FixedUpdate();
+ 
+ 			// we update our renderables after entity.update in case any new Renderables were added
+ 			RenderableComponents.UpdateLists();
+ 		}
+ 
++		public virtual void DrawUpdate()
++		{
++			// we set the RenderTarget here so that the Viewport will match the RenderTarget properly
++			Core.GraphicsDevice.SetRenderTarget(_sceneRenderTarget);
++
++			// update our SceneComponents
++			for (var i = _sceneComponents.Length - 1; i >= 0; i--)
++			{
++				if (_sceneComponents.Buffer[i].Enabled)
++					_sceneComponents.Buffer[i].DrawUpdate();
++			}
++
++			// update our Entities
++			Entities.DrawUpdate();
++		}
++
+ 		internal void Render()
+ 		{
+ 			if (_renderers.Length == 0)
+diff --git a/Nez.Portable/ECS/SceneComponent.cs b/Nez.Portable/ECS/SceneComponent.cs
+index dd40e66b..487a28bb 100644
+--- a/Nez.Portable/ECS/SceneComponent.cs
++++ b/Nez.Portable/ECS/SceneComponent.cs
+@@ -58,7 +58,11 @@ namespace Nez
+ 		/// <summary>
+ 		/// called each frame before the Entities are updated
+ 		/// </summary>
+-		public virtual void Update()
++		public virtual void FixedUpdate()
++		{
++		}
++
++		public virtual void DrawUpdate()
+ 		{
+ 		}
+ 
+@@ -112,4 +116,4 @@ namespace Nez
+ 			return UpdateOrder.CompareTo(other.UpdateOrder);
+ 		}
+ 	}
+-}
+\ No newline at end of file
++}
+diff --git a/Nez.Portable/ECS/Transform.cs b/Nez.Portable/ECS/Transform.cs
+index 82afbacf..89ab0c2a 100644
+--- a/Nez.Portable/ECS/Transform.cs
++++ b/Nez.Portable/ECS/Transform.cs
+@@ -564,18 +564,20 @@ namespace Nez
+ 			{
+ 				hierarchyDirty |= dirtyFlagType;
+ 
+-				switch (dirtyFlagType)
+-				{
+-					case DirtyType.PositionDirty:
+-						Entity.OnTransformChanged(Component.Position);
+-						break;
+-					case DirtyType.RotationDirty:
+-						Entity.OnTransformChanged(Component.Rotation);
+-						break;
+-					case DirtyType.ScaleDirty:
+-						Entity.OnTransformChanged(Component.Scale);
+-						break;
+-				}
++                                if(Entity != null) {
++                                    switch (dirtyFlagType)
++                                    {
++                                        case DirtyType.PositionDirty:
++                                            Entity.OnTransformChanged(Component.Position);
++                                            break;
++                                        case DirtyType.RotationDirty:
++                                            Entity.OnTransformChanged(Component.Rotation);
++                                            break;
++                                        case DirtyType.ScaleDirty:
++                                            Entity.OnTransformChanged(Component.Scale);
++                                            break;
++                                    }
++                                }
+ 
+ 				// dirty our children as well so they know of the changes
+ 				for (var i = 0; i < _children.Count; i++)
+@@ -598,6 +600,32 @@ namespace Nez
+ 			SetDirty(DirtyType.ScaleDirty);
+ 		}
+ 
++		public void SetWithLerp(Transform from, Transform to, float alpha)
++		{
++			var dirtyPosition = _position != from.Position || from.Position != to.Position
++				|| _localPosition != from._localPosition || from._localPosition != to._localPosition;
++			// Position must be rounded to ints, otherwise we get tearing
++			_position = Vector2.Round(Vector2.Lerp(from.Position, to.Position, alpha));
++			_localPosition = Vector2.Round(Vector2.Lerp(from._localPosition, to._localPosition, alpha));
++
++			var dirtyRotation = _rotation != from._rotation || from._rotation != to._rotation
++				|| _localRotation != from._localRotation || from._localRotation != to._localRotation;
++			_rotation = Mathf.LerpAngleRadians(from._rotation, to._rotation, alpha);
++			_localRotation = Mathf.LerpAngleRadians(from._localRotation, to._localRotation, alpha);
++
++			var dirtyScale = _scale != from._scale || from._scale != to._scale
++				|| _localScale != from._localScale || from._localScale != to._localScale;
++			_scale = Vector2.Lerp(from._scale, to._scale, alpha);
++			_localScale = Vector2.Lerp(from._localScale, to._localScale, alpha);
++
++			if (dirtyPosition)
++				SetDirty(DirtyType.PositionDirty);
++			if (dirtyRotation)
++				SetDirty(DirtyType.RotationDirty);
++			if (dirtyScale)
++				SetDirty(DirtyType.ScaleDirty);
++		}
++
+ 
+ 		public override string ToString()
+ 		{
+@@ -606,4 +634,4 @@ namespace Nez
+ 				Parent != null, Position, Rotation, Scale, LocalPosition, LocalRotation, LocalScale);
+ 		}
+ 	}
+-}
+\ No newline at end of file
++}
+diff --git a/Nez.Portable/Graphics/Renderers/Renderer.cs b/Nez.Portable/Graphics/Renderers/Renderer.cs
+index dca6a346..f7b946d4 100644
+--- a/Nez.Portable/Graphics/Renderers/Renderer.cs
++++ b/Nez.Portable/Graphics/Renderers/Renderer.cs
+@@ -120,6 +120,8 @@ namespace Nez
+ 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+ 		protected void RenderAfterStateCheck(IRenderable renderable, Camera cam)
+ 		{
++                        renderable.DrawUpdate();
++
+ 			// check for Material changes
+ 			if (renderable.Material != null && renderable.Material != _currentMaterial)
+ 			{
+@@ -180,4 +182,4 @@ namespace Nez
+ 
+ 		public int CompareTo(Renderer other) => RenderOrder.CompareTo(other.RenderOrder);
+ 	}
+-}
+\ No newline at end of file
++}
+diff --git a/Nez.Portable/Graphics/Textures/RenderTarget.cs b/Nez.Portable/Graphics/Textures/RenderTarget.cs
+index 8c029ff1..141ca914 100644
+--- a/Nez.Portable/Graphics/Textures/RenderTarget.cs
++++ b/Nez.Portable/Graphics/Textures/RenderTarget.cs
+@@ -162,7 +162,7 @@ namespace Nez.Textures
+ 
+ 		#endregion
+ 
+-		public override void Update()
++		public override void FixedUpdate()
+ 		{
+ 			// remove any TrackedRenderTarget2Ds that havent been used for 2 frames or more
+ 			for (var i = _renderTargetPool.Count - 1; i >= 0; i--)
+diff --git a/Nez.Portable/Input/GamePadData.cs b/Nez.Portable/Input/GamePadData.cs
+index 8ba706a2..c67af554 100644
+--- a/Nez.Portable/Input/GamePadData.cs
++++ b/Nez.Portable/Input/GamePadData.cs
+@@ -32,7 +32,7 @@ namespace Nez
+ 		}
+ 
+ 
+-		public void Update()
++		public void FixedUpdate()
+ 		{
+ 			_previousState = _currentState;
+ 			_currentState = GamePad.GetState(_playerIndex, DeadZone);
+diff --git a/Nez.Portable/Input/Input.cs b/Nez.Portable/Input/Input.cs
+index fa7e2f09..682f4b9b 100644
+--- a/Nez.Portable/Input/Input.cs
++++ b/Nez.Portable/Input/Input.cs
+@@ -79,9 +79,9 @@ namespace Nez
+ 		}
+ 
+ 
+-		public static void Update()
++		public static void FixedUpdate()
+ 		{
+-			Touch.Update();
++			Touch.FixedUpdate();
+ 
+ 			_previousKbState = _currentKbState;
+ 			_currentKbState = Keyboard.GetState();
+@@ -90,10 +90,10 @@ namespace Nez
+ 			_currentMouseState = Mouse.GetState();
+ 
+ 			for (var i = 0; i < _maxSupportedGamePads; i++)
+-				GamePads[i].Update();
++				GamePads[i].FixedUpdate();
+ 
+ 			for (var i = 0; i < _virtualInputs.Length; i++)
+-				_virtualInputs.Buffer[i].Update();
++				_virtualInputs.Buffer[i].FixedUpdate();
+ 		}
+ 
+ 		/// <summary>
+diff --git a/Nez.Portable/Input/TouchInput.cs b/Nez.Portable/Input/TouchInput.cs
+index 0dfad66b..6c8864de 100644
+--- a/Nez.Portable/Input/TouchInput.cs
++++ b/Nez.Portable/Input/TouchInput.cs
+@@ -32,7 +32,7 @@ namespace Nez
+ 		}
+ 
+ 
+-		internal void Update()
++		internal void FixedUpdate()
+ 		{
+ 			if (!_isConnected)
+ 				return;
+diff --git a/Nez.Portable/Input/Virtual/VirtualAxis.cs b/Nez.Portable/Input/Virtual/VirtualAxis.cs
+index 14e6acfc..4ad38bc9 100644
+--- a/Nez.Portable/Input/Virtual/VirtualAxis.cs
++++ b/Nez.Portable/Input/Virtual/VirtualAxis.cs
+@@ -38,10 +38,10 @@ namespace Nez
+ 		}
+ 
+ 
+-		public override void Update()
++		public override void FixedUpdate()
+ 		{
+ 			for (var i = 0; i < Nodes.Count; i++)
+-				Nodes[i].Update();
++				Nodes[i].FixedUpdate();
+ 		}
+ 
+ 
+@@ -206,7 +206,7 @@ namespace Nez
+ 			}
+ 
+ 
+-			public override void Update()
++			public override void FixedUpdate()
+ 			{
+ 				if (Input.IsKeyDown(Positive))
+ 				{
+diff --git a/Nez.Portable/Input/Virtual/VirtualButton.cs b/Nez.Portable/Input/Virtual/VirtualButton.cs
+index 414ddbc3..57fe5c11 100644
+--- a/Nez.Portable/Input/Virtual/VirtualButton.cs
++++ b/Nez.Portable/Input/Virtual/VirtualButton.cs
+@@ -62,7 +62,7 @@ namespace Nez
+ 		}
+ 
+ 
+-		public override void Update()
++		public override void FixedUpdate()
+ 		{
+ 			_bufferCounter -= Time.UnscaledDeltaTime;
+ 			IsRepeating = false;
+@@ -70,7 +70,7 @@ namespace Nez
+ 			var check = false;
+ 			for (var i = 0; i < Nodes.Count; i++)
+ 			{
+-				Nodes[i].Update();
++				Nodes[i].FixedUpdate();
+ 				if (Nodes[i].IsPressed)
+ 				{
+ 					_bufferCounter = BufferTime;
+diff --git a/Nez.Portable/Input/Virtual/VirtualInput.cs b/Nez.Portable/Input/Virtual/VirtualInput.cs
+index 6804f229..52e6972c 100644
+--- a/Nez.Portable/Input/Virtual/VirtualInput.cs
++++ b/Nez.Portable/Input/Virtual/VirtualInput.cs
+@@ -39,7 +39,7 @@
+ 			Input._virtualInputs.Remove(this);
+ 		}
+ 
+-		public abstract void Update();
++		public abstract void FixedUpdate();
+ 	}
+ 
+ 
+@@ -49,7 +49,7 @@
+ 	/// </summary>
+ 	public abstract class VirtualInputNode
+ 	{
+-		public virtual void Update()
++		public virtual void FixedUpdate()
+ 		{
+ 		}
+ 	}
+diff --git a/Nez.Portable/Input/Virtual/VirtualIntegerAxis.cs b/Nez.Portable/Input/Virtual/VirtualIntegerAxis.cs
+index 3ab8722d..105dbd51 100644
+--- a/Nez.Portable/Input/Virtual/VirtualIntegerAxis.cs
++++ b/Nez.Portable/Input/Virtual/VirtualIntegerAxis.cs
+@@ -40,10 +40,10 @@ namespace Nez
+ 		}
+ 
+ 
+-		public override void Update()
++		public override void FixedUpdate()
+ 		{
+ 			for (var i = 0; i < Nodes.Count; i++)
+-				Nodes[i].Update();
++				Nodes[i].FixedUpdate();
+ 		}
+ 
+ 
+diff --git a/Nez.Portable/Input/Virtual/VirtualJoystick.cs b/Nez.Portable/Input/Virtual/VirtualJoystick.cs
+index 8b58f778..2aed12b4 100644
+--- a/Nez.Portable/Input/Virtual/VirtualJoystick.cs
++++ b/Nez.Portable/Input/Virtual/VirtualJoystick.cs
+@@ -46,10 +46,10 @@ namespace Nez
+ 		}
+ 
+ 
+-		public override void Update()
++		public override void FixedUpdate()
+ 		{
+ 			for (int i = 0; i < Nodes.Count; i++)
+-				Nodes[i].Update();
++				Nodes[i].FixedUpdate();
+ 		}
+ 
+ 
+@@ -216,7 +216,7 @@ namespace Nez
+ 			}
+ 
+ 
+-			public override void Update()
++			public override void FixedUpdate()
+ 			{
+ 				//X Axis
+ 				if (Input.IsKeyDown(Left))
+diff --git a/Nez.Portable/Math/SubpixelFloat.cs b/Nez.Portable/Math/SubpixelFloat.cs
+index 83233c05..75f18a79 100644
+--- a/Nez.Portable/Math/SubpixelFloat.cs
++++ b/Nez.Portable/Math/SubpixelFloat.cs
+@@ -23,7 +23,7 @@
+ 		/// increments remainder by amount, truncates the value to an int, stores off the new remainder and sets amount to the current value.
+ 		/// </summary>
+ 		/// <param name="amount">Amount.</param>
+-		public void Update(ref float amount)
++		public void FixedUpdate(ref float amount)
+ 		{
+ 			Remainder += amount;
+ 			var motion = Mathf.TruncateToInt(Remainder);
+diff --git a/Nez.Portable/Math/SubpixelVector2.cs b/Nez.Portable/Math/SubpixelVector2.cs
+index 318b1e8c..a2b808d7 100644
+--- a/Nez.Portable/Math/SubpixelVector2.cs
++++ b/Nez.Portable/Math/SubpixelVector2.cs
+@@ -12,10 +12,10 @@ namespace Nez
+ 		/// increments s/y remainders by amount, truncates the values to an int, stores off the new remainders and sets amount to the current value.
+ 		/// </summary>
+ 		/// <param name="amount">Amount.</param>
+-		public void Update(ref Vector2 amount)
++		public void FixedUpdate(ref Vector2 amount)
+ 		{
+-			_x.Update(ref amount.X);
+-			_y.Update(ref amount.Y);
++			_x.FixedUpdate(ref amount.X);
++			_y.FixedUpdate(ref amount.Y);
+ 		}
+ 
+ 
+diff --git a/Nez.Portable/Nez.MG38.csproj b/Nez.Portable/Nez.MG38.csproj
+index 5d7632b5..d975de9a 100644
+--- a/Nez.Portable/Nez.MG38.csproj
++++ b/Nez.Portable/Nez.MG38.csproj
+@@ -5,7 +5,7 @@
+ 	<Import Sdk="Microsoft.NET.Sdk" Project="Sdk.props" />
+ 
+   <PropertyGroup>
+-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
++    <TargetFrameworks>net6.0</TargetFrameworks>
+     <AssemblyName>Nez</AssemblyName>
+     <RootNamespace>Nez</RootNamespace>
+     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+@@ -33,10 +33,13 @@
+       	</EmbeddedResource>
+     </ItemGroup>
+ 	
+-	<ItemGroup>
+-		<PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
+-		<PackageReference Include="System.Drawing.Common" Version="5.0.2" />
+-	</ItemGroup>
++    <ItemGroup>
++            <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
++    </ItemGroup>
++
++    <ItemGroup>
++            <ProjectReference Include="..\..\MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.csproj" />
++    </ItemGroup>
+ 
+-	<Import Sdk="Microsoft.NET.Sdk" Project="Sdk.targets" />
++    <Import Sdk="Microsoft.NET.Sdk" Project="Sdk.targets" />
+ </Project>
+diff --git a/Nez.Portable/Physics/ColliderTriggerHelper.cs b/Nez.Portable/Physics/ColliderTriggerHelper.cs
+index 761bb60b..a3fb81fe 100644
+--- a/Nez.Portable/Physics/ColliderTriggerHelper.cs
++++ b/Nez.Portable/Physics/ColliderTriggerHelper.cs
+@@ -32,7 +32,7 @@ namespace Nez
+ 		/// <summary>
+ 		/// update should be called AFTER Entity is moved. It will take care of any ITriggerListeners that the Collider overlaps.
+ 		/// </summary>
+-		public void Update()
++		public void FixedUpdate()
+ 		{
+ 			// 3. do an overlap check of all entity.colliders that are triggers with all broadphase colliders, triggers or not.
+ 			//    Any overlaps result in trigger events.
+diff --git a/Nez.Portable/Physics/Verlet/VerletWorld.cs b/Nez.Portable/Physics/Verlet/VerletWorld.cs
+index 415a2a58..6e63dc32 100644
+--- a/Nez.Portable/Physics/Verlet/VerletWorld.cs
++++ b/Nez.Portable/Physics/Verlet/VerletWorld.cs
+@@ -64,7 +64,7 @@ namespace Nez.Verlet
+ 
+ 		#region verlet simulation
+ 
+-		public void Update()
++		public void FixedUpdate()
+ 		{
+ 			UpdateTiming();
+ 
+diff --git a/Nez.Portable/UI/Containers/ScrollPane.cs b/Nez.Portable/UI/Containers/ScrollPane.cs
+index ce7437a6..ec1f7466 100644
+--- a/Nez.Portable/UI/Containers/ScrollPane.cs
++++ b/Nez.Portable/UI/Containers/ScrollPane.cs
+@@ -1108,7 +1108,7 @@ namespace Nez.UI
+ 		#endregion
+ 
+ 
+-		protected virtual void Update()
++		protected virtual void FixedUpdate()
+ 		{
+ 			if (_fadeAlpha > 0 && _fadeScrollBars && !_touchScrollH && !_touchScrollV)
+ 			{
+@@ -1231,7 +1231,7 @@ namespace Nez.UI
+ 			if (_widget == null)
+ 				return;
+ 
+-			Update();
++			FixedUpdate();
+ 			Validate();
+ 
+ 			// setup transform for this group.
+diff --git a/Nez.Portable/UI/Stage.cs b/Nez.Portable/UI/Stage.cs
+index f20c5f3f..beeba156 100644
+--- a/Nez.Portable/UI/Stage.cs
++++ b/Nez.Portable/UI/Stage.cs
+@@ -165,7 +165,7 @@ namespace Nez.UI
+ 		}
+ 
+ 
+-		public void Update()
++		public void FixedUpdate()
+ 		{
+ 			if (_isGamepadFocusEnabled)
+ 				UpdateGamepadState();
+diff --git a/Nez.Portable/UI/Widgets/SelectBoxList.cs b/Nez.Portable/UI/Widgets/SelectBoxList.cs
+index 9ae959f6..de3f9a1b 100644
+--- a/Nez.Portable/UI/Widgets/SelectBoxList.cs
++++ b/Nez.Portable/UI/Widgets/SelectBoxList.cs
+@@ -129,7 +129,7 @@ namespace Nez.UI
+ 		}
+ 
+ 
+-		protected override void Update()
++		protected override void FixedUpdate()
+ 		{
+ 			if (Input.IsKeyPressed(Keys.Escape))
+ 			{
+@@ -155,7 +155,7 @@ namespace Nez.UI
+ 					Core.Schedule(0f, false, this, t => ((SelectBoxList<T>)t.Context).Hide());
+ 			}
+ 
+-			base.Update();
++			base.FixedUpdate();
+ 			ToFront();
+ 		}
+ 	}
+diff --git a/Nez.Portable/Utils/Coroutines/CoroutineManager.cs b/Nez.Portable/Utils/Coroutines/CoroutineManager.cs
+index 658b30ef..33101a1c 100644
+--- a/Nez.Portable/Utils/Coroutines/CoroutineManager.cs
++++ b/Nez.Portable/Utils/Coroutines/CoroutineManager.cs
+@@ -111,7 +111,7 @@ namespace Nez.Systems
+ 			return coroutine;
+ 		}
+ 
+-		public override void Update()
++		public override void FixedUpdate()
+ 		{
+ 			_isInUpdate = true;
+ 			for (var i = 0; i < _unblockedCoroutines.Count; i++)
+diff --git a/Nez.Portable/Utils/GlobalManager.cs b/Nez.Portable/Utils/GlobalManager.cs
+index b6a46aab..caeb2fb0 100644
+--- a/Nez.Portable/Utils/GlobalManager.cs
++++ b/Nez.Portable/Utils/GlobalManager.cs
+@@ -52,10 +52,14 @@
+ 		/// <summary>
+ 		/// called each frame before Scene.update
+ 		/// </summary>
+-		public virtual void Update()
++		public virtual void FixedUpdate()
++		{
++		}
++
++		public virtual void DrawUpdate()
+ 		{
+ 		}
+ 
+ 		#endregion
+ 	}
+-}
+\ No newline at end of file
++}
+diff --git a/Nez.Portable/Utils/Time.cs b/Nez.Portable/Utils/Time.cs
+index 0bfc7f2b..8cbadaac 100644
+--- a/Nez.Portable/Utils/Time.cs
++++ b/Nez.Portable/Utils/Time.cs
+@@ -1,4 +1,5 @@
+ ﻿using System.Runtime.CompilerServices;
++using Microsoft.Xna.Framework;
+ 
+ 
+ namespace Nez
+@@ -18,6 +19,11 @@ namespace Nez
+ 		/// </summary>
+ 		public static float DeltaTime;
+ 
++		/// <summary>
++		/// 0..1 where we are currently in between two physics frames
++		/// </summary>
++		public static float Alpha;
++
+ 		/// <summary>
+ 		/// unscaled version of deltaTime. Not affected by timeScale
+ 		/// </summary>
+@@ -54,8 +60,9 @@ namespace Nez
+ 		/// </summary>
+ 		public static float MaxDeltaTime = float.MaxValue;
+ 
+-		internal static void Update(float dt)
++		internal static void FixedUpdate(GameTime gameTime)
+ 		{
++                    float dt = (float) gameTime.ElapsedGameTime.TotalSeconds;
+ 			if(dt > MaxDeltaTime)
+ 				dt = MaxDeltaTime;
+ 			TotalTime += dt;
+@@ -64,6 +71,12 @@ namespace Nez
+ 			UnscaledDeltaTime = dt;
+ 			TimeSinceSceneLoad += dt;
+ 			FrameCount++;
++                        Alpha = gameTime.Alpha;
++		}
++
++		internal static void UpdateAlpha(GameTime gameTime)
++		{
++                        Alpha = gameTime.Alpha;
+ 		}
+ 
+ 
+diff --git a/Nez.Portable/Utils/Timers/TimerManager.cs b/Nez.Portable/Utils/Timers/TimerManager.cs
+index 91c5bf7c..4dc01e66 100644
+--- a/Nez.Portable/Utils/Timers/TimerManager.cs
++++ b/Nez.Portable/Utils/Timers/TimerManager.cs
+@@ -12,7 +12,7 @@ namespace Nez.Timers
+ 		List<Timer> _timers = new List<Timer>();
+ 
+ 
+-		public override void Update()
++		public override void FixedUpdate()
+ 		{
+ 			for (var i = _timers.Count - 1; i >= 0; i--)
+ 			{
+diff --git a/Nez.Portable/Utils/Tweens/TweenManager.cs b/Nez.Portable/Utils/Tweens/TweenManager.cs
+index ac9ac5ef..3faf4cf1 100644
+--- a/Nez.Portable/Utils/Tweens/TweenManager.cs
++++ b/Nez.Portable/Utils/Tweens/TweenManager.cs
+@@ -61,7 +61,7 @@ namespace Nez.Tweens
+ 		}
+ 
+ 
+-		public override void Update()
++		public override void FixedUpdate()
+ 		{
+ 			_isUpdating = true;
+ 
+diff --git a/patch-applied b/patch-applied
+new file mode 100644
+index 00000000..20e6131e
+--- /dev/null
++++ b/patch-applied
+@@ -0,0 +1 @@
++File for Make
+-- 
+2.37.2
+

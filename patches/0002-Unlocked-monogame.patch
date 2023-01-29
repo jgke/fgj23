@@ -1,0 +1,324 @@
+From d6cc2d52dc0752dca809d234dd1cec8e0e686589 Mon Sep 17 00:00:00 2001
+From: Jaakko Hannikainen <jgke@jgke.fi>
+Date: Sun, 8 Jan 2023 22:19:48 +0200
+Subject: [PATCH] Patch Monogame to use FixedUpdate/DrawUpdate
+
+---
+ .editorconfig                             |  13 +++
+ MonoGame.Framework/FrameworkDispatcher.cs |   2 +-
+ MonoGame.Framework/Game.cs                | 124 +++++++++-------------
+ MonoGame.Framework/GameComponent.cs       |   3 +-
+ MonoGame.Framework/GameTime.cs            |   5 +
+ MonoGame.Framework/IUpdateable.cs         |   3 +-
+ patch-applied                             |   1 +
+ 7 files changed, 75 insertions(+), 76 deletions(-)
+ create mode 100644 patch-applied
+
+diff --git a/.editorconfig b/.editorconfig
+index 3645e9835..ccbd5faef 100644
+--- a/.editorconfig
++++ b/.editorconfig
+@@ -10,3 +10,16 @@ trim_trailing_whitespace = true
+ [*.cs]
+ indent_style = space
+ indent_size = 4
++dotnet_diagnostic.CS1591.severity = none
++dotnet_diagnostic.CS1574.severity = none
++dotnet_diagnostic.CS3021.severity = none
++dotnet_diagnostic.CS0067 = none
++dotnet_diagnostic.CS0162 = none
++dotnet_diagnostic.CS0169 = none
++dotnet_diagnostic.CS0414 = none
++dotnet_diagnostic.CS0419 = none
++dotnet_diagnostic.CS0618 = none
++dotnet_diagnostic.CS0649 = none
++dotnet_diagnostic.CS1572 = none
++dotnet_diagnostic.MSB3539 = none
++dotnet_diagnostic.MSB4011 = none
+diff --git a/MonoGame.Framework/FrameworkDispatcher.cs b/MonoGame.Framework/FrameworkDispatcher.cs
+index ca3f6369f..6ffac9987 100644
+--- a/MonoGame.Framework/FrameworkDispatcher.cs
++++ b/MonoGame.Framework/FrameworkDispatcher.cs
+@@ -21,7 +21,7 @@ namespace Microsoft.Xna.Framework
+         /// <summary>
+         /// Processes framework events.
+         /// </summary>
+-        public static void Update()
++        public static void FixedUpdate()
+         {
+             if (!_initialized)
+                 Initialize();
+diff --git a/MonoGame.Framework/Game.cs b/MonoGame.Framework/Game.cs
+index 8894ae04e..30474bb39 100644
+--- a/MonoGame.Framework/Game.cs
++++ b/MonoGame.Framework/Game.cs
+@@ -80,7 +80,7 @@ namespace Microsoft.Xna.Framework
+             _services.AddService(typeof(GamePlatform), Platform);
+ 
+             // Calling Update() for first time initializes some systems
+-            FrameworkDispatcher.Update();
++            FrameworkDispatcher.FixedUpdate();
+ 
+             // Allow some optional per-platform construction to occur too.
+             PlatformConstruct();
+@@ -487,7 +487,7 @@ namespace Microsoft.Xna.Framework
+                 break;
+             case GameRunBehavior.Synchronous:
+                 // XNA runs one Update even before showing the window
+-                DoUpdate(new GameTime());
++                DoFixedUpdate(new GameTime());
+ 
+                 Platform.RunLoop();
+                 EndRun();
+@@ -523,8 +523,6 @@ namespace Microsoft.Xna.Framework
+             // any change fully in both the fixed and variable timestep 
+             // modes across multiple devices and platforms.
+ 
+-        RetryTick:
+-
+             if (!IsActive && (InactiveSleepTime.TotalMilliseconds >= 1.0))
+             {
+ #if WINDOWS_UAP
+@@ -545,84 +543,57 @@ namespace Microsoft.Xna.Framework
+             _accumulatedElapsedTime += TimeSpan.FromTicks(currentTicks - _previousTicks);
+             _previousTicks = currentTicks;
+ 
+-            if (IsFixedTimeStep && _accumulatedElapsedTime < TargetElapsedTime)
+-            {
+-                // Sleep for as long as possible without overshooting the update time
+-                var sleepTime = (TargetElapsedTime - _accumulatedElapsedTime).TotalMilliseconds;
+-                // We only have a precision timer on Windows, so other platforms may still overshoot
+-#if WINDOWS && !DESKTOPGL
+-                MonoGame.Framework.Utilities.TimerHelper.SleepForNoMoreThan(sleepTime);
+-#elif WINDOWS_UAP
+-                lock (_locker)
+-                    if (sleepTime >= 2.0)
+-                        System.Threading.Monitor.Wait(_locker, 1);
+-#elif DESKTOPGL || ANDROID || IOS
+-                if (sleepTime >= 2.0)
+-                    System.Threading.Thread.Sleep(1);
+-#endif
+-                // Keep looping until it's time to perform the next update
+-                goto RetryTick;
+-            }
+-
+             // Do not allow any update to take longer than our maximum.
+             if (_accumulatedElapsedTime > _maxElapsedTime)
+                 _accumulatedElapsedTime = _maxElapsedTime;
+ 
+-            if (IsFixedTimeStep)
++            _gameTime.ElapsedGameTime = TargetElapsedTime;
++            var stepCount = 0;
++
++            // Perform as many full fixed length time steps as we can.
++            while (_accumulatedElapsedTime >= TargetElapsedTime && !_shouldExit)
+             {
+-                _gameTime.ElapsedGameTime = TargetElapsedTime;
+-                var stepCount = 0;
++                _gameTime.TotalGameTime += TargetElapsedTime;
++                _accumulatedElapsedTime -= TargetElapsedTime;
++                ++stepCount;
+ 
+-                // Perform as many full fixed length time steps as we can.
+-                while (_accumulatedElapsedTime >= TargetElapsedTime && !_shouldExit)
+-                {
+-                    _gameTime.TotalGameTime += TargetElapsedTime;
+-                    _accumulatedElapsedTime -= TargetElapsedTime;
+-                    ++stepCount;
++                DoFixedUpdate(_gameTime);
++            }
+ 
+-                    DoUpdate(_gameTime);
+-                }
++            //Every update after the first accumulates lag
++            _updateFrameLag += Math.Max(0, stepCount - 1);
+ 
+-                //Every update after the first accumulates lag
+-                _updateFrameLag += Math.Max(0, stepCount - 1);
++            //If we think we are running slowly, wait until the lag clears before resetting it
++            if (_gameTime.IsRunningSlowly)
++            {
++                if (_updateFrameLag == 0)
++                    _gameTime.IsRunningSlowly = false;
++            }
++            else if (_updateFrameLag >= 5)
++            {
++                //If we lag more than 5 frames, start thinking we are running slowly
++                _gameTime.IsRunningSlowly = true;
++            }
+ 
+-                //If we think we are running slowly, wait until the lag clears before resetting it
+-                if (_gameTime.IsRunningSlowly)
+-                {
+-                    if (_updateFrameLag == 0)
+-                        _gameTime.IsRunningSlowly = false;
+-                }
+-                else if (_updateFrameLag >= 5)
+-                {
+-                    //If we lag more than 5 frames, start thinking we are running slowly
+-                    _gameTime.IsRunningSlowly = true;
+-                }
++            //Every time we just do one update and one draw, then we are not running slowly, so decrease the lag
++            if (stepCount == 1 && _updateFrameLag > 0)
++                _updateFrameLag--;
+ 
+-                //Every time we just do one update and one draw, then we are not running slowly, so decrease the lag
+-                if (stepCount == 1 && _updateFrameLag > 0)
+-                    _updateFrameLag--;
++            // Draw needs to know the total elapsed time
++            // that occured for the fixed length updates.
++            _gameTime.ElapsedGameTime = TimeSpan.FromTicks(TargetElapsedTime.Ticks * stepCount);
+ 
+-                // Draw needs to know the total elapsed time
+-                // that occured for the fixed length updates.
+-                _gameTime.ElapsedGameTime = TimeSpan.FromTicks(TargetElapsedTime.Ticks * stepCount);
+-            }
+-            else
+-            {
+-                // Perform a single variable length update.
+-                _gameTime.ElapsedGameTime = _accumulatedElapsedTime;
+-                _gameTime.TotalGameTime += _accumulatedElapsedTime;
+-                _accumulatedElapsedTime = TimeSpan.Zero;
++            _gameTime.Alpha = (float)_accumulatedElapsedTime.Ticks / (float)TargetElapsedTime.Ticks;
+ 
+-                DoUpdate(_gameTime);
++            // Draw unless the update suppressed it.
++            if (!_suppressDraw) {
++                DrawUpdate(_gameTime);
+             }
+ 
+-            // Draw unless the update suppressed it.
+-            if (_suppressDraw)
+-                _suppressDraw = false;
+-            else
+-            {
++            if (!_suppressDraw) {
+                 DoDraw(_gameTime);
+             }
++            _suppressDraw = false;
+ 
+             if (_shouldExit)
+             {
+@@ -718,8 +689,10 @@ namespace Microsoft.Xna.Framework
+             _drawables.ForEachFilteredItem(DrawAction, gameTime);
+         }
+ 
+-        private static readonly Action<IUpdateable, GameTime> UpdateAction =
+-            (updateable, gameTime) => updateable.Update(gameTime);
++        private static readonly Action<IUpdateable, GameTime> FixedUpdateAction =
++            (updateable, gameTime) => updateable.FixedUpdate(gameTime);
++        private static readonly Action<IUpdateable, GameTime> DrawUpdateAction =
++            (updateable, gameTime) => updateable.DrawUpdate(gameTime);
+ 
+         /// <summary>
+         /// Called when the game should update.
+@@ -728,9 +701,14 @@ namespace Microsoft.Xna.Framework
+         /// Override this to update your game.
+         /// </summary>
+         /// <param name="gameTime">The elapsed time since the last call to <see cref="Update"/>.</param>
+-        protected virtual void Update(GameTime gameTime)
++        protected virtual void FixedUpdate(GameTime gameTime)
++        {
++            _updateables.ForEachFilteredItem(FixedUpdateAction, gameTime);
++		}
++
++        protected virtual void DrawUpdate(GameTime gameTime)
+         {
+-            _updateables.ForEachFilteredItem(UpdateAction, gameTime);
++            _updateables.ForEachFilteredItem(DrawUpdateAction, gameTime);
+ 		}
+ 
+         /// <summary>
+@@ -820,14 +798,14 @@ namespace Microsoft.Xna.Framework
+         }
+ #endif
+ 
+-        internal void DoUpdate(GameTime gameTime)
++        internal void DoFixedUpdate(GameTime gameTime)
+         {
+             AssertNotDisposed();
+             if (Platform.BeforeUpdate(gameTime))
+             {
+-                FrameworkDispatcher.Update();
++                FrameworkDispatcher.FixedUpdate();
+ 				
+-                Update(gameTime);
++                FixedUpdate(gameTime);
+ 
+                 //The TouchPanel needs to know the time for when touches arrive
+                 TouchPanelState.CurrentTimestamp = gameTime.TotalGameTime;
+diff --git a/MonoGame.Framework/GameComponent.cs b/MonoGame.Framework/GameComponent.cs
+index 5541b44e9..9d0c3c339 100644
+--- a/MonoGame.Framework/GameComponent.cs
++++ b/MonoGame.Framework/GameComponent.cs
+@@ -72,7 +72,8 @@ namespace Microsoft.Xna.Framework
+         /// Update the component.
+         /// </summary>
+         /// <param name="gameTime"><see cref="GameTime"/> of the <see cref="Game"/>.</param>
+-        public virtual void Update(GameTime gameTime) { }
++        public virtual void FixedUpdate(GameTime gameTime) { }
++        public virtual void DrawUpdate(GameTime gameTime) { }
+ 
+         /// <summary>
+         /// Called when <see cref="UpdateOrder"/> changed. Raises the <see cref="UpdateOrderChanged"/> event.
+diff --git a/MonoGame.Framework/GameTime.cs b/MonoGame.Framework/GameTime.cs
+index 6e39e53a7..9829c942b 100644
+--- a/MonoGame.Framework/GameTime.cs
++++ b/MonoGame.Framework/GameTime.cs
+@@ -30,6 +30,8 @@ namespace Microsoft.Xna.Framework
+         /// </summary>
+         public bool IsRunningSlowly { get; set; }
+ 
++        public float Alpha { get; set; }
++
+         /// <summary>
+         /// Create a <see cref="GameTime"/> instance with a <see cref="TotalGameTime"/> and
+         /// <see cref="ElapsedGameTime"/> of <code>0</code>.
+@@ -39,6 +41,7 @@ namespace Microsoft.Xna.Framework
+             TotalGameTime = TimeSpan.Zero;
+             ElapsedGameTime = TimeSpan.Zero;
+             IsRunningSlowly = false;
++            Alpha = 0;
+         }
+ 
+         /// <summary>
+@@ -52,6 +55,7 @@ namespace Microsoft.Xna.Framework
+             TotalGameTime = totalGameTime;
+             ElapsedGameTime = elapsedGameTime;
+             IsRunningSlowly = false;
++            Alpha = 0;
+         }
+ 
+         /// <summary>
+@@ -66,6 +70,7 @@ namespace Microsoft.Xna.Framework
+             TotalGameTime = totalRealTime;
+             ElapsedGameTime = elapsedRealTime;
+ 		    IsRunningSlowly = isRunningSlowly;
++            Alpha = 0;
+ 		}
+     }
+ }
+diff --git a/MonoGame.Framework/IUpdateable.cs b/MonoGame.Framework/IUpdateable.cs
+index 4215210fc..5d0ab2432 100644
+--- a/MonoGame.Framework/IUpdateable.cs
++++ b/MonoGame.Framework/IUpdateable.cs
+@@ -16,7 +16,8 @@ namespace Microsoft.Xna.Framework
+ 	    /// Called when this <see cref="IUpdateable"/> should update itself.
+ 	    /// </summary>
+ 	    /// <param name="gameTime">The elapsed time since the last call to <see cref="Update"/>.</param>
+-		void Update(GameTime gameTime);
++		void FixedUpdate(GameTime gameTime);
++		void DrawUpdate(GameTime gameTime);
+ 		#endregion
+ 		
+ 		#region Events
+diff --git a/patch-applied b/patch-applied
+new file mode 100644
+index 000000000..20e6131ef
+--- /dev/null
++++ b/patch-applied
+@@ -0,0 +1 @@
++File for Make
+-- 
+2.37.2
+

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{d3073529-905c-4493-bfca-3c17599a319f}">
+		<property name="assetPath">
+			<value>iceball.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>1.540702947845805</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{44514578-b243-4d08-a664-9783e0a7516a}</destination>
+		</relationship>
+	</object>
+</objects>

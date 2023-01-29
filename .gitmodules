@@ -1,0 +1,8 @@
+[submodule "Nez"]
+	path = Nez
+	url = https://github.com/prime31/Nez
+        ignore = dirty
+[submodule "MonoGame"]
+	path = MonoGame
+	url = https://github.com/MonoGame/MonoGame.git
+        ignore = dirty
