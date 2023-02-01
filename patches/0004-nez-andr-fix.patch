@@ -1,0 +1,226 @@
+From 76aee44ed429081abe256b8e8188858aa3812eef Mon Sep 17 00:00:00 2001
+From: Jaakko Hannikainen <jgke@jgke.fi>
+Date: Wed, 1 Feb 2023 19:22:28 +0200
+Subject: [PATCH] Build for andr
+
+---
+ Nez.ImGui/Core/ImGuiRenderer.cs               |  8 ++-
+ Nez.Portable/Assets/BitmapFonts/BitmapFont.cs |  4 ++
+ .../Loaders/ParticleEmitterConfigLoader.cs    | 55 ++++++++++++++++++-
+ Nez.Portable/UI/Base/IInputListener.cs        |  8 ++-
+ Nez.Portable/UI/Containers/ScrollPane.cs      |  6 +-
+ Nez.Portable/UI/Stage.cs                      | 21 +++++--
+ 6 files changed, 89 insertions(+), 13 deletions(-)
+
+diff --git a/Nez.ImGui/Core/ImGuiRenderer.cs b/Nez.ImGui/Core/ImGuiRenderer.cs
+index 65bcde23..46aa0bde 100644
+--- a/Nez.ImGui/Core/ImGuiRenderer.cs
++++ b/Nez.ImGui/Core/ImGuiRenderer.cs
+@@ -202,9 +202,10 @@ namespace Nez.ImGuiTools
+ 			_keys.Add(io.KeyMap[(int) ImGuiKey.V] = (int) Keys.V);
+ 			_keys.Add(io.KeyMap[(int) ImGuiKey.X] = (int) Keys.X);
+ 			_keys.Add(io.KeyMap[(int) ImGuiKey.Y] = (int) Keys.Y);
+-			_keys.Add(io.KeyMap[(int) ImGuiKey.Z] = (int) Keys.Z);
+-
+-
++			_keys.Add(io.KeyMap[(int) ImGuiKey.Z] = (int) Keys.Z);
++
++
++#if !ANDROID
+ #if !FNA
+ 			Core.Instance.Window.TextInput += (s, a) =>
+ 			{
+@@ -220,6 +221,7 @@ namespace Nez.ImGuiTools
+ 					return;
+ 				ImGui.GetIO().AddInputCharacter( c );
+ 			};
++#endif
+ #endif
+ 		}
+ 
+diff --git a/Nez.Portable/Assets/BitmapFonts/BitmapFont.cs b/Nez.Portable/Assets/BitmapFonts/BitmapFont.cs
+index 8ebd1900..e9797b59 100644
+--- a/Nez.Portable/Assets/BitmapFonts/BitmapFont.cs
++++ b/Nez.Portable/Assets/BitmapFonts/BitmapFont.cs
+@@ -188,6 +188,8 @@ namespace Nez.BitmapFonts
+ 
+ 		public string WrapText(string text, float maxLineWidth)
+ 		{
++			if(text.Length == 1)
++				return text; 
+ 			var words = text.Split(' ');
+ 			var sb = new StringBuilder();
+ 			var lineWidth = 0f;
+@@ -209,6 +211,8 @@ namespace Nez.BitmapFonts
+ 					{
+ 						if (sb.ToString() == "")
+ 							sb.Append(WrapText(word.Insert(word.Length / 2, " ") + " ", maxLineWidth));
++						else if (word.Length == 1)
++							sb.Append("\n" + word);
+ 						else
+ 							sb.Append("\n" + WrapText(word.Insert(word.Length / 2, " ") + " ", maxLineWidth));
+ 					}
+diff --git a/Nez.Portable/Assets/Loaders/ParticleEmitterConfigLoader.cs b/Nez.Portable/Assets/Loaders/ParticleEmitterConfigLoader.cs
+index 85c67843..1bd960c3 100644
+--- a/Nez.Portable/Assets/Loaders/ParticleEmitterConfigLoader.cs
++++ b/Nez.Portable/Assets/Loaders/ParticleEmitterConfigLoader.cs
+@@ -1,4 +1,5 @@
+-﻿using System;
++﻿#if !ANDROID
++using System;
+ using System.IO;
+ using System.IO.Compression;
+ using System.Xml;
+@@ -175,3 +176,55 @@ namespace Nez.ParticleDesigner
+ 		}
+ 	}
+ }
++#else
++using System;
++using System.IO;
++using System.IO.Compression;
++using System.Xml;
++using System.Xml.Linq;
++using Microsoft.Xna.Framework;
++using Microsoft.Xna.Framework.Graphics;
++using Nez.Particles;
++
++namespace Nez.ParticleDesigner
++{
++	public static class ParticleEmitterConfigLoader
++	{
++		/// <summary>
++		/// parses a ParticleDesigner pex file or one exported from the Nez.Samples exporter or from Particle Editor:
++		/// http://onebyonedesign.com/flash/particleeditor/
++		/// </summary>
++		public static ParticleEmitterConfig Load(string name)
++		{
++			throw new System.NotSupportedException();
++		}
++
++		static ParticleEmitterConfig Load(XDocument xDoc, string rootDir)
++		{
++			throw new System.NotSupportedException();
++		}
++
++		static float GetFloatElement(XElement root, string name) => (float)root.Element(name).Attribute("value");
++
++		/// <summary>
++		/// for some reason, some pex exporters export ints like maxParticles as floats. This mess guards against that.
++		/// </summary>
++		static int GetIntElement(XElement root, string name) => Mathf.RoundToInt(GetFloatElement(root, name));
++
++		static Vector2 GetVectorElement(XElement root, string name)
++		{
++			throw new System.NotSupportedException();
++		}
++
++		static Color GetColorElement(XElement root, string name)
++		{
++			throw new System.NotSupportedException();
++		}
++
++		static Blend GetBlendElement(XElement root, string name)
++		{
++			throw new System.NotSupportedException();
++		}
++	}
++}
++#endif
+diff --git a/Nez.Portable/UI/Base/IInputListener.cs b/Nez.Portable/UI/Base/IInputListener.cs
+index da804971..fb8e288b 100644
+--- a/Nez.Portable/UI/Base/IInputListener.cs
++++ b/Nez.Portable/UI/Base/IInputListener.cs
+@@ -27,7 +27,13 @@ namespace Nez.UI
+ 		/// here if you are uninterested in the onMouseUp event.
+ 		/// </summary>
+ 		/// <param name="mousePos">Mouse position.</param>
+-		void OnMouseMoved(Vector2 mousePos);
++		void OnMouseMoved(Vector2 mousePos);
++
++		/// <summary>
++		/// called when the mouse moves over the element. Must be subscribed to with AddInputHoverListener().
++		/// </summary>
++		/// <param name="mousePos">Mouse position.</param>
++		void OnHoverMouseMoved(Vector2 mousePos) { }
+ 
+ 		/// <summary>
+ 		/// called when the left mouse button is released
+diff --git a/Nez.Portable/UI/Containers/ScrollPane.cs b/Nez.Portable/UI/Containers/ScrollPane.cs
+index ec1f7466..11d15763 100644
+--- a/Nez.Portable/UI/Containers/ScrollPane.cs
++++ b/Nez.Portable/UI/Containers/ScrollPane.cs
+@@ -1043,12 +1043,12 @@ namespace Nez.UI
+ 			var amountX = _amountX;
+ 			if (centerHorizontal)
+ 			{
+-				amountX = x - _areaWidth / 2 + width / 2;
++				amountX = _maxX - x + _areaWidth / 2 - width / 2;
+ 			}
+ 			else
+ 			{
+-				if (x + width > amountX + _areaWidth) amountX = x + width - _areaWidth;
+-				if (x < amountX) amountX = x;
++				if (amountX > _maxX - x - width + _areaWidth) amountX = _maxX - x - width + _areaWidth;
++				if (_amountX < _maxX - x) amountX = _maxX - x;
+ 			}
+ 
+ 			SetScrollX(amountX);
+diff --git a/Nez.Portable/UI/Stage.cs b/Nez.Portable/UI/Stage.cs
+index beeba156..1136a616 100644
+--- a/Nez.Portable/UI/Stage.cs
++++ b/Nez.Portable/UI/Stage.cs
+@@ -2,7 +2,6 @@
+ using Microsoft.Xna.Framework.Input;
+ using System.Collections.Generic;
+ 
+-
+ namespace Nez.UI
+ {
+ 	public class Stage
+@@ -40,6 +39,7 @@ namespace Nez.UI
+ 		Element _mouseOverElement;
+ 		private Dictionary<int, Element> _touchOverElement = new Dictionary<int, Element>();
+ 		List<Element> _inputFocusListeners = new List<Element>();
++		List<Element> _inputHoverListeners = new List<Element>();
+ 
+ 		static Keys[] _emptyKeys = new Keys[0];
+ 		IKeyboardListener _keyboardFocusElement;
+@@ -323,6 +323,10 @@ namespace Nez.UI
+ 				(over as IInputListener)?.OnMouseEnter();
+ 				(lastOver as IInputListener)?.OnMouseExit();
+ 			}
++
++			for (var i = _inputHoverListeners.Count - 1; i >= 0; i--)
++				((IInputListener)_inputHoverListeners[i]).OnHoverMouseMoved(_inputHoverListeners[i]
++					.StageToLocalCoordinates(inputPos));
+ 		}
+ 
+ 
+@@ -493,12 +497,19 @@ namespace Nez.UI
+ 		}
+ 
+ 		/// <summary>
+-		/// Removes the listener from being notified for all touchDragged and touchUp events for the specified pointer and button. Note
+-		/// the listener may never receive a touchUp event if this method is used.
++		/// Add the listener to all hover events.
++		/// </summary>
++		public void AddInputHoverListener(Element element)
++		{
++			_inputHoverListeners.Add(element);
++		}
++
++		/// <summary>
++		/// Remove the listener from all hover events;
+ 		/// </summary>
+-		public void AddInputFocusListener(Element element)
++		public void RemoveInputHoverListener(Element element)
+ 		{
+-			_inputFocusListeners.Add(element);
++			_inputHoverListeners.Remove(element);
+ 		}
+ 
+ 		/// <summary>
+-- 
+2.37.2
+

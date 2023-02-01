@@ -28,6 +28,14 @@ namespace FGJ23.Support
             
 		private static List<Bank> _banks = new List<Bank>();
 
+#if !ANDROID
+        string masterBankLocation = "Content/fmod/Master.bank";
+        string masterStringBankLocation = "Content/fmod/Master.strings.bank";
+#else
+        string masterBankLocation = "Audio/audio/Build/Mobile/Master.bank";
+        string masterStringBankLocation = "Audio/audio/Build/Mobile/Master.strings.bank";
+#endif
+
         public void Init()
         {
             if (loaded)
@@ -71,10 +79,10 @@ namespace FGJ23.Support
 
             coreSystem.setDSPBufferSize(dspBufferLength, dspBufferCount);
 
-            var masterData = ResourceLoader.ReadResource("Content/fmod/Master.bank");
+            var masterData = ResourceLoader.ReadResource(masterBankLocation);
             HandleError(studioSystem.loadBankMemory(masterData, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out var bank), "Failed to load master bank");
             _banks.Add(bank);
-            var stringData = ResourceLoader.ReadResource("Content/fmod/Master.strings.bank");
+            var stringData = ResourceLoader.ReadResource(masterStringBankLocation);
             HandleError(studioSystem.loadBankMemory(stringData, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out bank), "Failed to load master strings bank");
             _banks.Add(bank);
 
