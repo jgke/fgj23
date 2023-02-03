@@ -4,7 +4,9 @@ using FGJ23.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Input.Touch;
 using Nez;
+using Nez.UI;
 using Nez.Sprites;
 using Nez.Textures;
 using Nez.Tiled;
@@ -31,7 +33,6 @@ namespace FGJ23.Entities
         int _coyote = 0;
 
         VirtualButton _jumpInput;
-        VirtualButton _climbInput;
         VirtualButton _fireInput;
 
         internal void LockControls(float v)
@@ -40,7 +41,8 @@ namespace FGJ23.Entities
         }
 
         VirtualIntegerAxis _xAxisInput;
-        VirtualIntegerAxis _yAxisInput;
+        Button _leftInput;
+        Button _rightInput;
 
         private float ControlsLocked = 0;
 
@@ -60,6 +62,7 @@ namespace FGJ23.Entities
             _rigidBody = Entity.AddComponent(new RigidBody(600, groundAccel, airAccel));
 
             Entity.AddComponent(new Health(5));
+            Entity.AddComponent(new PlayerControls());
 
             _animator.AddAnimation("Idle", new[] { sprites[0] });
             _animator.AddAnimation("Run", new[] { sprites[1] });
@@ -75,9 +78,7 @@ namespace FGJ23.Entities
             // deregister virtual input
             _jumpInput.Deregister();
             _fireInput.Deregister();
-            _climbInput.Deregister();
             _xAxisInput.Deregister();
-            _yAxisInput.Deregister();
             ColliderSystem.UnRegisterCollider(Entity);
         }
 
@@ -87,15 +88,12 @@ namespace FGJ23.Entities
             _jumpInput = new VirtualButton();
             _jumpInput.Nodes.Add(new VirtualButton.KeyboardKey(Keys.A));
             _jumpInput.Nodes.Add(new VirtualButton.GamePadButton(0, Buttons.A));
+            _jumpInput.Nodes.Add(new ButtonNode(Entity.AddComponent(new Button(new RectangleF(200, 225, 50, 50)))));
 
             _fireInput = new VirtualButton();
             _fireInput.Nodes.Add(new VirtualButton.KeyboardKey(Keys.Space));
             _fireInput.Nodes.Add(new VirtualButton.GamePadButton(0, Buttons.X));
-
-            // setup input for climb
-            _climbInput = new VirtualButton();
-            _climbInput.Nodes.Add(new VirtualButton.KeyboardKey(Keys.O));
-            _climbInput.Nodes.Add(new VirtualButton.GamePadButton(0, Buttons.B));
+            _fireInput.Nodes.Add(new ButtonNode(Entity.AddComponent(new Button(new RectangleF(275, 225, 50, 50)))));
 
             // horizontal input from dpad, left stick or keyboard left/right
             _xAxisInput = new VirtualIntegerAxis();
@@ -103,11 +101,8 @@ namespace FGJ23.Entities
             _xAxisInput.Nodes.Add(new VirtualAxis.GamePadLeftStickX());
             _xAxisInput.Nodes.Add(new VirtualAxis.KeyboardKeys(VirtualInput.OverlapBehavior.TakeNewer, Keys.Left, Keys.Right));
 
-            // horizontal input from dpad, left stick or keyboard left/right
-            _yAxisInput = new VirtualIntegerAxis();
-            _yAxisInput.Nodes.Add(new VirtualAxis.GamePadDpadUpDown());
-            _yAxisInput.Nodes.Add(new VirtualAxis.GamePadLeftStickY());
-            _yAxisInput.Nodes.Add(new VirtualAxis.KeyboardKeys(VirtualInput.OverlapBehavior.TakeNewer, Keys.Up, Keys.Down));
+            _leftInput = Entity.AddComponent(new Button(new RectangleF(0, 225, 50, 50)));
+            _rightInput = Entity.AddComponent(new Button(new RectangleF(75, 225, 50, 50)));
         }
 
         void UpdateAnimation(Vector2 moveDir)
@@ -245,33 +240,6 @@ namespace FGJ23.Entities
                     jumpLength = 0;
                     cachedJump = false;
                 }
-
-                if ((_collisionState.Left && moveDir.X < 0) || (_collisionState.Right && moveDir.X > 0))
-                {
-                    if (_rigidBody.velocity.Y < 0 && wallclimbLength > 0 && jumpLength <= 0 && _climbInput.IsDown && (_jumpInput.IsDown || _yAxisInput < 0))
-                    {
-                        //_rigidBody.velocity.Y = -Mathf.Sqrt(2f * JumpHeight * 1000);
-                        //_rigidBody.gravity = 1000;
-                        _rigidBody.gravity = 0;
-                        wallclimbLength -= Time.DeltaTime;
-                    }
-                    else if (_climbInput.IsDown)
-                    {
-                        //_rigidBody.velocity.Y = Math.Min(_rigidBody.velocity.Y, 50);
-                        if (_rigidBody.velocity.Y > 0)
-                        {
-                            _rigidBody.gravity = 100;
-                        }
-                        else
-                        {
-                            _rigidBody.gravity = 1000;
-                        }
-                    }
-                }
-                else
-                {
-                    _rigidBody.gravity = 1000;
-                }
             }
             else
             {
@@ -301,8 +269,14 @@ namespace FGJ23.Entities
 
         void IUpdatable.FixedUpdate()
         {
-            // handle movement and animations
-            var moveDir = new Vector2(_xAxisInput.Value, _yAxisInput.Value);
+            Vector2 moveDir;
+            if(_leftInput.Hits(false)) {
+                moveDir = new Vector2(-1, 0);
+            } else if(_rightInput.Hits(false)) {
+                moveDir = new Vector2(1, 0);
+            } else {
+                moveDir = new Vector2(_xAxisInput.Value, 0);
+            }
 
             UpdateAnimation(moveDir);
             UpdateMovement(moveDir);
@@ -347,5 +321,55 @@ namespace FGJ23.Entities
         }
 
         #endregion
+    }
+
+    public class ButtonNode : VirtualButton.Node {
+        Button button;
+
+        public override bool IsDown => button.Hits(false);
+
+        public override bool IsPressed => button.Hits(true);
+
+        public override bool IsReleased => false;
+        public ButtonNode(Button button) {
+            this.button = button;
+        }
+    }
+
+    public class Button : RenderableComponent {
+        RectangleF hit;
+        public override RectangleF Bounds => Entity.Scene.Camera.Bounds;
+
+        public Button(RectangleF pos) {
+            this.hit = pos;
+        }
+
+        public override void Render(Batcher batcher, Camera camera)
+        {
+            batcher.DrawRect(hit.X + Bounds.X, hit.Y + Bounds.Y, hit.Width, hit.Height, Color.DarkGray);
+        }
+
+        public bool Hits(bool pressed) {
+            foreach (var e in Input.Touch.CurrentTouches) {
+                if(pressed && e.State == TouchLocationState.Pressed && hit.Contains(e.Position)) {
+                    return true;
+                }
+                if(!pressed && e.State != TouchLocationState.Released && hit.Contains(e.Position)) {
+                    return true;
+                }
+            }
+            if(Input.LeftMouseButtonPressed && hit.Contains(Input.ScaledMousePosition)) {
+                return true;
+            }
+            if(!pressed && Input.LeftMouseButtonDown && hit.Contains(Input.ScaledMousePosition)) {
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public class PlayerControls : Component {
+        public override void OnAddedToEntity() {
+        }
     }
 }

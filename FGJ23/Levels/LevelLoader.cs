@@ -56,7 +56,7 @@ namespace FGJ23.Levels
                 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
                 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
             });
-#pragma warning enable format
+#pragma warning restore format
             lev.Layers.Add(protoLayer);
                 var protoTileset = new Proto.Tileset()
                 {
