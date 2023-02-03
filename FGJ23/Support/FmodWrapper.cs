@@ -25,8 +25,8 @@ namespace FGJ23.Support
         private static bool loaded = false;
         private static FMOD.Studio.System studioSystem;
         private static FMOD.System coreSystem;
-            
-		private static List<Bank> _banks = new List<Bank>();
+
+        private static List<Bank> _banks = new List<Bank>();
 
 #if !ANDROID
         string masterBankLocation = "Content/fmod/Master.bank";
@@ -102,7 +102,7 @@ namespace FGJ23.Support
             if (result != FMOD.RESULT.OK)
             {
                 Log.Fatal(msg + ": {A}", result);
-                throw new Exception(msg + ": "+ result);
+                throw new Exception(msg + ": " + result);
             }
         }
 
@@ -146,7 +146,7 @@ namespace FGJ23.Support
 
         public static void Unload()
         {
-            foreach(var bank in _banks)
+            foreach (var bank in _banks)
             {
                 bank.unload();
             }

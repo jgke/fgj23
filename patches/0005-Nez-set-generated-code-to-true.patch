@@ -1,0 +1,23 @@
+From 90f4565b0a0ec33153db4c9554cf79418cf6215b Mon Sep 17 00:00:00 2001
+From: Jaakko Hannikainen <jgke@jgke.fi>
+Date: Fri, 3 Feb 2023 15:46:25 +0200
+Subject: [PATCH] Set generated code to true
+
+---
+ .editorconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/.editorconfig b/.editorconfig
+index ba49e3c2..267e78f7 100644
+--- a/.editorconfig
++++ b/.editorconfig
+@@ -1,5 +1,6 @@
+ root = true
+ 
+ [*]
++generated_code = true
+ indent_style = tab
+ indent_size = 4
+-- 
+2.37.2
+

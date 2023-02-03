@@ -69,7 +69,7 @@ namespace FGJ23.Core
 
 
 
-#region IFinalRenderDelegate
+        #region IFinalRenderDelegate
 
         private Scene _scene;
 
@@ -89,7 +89,7 @@ namespace FGJ23.Core
             _screenSpaceRenderer.Render(_scene);
         }
 
-#endregion
+        #endregion
     }
 
 }

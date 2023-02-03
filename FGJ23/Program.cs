@@ -60,7 +60,8 @@ using UIKit;
 #endregion
 
 
-namespace FGJ23.Core {
+namespace FGJ23.Core
+{
 #if __IOS__ || __TVOS__
     [Register("AppDelegate")]
     class Program : UIApplicationDelegate
@@ -71,7 +72,8 @@ namespace FGJ23.Core {
         private static Game1 _game;
 
 
-        internal static void RunGame() {
+        internal static void RunGame()
+        {
             Logger.SetupLogger();
 
             _game = new Game1();
@@ -87,7 +89,8 @@ namespace FGJ23.Core {
 #if !MONOMAC && !__IOS__ && !__TVOS__
         [STAThread]
 #endif
-        static void Main(string[] args) {
+        static void Main(string[] args)
+        {
 #if MONOMAC
             NSApplication.Init ();
 

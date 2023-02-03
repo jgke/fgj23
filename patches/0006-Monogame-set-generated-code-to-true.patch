@@ -1,0 +1,24 @@
+From baaaa5ae394e52e7c2d9c46f5e2fba8778aa08f6 Mon Sep 17 00:00:00 2001
+From: Jaakko Hannikainen <jgke@jgke.fi>
+Date: Fri, 3 Feb 2023 15:46:37 +0200
+Subject: [PATCH] Set generated code to true
+
+---
+ .editorconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/.editorconfig b/.editorconfig
+index 3645e9835..bc48dd714 100644
+--- a/.editorconfig
++++ b/.editorconfig
+@@ -3,6 +3,7 @@
+ root = true
+ 
+ [*]
++generated_code = true
+ end_of_line = lf
+ insert_final_newline = true
+ trim_trailing_whitespace = true
+-- 
+2.37.2
+
