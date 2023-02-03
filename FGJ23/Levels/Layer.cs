@@ -163,12 +163,12 @@ namespace FGJ23.Levels
             int maxX = WorldToTilePositionX(cameraClipBounds.Right - offset.X);
             int maxY = WorldToTilePositionY(cameraClipBounds.Bottom - offset.Y);
 
-            if(!LoopX)
+            if (!LoopX)
             {
                 minX = Math.Max(0, minX);
                 maxX = Math.Min(maxX, Width);
             }
-            if(!LoopY)
+            if (!LoopY)
             {
                 minY = Math.Max(0, minY);
                 maxY = Math.Min(maxY, Height);

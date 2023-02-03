@@ -34,7 +34,7 @@ namespace FGJ23.Entities.AreaEvents
             get => speed;
         }
 
-        public ForceMovement(ByteString data): base("suck tube")
+        public ForceMovement(ByteString data) : base("suck tube")
         {
             var reader = new BinaryBitReader(data.ToByteArray());
             var x = reader.ReadI8();

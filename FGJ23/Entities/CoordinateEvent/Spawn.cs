@@ -13,7 +13,7 @@ namespace FGJ23.Entities.CoordinateEvents
         [Loggable]
         public uint Team;
 
-        public Spawn(ByteString data): base("spawn")
+        public Spawn(ByteString data) : base("spawn")
         {
             Team = data[0];
         }
