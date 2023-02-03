@@ -1,0 +1,80 @@
+syntax = "proto3";
+package levelformat;
+
+option csharp_namespace = "FGJ23.Levels.Proto";
+
+message Level {
+	repeated Layer layers = 1;
+	repeated Tileset tilesets = 2;
+	uint32 SpriteLayer = 3;
+}
+
+message Layer {
+	enum TileEffect {
+		NONE = 0x00;
+		V_FLIP = 0x1000000; // 1 << 24
+		H_FLIP = 0x2000000; // 2 << 24
+		TRANSPARENT = 0x4000000; // 4 << 24
+		ONE_WAY = 0x8000000; // 4 << 24
+	}
+
+	int32 width = 1;
+	int32 height = 2;
+	int32 tileset_index = 3;
+	repeated int32 tiles = 4 [packed=true];
+	//repeated TileEffect areaEvents = 5;
+	repeated AreaEvent areaEvents = 6;
+	repeated CoordinateEvent coordinateEvents = 7;
+
+	bool loopX = 8;
+	bool loopY = 9;
+	float xSpeed = 10;
+	float ySpeed = 11;
+}
+
+//message TileEffect {
+//	enum TileEffectId {
+//		NONE = 0;
+//		V_FLIP = 1;
+//		H_FLIP = 2;
+//		TRANSPARENT = 3;
+//		ONE_WAY = 4;
+//	}
+//
+//	int32 x = 2;
+//	int32 y = 3;
+//	TileEffectId id = 6;
+//	bytes data = 7;
+//}
+
+message AreaEvent {
+	enum AreaEventId {
+		NONE = 0;
+		FORCED_MOVEMENT = 1;
+	}
+
+	int32 x = 2;
+	int32 y = 3;
+	int32 width = 4;
+	int32 height = 5;
+	AreaEventId id = 6;
+	bytes data = 7;  
+}
+
+message CoordinateEvent {
+	enum CoordinateEventId {
+		NONE = 0;
+		SPAWN = 1;
+		HEALTH_PICKUP = 2;
+	}
+
+	int32 x = 2;
+	int32 y = 3;
+	CoordinateEventId id = 4;
+	bytes data = 5;  
+}
+
+message Tileset {
+    string image = 1;
+    string mask = 2;
+}

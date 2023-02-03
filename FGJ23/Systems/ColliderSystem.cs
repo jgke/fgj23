@@ -70,6 +70,15 @@ namespace FGJ23.Systems
             return EnemyPool.AabbBroadphase(ref bounds, collider, layerMask);
         }
 
+        public static void ForceMove(Collider collider, Vector2 motion)
+        {
+            UnRegisterCollider(collider.Entity);
+            collider.UnregisterColliderWithPhysicsSystem();
+            collider.Entity.Transform.Position += motion;
+            collider.RegisterColliderWithPhysicsSystem();
+            RegisterCollider(collider.Entity);
+        }
+
         public static void SetPosition(Collider collider, Vector2 position)
         {
             UnRegisterCollider(collider.Entity);

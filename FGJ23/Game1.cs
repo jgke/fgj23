@@ -34,7 +34,7 @@ namespace FGJ23
             DebugRenderEnabled = false;
 
             Window.AllowUserResizing = true;
-            Scene = new GameplayScene();
+            Scene = new GameplayScene(null);
         }
 
         protected override void FixedUpdate(GameTime gameTime)

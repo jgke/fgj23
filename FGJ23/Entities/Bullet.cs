@@ -20,7 +20,9 @@ namespace FGJ23.Entities
     public class Bullet : Component, ITriggerListener, IUpdatable
     {
         SpriteAnimator _animator;
+        FGJ23.Levels.Mover _mover;
         BoxCollider _boxCollider;
+        Levels.CollisionState _collisionState = new Levels.CollisionState();
         RigidBody _rigidBody;
         int frames = 300;
         string animation = "Fly";
@@ -47,6 +49,7 @@ namespace FGJ23.Entities
             var sprites = Sprite.SpritesFromAtlas(texture, 8, 8);
 
             _boxCollider = Entity.GetComponent<BoxCollider>();
+            _mover = Entity.GetComponent<FGJ23.Levels.Mover>();
             _animator = Entity.AddComponent(new SpriteAnimator(sprites[0]));
             _rigidBody = Entity.AddComponent(new RigidBody(1000, 1000, 1000));
             _rigidBody.gravity = 0;
@@ -101,8 +104,15 @@ namespace FGJ23.Entities
             }
         }
 
+        void UpdateMovement()
+        {
+            _mover.Move(_rigidBody.velocity * Time.DeltaTime, _boxCollider, _collisionState);
+            _rigidBody.UpdateCollisions(_collisionState);
+        }
+
         void IUpdatable.FixedUpdate()
         {
+            UpdateMovement();
             if (frames == -2)
             {
                 return;
@@ -114,6 +124,12 @@ namespace FGJ23.Entities
                 return;
             }
             frames -= 1;
+
+            if (animation == "Fly" && _collisionState.HasCollision)
+            {
+                frames = 8;
+                animation = "Die";
+            }
 
             UpdateAnimation();
         }
