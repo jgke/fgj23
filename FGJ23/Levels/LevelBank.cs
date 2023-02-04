@@ -604,9 +604,9 @@ namespace FGJ23.Levels
             {
                 "level1" =>
                     new StoryBuilder()
-                    .Exposition("I was born in 1982. Back in my day, games were about CONTENT. You'd walk around with the arrow keys. Jump by pressing up.")
+                    .Line("Files/Eka_seta_selittaa.png", "", "I was born in 1982. Back in my day, games were about CONTENT. You'd walk around with the arrow keys. Jump by pressing up.")
                     .Exposition("Maybe shoot some bad guys with the space bar. Double jump by jumping again in the air and wall jump by pointing towards a wall in mid-air and jumping. The good old days")
-                    .Exposition("Nowadays the kids can’t stay focused for more than two seconds unless it’s some virtual reality thirst trap.")
+                    .Exposition("Nowadays the kids can't stay focused for more than two seconds unless it's some virtual reality thirst trap.")
                     .GoToLevel(),
 
                 "level2" =>
