@@ -18,6 +18,7 @@ namespace FGJ23
     {
         static Player playerInstance;
 
+        static bool bgmPlaying = false;
         public Level level { get; set; }
         public static FGJ23.Levels.Proto.Level NextProtoLevel { get; set; }
 
@@ -33,6 +34,11 @@ namespace FGJ23
         {
             base.Initialize();
             ColliderSystem.Reset();
+
+            if(!bgmPlaying) {
+                bgmPlaying = true;
+                FmodWrapper.PlaySound("event:/bgm");
+            }
 
             Log.Information("Initializing new GameplayScene with l={A}", NextProtoLevel);
             // setup a pixel perfect screen that fits our map
