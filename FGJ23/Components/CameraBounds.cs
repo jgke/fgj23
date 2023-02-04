@@ -36,9 +36,12 @@ namespace FGJ23.Components
         {
             var cameraBounds = Entity.Scene.Camera.Bounds;
 
-            if(Max.X - Min.X < cameraBounds.Width) {
+            if (Max.X - Min.X < cameraBounds.Width)
+            {
                 Entity.Scene.Camera.Position -= new Vector2(cameraBounds.Left, 0);
-            } else {
+            }
+            else
+            {
                 if (cameraBounds.Left < Min.X)
                 {
                     Entity.Scene.Camera.Position += new Vector2(Min.X - cameraBounds.Left, 0);
@@ -50,9 +53,12 @@ namespace FGJ23.Components
                 }
             }
 
-            if(Max.Y - Min.Y < cameraBounds.Height) {
+            if (Max.Y - Min.Y < cameraBounds.Height)
+            {
                 Entity.Scene.Camera.Position -= new Vector2(0, cameraBounds.Top);
-            } else {
+            }
+            else
+            {
                 if (cameraBounds.Top < Min.Y)
                 {
                     Entity.Scene.Camera.Position += new Vector2(0, Min.Y - cameraBounds.Top);

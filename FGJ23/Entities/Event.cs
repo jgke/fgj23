@@ -6,12 +6,15 @@ using Microsoft.Xna.Framework;
 using Nez.UI;
 using System;
 using System.Collections;
+using FGJ23.Support;
 
 namespace FGJ23.Entities
 {
     public abstract class EventBase : Component
     {
+        [Loggable]
         public readonly string name;
+        [Loggable]
         public Vector2 position;
 
         public EventBase(String name)
@@ -69,6 +72,7 @@ namespace FGJ23.Entities
 
     public class AreaEvent : EventBase
     {
+        [Loggable]
         public Vector2 size;
 
         public AreaEvent(string name) : base(name)
@@ -109,6 +113,7 @@ namespace FGJ23.Entities
             if (elem != null)
             {
                 elem.position = pos;
+                Log.Information("Initialized event {A}", elem);
             }
             return elem;
         }
@@ -117,18 +122,20 @@ namespace FGJ23.Entities
         {
             //Log.Information("Parsing area event {@A}", e);
             // TODO: 32
-            var pos = new Vector2(e.X * 32, e.Y * 32);
+            var pos = new Vector2(e.X, e.Y);
             var size = new Vector2(e.Width, e.Height);
             AreaEvent elem = e.Id switch
             {
                 Levels.Proto.AreaEvent.Types.AreaEventId.None => null,
                 Levels.Proto.AreaEvent.Types.AreaEventId.ForcedMovement => new ForceMovement(e.Data),
+                Levels.Proto.AreaEvent.Types.AreaEventId.LevelEnd => new LevelEnd(e.Data),
                 _ => throw new Exception("Unknown event ID: " + e.Id),
             };
             if (elem != null)
             {
                 elem.position = pos;
                 elem.size = size;
+                Log.Information("Initialized areaevent {A}", elem);
             }
             return elem;
         }

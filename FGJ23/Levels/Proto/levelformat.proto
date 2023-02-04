@@ -51,6 +51,7 @@ message AreaEvent {
 	enum AreaEventId {
 		NONE = 0;
 		FORCED_MOVEMENT = 1;
+		LEVEL_END = 2;
 	}
 
 	int32 x = 2;

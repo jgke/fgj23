@@ -36,9 +36,11 @@ namespace FGJ23
             LevelNum = levelNum;
         }
 
-        public void DoTransition(Func<Scene> act) {
+        public void DoTransition(Func<Scene> act)
+        {
             this.Transitioning = true;
-            Nez.Core.StartSceneTransition(new WindTransition(act)).OnTransitionCompleted += () => {
+            Nez.Core.StartSceneTransition(new WindTransition(act)).OnTransitionCompleted += () =>
+            {
                 this.Transitioning = false;
             };
         }

@@ -890,6 +890,7 @@ namespace FGJ23.Levels.Proto {
       public enum AreaEventId {
         [pbr::OriginalName("NONE")] None = 0,
         [pbr::OriginalName("FORCED_MOVEMENT")] ForcedMovement = 1,
+        [pbr::OriginalName("LEVEL_END")] LevelEnd = 2,
       }
 
     }

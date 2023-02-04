@@ -20,10 +20,14 @@ namespace FGJ23
         static Player playerInstance;
 
         public Level level { get; set; }
+        public static FGJ23.Levels.Proto.Level NextProtoLevel { get; set; }
 
-        public GameplayScene(Level level)
+        private GameplayScene() { }
+
+        public static GameplayScene construct(FGJ23.Levels.Proto.Level lev)
         {
-            this.level = level;
+            NextProtoLevel = lev;
+            return new GameplayScene();
         }
 
         public override void Initialize()
@@ -31,20 +35,22 @@ namespace FGJ23
             base.Initialize();
             ColliderSystem.Reset();
 
-            Log.Information("Initializing new GameplayScene with l={A}", this.level);
+            Log.Information("Initializing new GameplayScene with l={A}", NextProtoLevel);
             // setup a pixel perfect screen that fits our map
             int x = 800;
             int y = 600;
             SetDesignResolution(x, y, SceneResolutionPolicy.ShowAllPixelPerfect);
             if (OperatingSystem.IsAndroid())
             {
-                    Nez.Screen.IsFullscreen = true;
-                    Nez.Screen.SetSize(
-                            Screen.MonitorWidth,
-                            Screen.MonitorHeight
-                    );
-                    Nez.Screen.SupportedOrientations = DisplayOrientation.LandscapeLeft;
-            } else {
+                Nez.Screen.IsFullscreen = true;
+                Nez.Screen.SetSize(
+                        Screen.MonitorWidth,
+                        Screen.MonitorHeight
+                );
+                Nez.Screen.SupportedOrientations = DisplayOrientation.LandscapeLeft;
+            }
+            else
+            {
                 Screen.SetSize(x * 2, y * 2);
             }
 
@@ -52,11 +58,8 @@ namespace FGJ23
                 .AddComponent(new ForceMovementSystem());
 
             var realMapEntity = CreateEntity("real-map-entity");
-            if (this.level == null)
-            {
-                var levelTuple = LevelLoader.LoadLevel(file => "Content/Files/" + file);
-                this.level = levelTuple.Item1;
-            }
+            var levelTuple = LevelLoader.LoadLevel(NextProtoLevel, file => "Content/Files/" + file);
+            this.level = levelTuple.Item1;
 
             foreach (var layer in level.Layers)
             {

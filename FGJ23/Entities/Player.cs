@@ -269,12 +269,18 @@ namespace FGJ23.Entities
 
         void IUpdatable.FixedUpdate()
         {
+            Log.Information("Player {A}", Transform.Position);
             Vector2 moveDir;
-            if(_leftInput.Hits(false) != null) {
+            if (_leftInput.Hits(false) != null)
+            {
                 moveDir = new Vector2(-1, 0);
-            } else if(_rightInput.Hits(false) != null) {
+            }
+            else if (_rightInput.Hits(false) != null)
+            {
                 moveDir = new Vector2(1, 0);
-            } else {
+            }
+            else
+            {
                 moveDir = new Vector2(_xAxisInput.Value, 0);
             }
 
@@ -323,7 +329,8 @@ namespace FGJ23.Entities
         #endregion
     }
 
-    public class ButtonNode : VirtualButton.Node {
+    public class ButtonNode : VirtualButton.Node
+    {
         Button button;
 
         public override bool IsDown => button.Hits(false) != null;
@@ -331,16 +338,19 @@ namespace FGJ23.Entities
         public override bool IsPressed => button.Hits(true) != null;
 
         public override bool IsReleased => false;
-        public ButtonNode(Button button) {
+        public ButtonNode(Button button)
+        {
             this.button = button;
         }
     }
 
-    public class Button : RenderableComponent {
+    public class Button : RenderableComponent
+    {
         RectangleF hit;
         public override RectangleF Bounds => Entity.Scene.Camera.Bounds;
 
-        public Button(RectangleF pos) {
+        public Button(RectangleF pos)
+        {
             this.hit = pos;
         }
 
@@ -349,28 +359,36 @@ namespace FGJ23.Entities
             batcher.DrawRect(hit.X + Bounds.X, hit.Y + Bounds.Y, hit.Width, hit.Height, Color.DarkGray);
         }
 
-        public Vector2? Hits(bool pressed) {
-            foreach (var e in Input.Touch.CurrentTouches) {
-                var position = Input.ScalePosition(e.Position);
-                if(pressed && e.State == TouchLocationState.Pressed && hit.Contains(position)) {
+        public Vector2? Hits(bool pressed)
+        {
+            foreach (var e in Input.Touch.CurrentTouches)
+            {
+                var position = Nez.Input.ScaledPosition(e.Position);
+                if (pressed && e.State == TouchLocationState.Pressed && hit.Contains(position))
+                {
                     return e.Position;
                 }
-                if(!pressed && e.State != TouchLocationState.Released && hit.Contains(position)) {
+                if (!pressed && e.State != TouchLocationState.Released && hit.Contains(position))
+                {
                     return e.Position;
                 }
             }
-            if(Input.LeftMouseButtonPressed && hit.Contains(Input.ScaledMousePosition)) {
+            if (Input.LeftMouseButtonPressed && hit.Contains(Input.ScaledMousePosition))
+            {
                 return Input.ScaledMousePosition;
             }
-            if(!pressed && Input.LeftMouseButtonDown && hit.Contains(Input.ScaledMousePosition)) {
+            if (!pressed && Input.LeftMouseButtonDown && hit.Contains(Input.ScaledMousePosition))
+            {
                 return Input.ScaledMousePosition;
             }
             return null;
         }
     }
 
-    public class PlayerControls : Component {
-        public override void OnAddedToEntity() {
+    public class PlayerControls : Component
+    {
+        public override void OnAddedToEntity()
+        {
         }
     }
 }

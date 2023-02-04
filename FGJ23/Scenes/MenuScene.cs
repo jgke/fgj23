@@ -9,22 +9,28 @@ using System;
 using System.IO;
 using FGJ23.Core;
 using FGJ23.Support;
+using FGJ23.Levels;
 
 namespace FGJ23
 {
 
-    public class TouchableButton : TextButton {
-        public class TouchableComponent : Component, IUpdatable {
+    public class TouchableButton : TextButton
+    {
+        public class TouchableComponent : Component, IUpdatable
+        {
             TouchableButton parent;
             FGJ23.Entities.Button hitTester;
-            public TouchableComponent(TouchableButton parent) {
+            public TouchableComponent(TouchableButton parent)
+            {
                 this.parent = parent;
             }
 
-            void IUpdatable.FixedUpdate() {
+            void IUpdatable.FixedUpdate()
+            {
                 hitTester = new FGJ23.Entities.Button(new RectangleF(parent.x, parent.y, parent.width, parent.height));
                 var mhit = hitTester.Hits(true);
-                if(mhit is {} hit) {
+                if (mhit is { } hit)
+                {
                     ((IInputListener)parent).OnLeftMousePressed(hit);
                 }
             }
@@ -32,11 +38,13 @@ namespace FGJ23
         }
 
 
-        public TouchableButton(string label, TextButtonStyle style): base(label, style) {
+        public TouchableButton(string label, TextButtonStyle style) : base(label, style)
+        {
 
         }
 
-        public TouchableComponent ToTouchableComponent() {
+        public TouchableComponent ToTouchableComponent()
+        {
             return new TouchableComponent(this);
         }
     }
@@ -66,7 +74,8 @@ namespace FGJ23
             table.Row();
             button1.OnClicked += _ =>
             {
-                GameState.Instance.DoTransition(() => new GameplayScene(null));
+                Log.Information("menu to lev1");
+                GameState.Instance.DoTransition(() => GameplayScene.construct(LevelBank.GetLevel("level1")));
             };
             var button2 = new TouchableButton("Quit game", TextButtonStyle.Create(Color.Black, Color.DarkGray, Color.Green));
             Entity.AddComponent(button2.ToTouchableComponent());
@@ -94,13 +103,15 @@ namespace FGJ23
             SetDesignResolution(x, y, SceneResolutionPolicy.ShowAllPixelPerfect);
             if (OperatingSystem.IsAndroid())
             {
-                    Nez.Screen.IsFullscreen = true;
-                    Nez.Screen.SetSize(
-                            Screen.MonitorWidth,
-                            Screen.MonitorHeight
-                    );
-                    Nez.Screen.SupportedOrientations = DisplayOrientation.LandscapeLeft;
-            } else {
+                Nez.Screen.IsFullscreen = true;
+                Nez.Screen.SetSize(
+                        Screen.MonitorWidth,
+                        Screen.MonitorHeight
+                );
+                Nez.Screen.SupportedOrientations = DisplayOrientation.LandscapeLeft;
+            }
+            else
+            {
                 Screen.SetSize(x * 2, y * 2);
             }
         }
