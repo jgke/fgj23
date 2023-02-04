@@ -295,7 +295,7 @@ namespace FGJ23.Entities
             UpdateAnimation(moveDir);
             UpdateMovement(moveDir);
 
-            if (_fireInput.IsPressed)
+            if (!PreventActions && CanShoot && _fireInput.IsPressed)
             {
                 var bullet = Entity.Scene.CreateEntity("bullet", Transform.Position);
                 bullet.AddComponent(new Bullet(BulletType.Basic, _animator.FlipX));

@@ -56,19 +56,6 @@ namespace FGJ23
             int x = 400;
             int y = 300;
             SetDesignResolution(x, y, SceneResolutionPolicy.ShowAllPixelPerfect);
-            if (OperatingSystem.IsAndroid())
-            {
-                Nez.Screen.IsFullscreen = true;
-                Nez.Screen.SetSize(
-                        Screen.MonitorWidth,
-                        Screen.MonitorHeight
-                );
-                Nez.Screen.SupportedOrientations = DisplayOrientation.LandscapeLeft;
-            }
-            else
-            {
-                Screen.SetSize(x * 2, y * 2);
-            }
 
             CreateEntity("forceMovementSystem")
                 .AddComponent(new ForceMovementSystem());
