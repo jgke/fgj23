@@ -29,11 +29,19 @@ namespace FGJ23.Entities
         readonly Levels.CollisionState _collisionState = new Levels.CollisionState();
         readonly float groundAccel = 1000;
         readonly float airAccel = 750;
-        RigidBody _rigidBody;
+        public RigidBody _rigidBody;
         int _coyote = 0;
 
         VirtualButton _jumpInput;
         VirtualButton _fireInput;
+
+        public int Width;
+        public int Height;
+
+        public Player(int width, int height) {
+            Width = width;
+            Height = height;
+        }
 
         internal void LockControls(float v)
         {
@@ -62,7 +70,6 @@ namespace FGJ23.Entities
             _rigidBody = Entity.AddComponent(new RigidBody(600, groundAccel, airAccel));
 
             Entity.AddComponent(new Health(5));
-            Entity.AddComponent(new PlayerControls());
 
             _animator.AddAnimation("Idle", new[] { sprites[0] });
             _animator.AddAnimation("Run", new[] { sprites[1] });
@@ -269,7 +276,6 @@ namespace FGJ23.Entities
 
         void IUpdatable.FixedUpdate()
         {
-            Log.Information("Player {A}", Transform.Position);
             Vector2 moveDir;
             if (_leftInput.Hits(false) != null)
             {
@@ -356,14 +362,16 @@ namespace FGJ23.Entities
 
         public override void Render(Batcher batcher, Camera camera)
         {
-            batcher.DrawRect(hit.X + Bounds.X, hit.Y + Bounds.Y, hit.Width, hit.Height, Color.DarkGray);
+            //batcher.DrawRect(hit.X + Bounds.X, hit.Y + Bounds.Y, hit.Width, hit.Height, Color.DarkGray);
         }
 
         public Vector2? Hits(bool pressed)
         {
             foreach (var e in Input.Touch.CurrentTouches)
             {
-                var position = Nez.Input.ScaledPosition(e.Position);
+                var mul = new Vector2(Screen.MonitorWidth / Screen.Width, Screen.MonitorHeight / Screen.Height);
+                var position = mul * Nez.Input.ScaledPosition(e.Position);
+
                 if (pressed && e.State == TouchLocationState.Pressed && hit.Contains(position))
                 {
                     return e.Position;
@@ -382,13 +390,6 @@ namespace FGJ23.Entities
                 return Input.ScaledMousePosition;
             }
             return null;
-        }
-    }
-
-    public class PlayerControls : Component
-    {
-        public override void OnAddedToEntity()
-        {
         }
     }
 }

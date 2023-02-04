@@ -1,5 +1,5 @@
 ﻿using FGJ23.Entities;
-using FGJ23.Entities.Enemies;
+using FGJ23.Entities.CoordinateEvents;
 using FGJ23.Support;
 using FGJ23.Systems;
 using System;

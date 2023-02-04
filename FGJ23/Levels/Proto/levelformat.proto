@@ -67,6 +67,7 @@ message CoordinateEvent {
 		NONE = 0;
 		SPAWN = 1;
 		HEALTH_PICKUP = 2;
+		ENEMY = 3;
 	}
 
 	int32 x = 2;

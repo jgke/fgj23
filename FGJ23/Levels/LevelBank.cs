@@ -70,6 +70,13 @@ namespace FGJ23.Levels
                 Data = ByteString.CopyFromUtf8("level2")
             });
 
+            protoLayer.CoordinateEvents.Add(new Proto.CoordinateEvent()
+            {
+                Id = Proto.CoordinateEvent.Types.CoordinateEventId.Enemy,
+                X = 10 * 32,
+                Y = 10 * 32,
+            });
+
             lev.Layers.Add(protoLayer);
             var protoTileset = new Proto.Tileset()
             {
@@ -124,7 +131,15 @@ namespace FGJ23.Levels
                 Y = 13 * 32,
                 Width = 64,
                 Height = 64,
-                Data = ByteString.CopyFromUtf8("")
+                Data = ByteString.CopyFromUtf8("level1")
+            });
+
+
+            protoLayer.CoordinateEvents.Add(new Proto.CoordinateEvent()
+            {
+                Id = Proto.CoordinateEvent.Types.CoordinateEventId.Enemy,
+                X = 10 * 32,
+                Y = 10 * 32,
             });
 
             lev.Layers.Add(protoLayer);

@@ -1117,6 +1117,7 @@ namespace FGJ23.Levels.Proto {
         [pbr::OriginalName("NONE")] None = 0,
         [pbr::OriginalName("SPAWN")] Spawn = 1,
         [pbr::OriginalName("HEALTH_PICKUP")] HealthPickup = 2,
+        [pbr::OriginalName("ENEMY")] Enemy = 3,
       }
 
     }

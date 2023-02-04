@@ -101,13 +101,13 @@ namespace FGJ23.Entities
         public static EventBase CoordinateEventFromProto(Levels.Proto.CoordinateEvent e)
         {
             //Log.Information("Parsing coordinate event {@A}", e);
-            // TODO: 32
-            var pos = new Vector2(e.X * 32 + 32 / 2, e.Y * 32 + 32 / 2);
+            var pos = new Vector2(e.X, e.Y);
             CoordinateEvent elem = e.Id switch
             {
                 Levels.Proto.CoordinateEvent.Types.CoordinateEventId.None => null,
                 Levels.Proto.CoordinateEvent.Types.CoordinateEventId.Spawn => new Spawn(e.Data),
                 Levels.Proto.CoordinateEvent.Types.CoordinateEventId.HealthPickup => new HealthPickup(),
+                Levels.Proto.CoordinateEvent.Types.CoordinateEventId.Enemy => new FloatingBlob(e.Data),
                 _ => throw new Exception("Unknown event ID: " + e.Id)
             };
             if (elem != null)
@@ -121,7 +121,6 @@ namespace FGJ23.Entities
         internal static EventBase AreaEventFromProto(Levels.Proto.AreaEvent e)
         {
             //Log.Information("Parsing area event {@A}", e);
-            // TODO: 32
             var pos = new Vector2(e.X, e.Y);
             var size = new Vector2(e.Width, e.Height);
             AreaEvent elem = e.Id switch

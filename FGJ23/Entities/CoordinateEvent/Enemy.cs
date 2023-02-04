@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FGJ23.Entities.Enemies
+namespace FGJ23.Entities.CoordinateEvents
 {
     internal class Enemy : Component
     {

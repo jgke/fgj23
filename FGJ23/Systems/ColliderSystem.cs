@@ -1,5 +1,5 @@
 ﻿using FGJ23.Entities;
-using FGJ23.Entities.Enemies;
+using FGJ23.Entities.CoordinateEvents;
 using Microsoft.Xna.Framework;
 using Nez.Spatial;
 using System;

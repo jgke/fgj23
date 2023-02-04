@@ -1,5 +1,5 @@
 using FGJ23.Components;
-using FGJ23.Entities.Enemies;
+using FGJ23.Entities.CoordinateEvents;
 using FGJ23.Support;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

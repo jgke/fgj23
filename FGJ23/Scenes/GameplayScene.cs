@@ -2,7 +2,6 @@
 using FGJ23.Core;
 using FGJ23.Entities;
 using FGJ23.Entities.CoordinateEvents;
-using FGJ23.Entities.Enemies;
 using FGJ23.Levels;
 using FGJ23.Support;
 using FGJ23.Systems;
@@ -70,7 +69,6 @@ namespace FGJ23
                     {
                         var eventEntity = CreateEntity("event");
                         eventEntity.AddComponent(eventComponent);
-                        Log.Information("{@A}", eventComponent);
                     }
                 }
             }
@@ -84,7 +82,6 @@ namespace FGJ23
                     {
                         var eventEntity = CreateEntity("event");
                         eventEntity.AddComponent(eventComponent);
-                        Log.Information("{@A}", eventComponent);
                     }
                 }
             }
@@ -112,12 +109,12 @@ namespace FGJ23
                 var r = new System.Random();
                 playerEntity = CreateEntity("player", spawns[r.Next(spawns.Count)].Transform.Position);
             }
-            playerInstance = playerEntity.AddComponent(new Player());
-            var playerWidth = 20;
-            var playerHeight = 24;
+            playerInstance = playerEntity.AddComponent(new Player(20, 24));
+            var playerWidth = playerInstance.Width;
+            var playerHeight = playerInstance.Height;
             playerEntity.AddComponent(new BoxCollider(-playerWidth / 2, -playerHeight / 2, playerWidth, playerHeight));
+            Log.Information("PlayerSize {A} {B}", playerWidth, playerHeight);
             playerEntity.AddComponent(new Levels.Mover(this.level.SpriteLayer));
-            CreateEntity("blob", new Vector2(1000, 1000)).AddComponent(new FloatingBlob());
 
             Camera.Entity.AddComponent(new FollowCamera(playerEntity)).FollowLerp = 1;
         }
