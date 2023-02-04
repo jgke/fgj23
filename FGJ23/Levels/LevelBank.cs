@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FGJ23.Core;
 using FGJ23.Support;
+using FGJ23.Entities;
 
 namespace FGJ23.Levels
 {
@@ -198,6 +199,28 @@ namespace FGJ23.Levels
 
                 _ => throw new Exception("Unknown level name: " + name),
             };
+        }
+
+        public static void setPlayerAttributes(Player player, string name)
+        {
+            switch (name) {
+                case "level1":
+                    player.CanJump = true;
+                    player.CanWalljump = true;
+                    player.CanShoot = true;
+                    player.ExtraJumps = 1;
+                    break;
+
+                case "level2":
+                    player.CanJump = true;
+                    player.CanWalljump = false;
+                    player.CanShoot = false;
+                    player.ExtraJumps = 0;
+                    break;
+
+                default:
+                    throw new Exception("Unknown level name: " + name);
+            }
         }
     }
 }

@@ -124,6 +124,8 @@ namespace FGJ23
 
             playerInstance.PreventActions = true;
 
+            LevelBank.setPlayerAttributes(playerInstance, NextProtoLevel.Name);
+
             var storyEntity = CreateEntity("startStory", new Vector2(0, 0));
             storyEntity.AddComponent(LevelBank.getStartStory(NextProtoLevel.Name));
             GameState.OnStoryComplete += () => playerInstance.PreventActions = false;

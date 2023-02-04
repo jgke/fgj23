@@ -18,6 +18,7 @@ namespace FGJ23.Entities
     {
         public int ExtraJumps = 1;
         public bool CanShoot = true;
+        public bool CanJump = true;
         public bool CanWalljump = true;
 
         public float JumpHeight = 16 * 6;
@@ -162,9 +163,9 @@ namespace FGJ23.Entities
                  (Math.Abs(_collisionState.SlopeAngle) <= -40 && _rigidBody.velocity.X < -350));
         }
 
-        bool CanJump()
+        bool CanJumpNow()
         {
-            return _collisionState.Below || cachedJump || _coyote > 0;
+            return CanJump && _collisionState.Below || cachedJump || _coyote > 0;
         }
 
         bool CanContinueJump()
@@ -211,15 +212,15 @@ namespace FGJ23.Entities
                 {
                     cachedJump = true;
                 }
-                else if(CanWalljump && !CanJump() && _collisionState.Left && moveDir.X < 0 && _jumpInput.IsPressed) {
+                else if(CanWalljump && !CanJumpNow() && _collisionState.Left && moveDir.X < 0 && _jumpInput.IsPressed) {
                     _rigidBody.velocity.X = WalljumpStrength;
                     _rigidBody.velocity.Y = -Mathf.Sqrt(2f * JumpHeight * WalljumpStrength);
                 }
-                else if(CanWalljump && !CanJump() && _collisionState.Right && moveDir.X > 0 && _jumpInput.IsPressed) {
+                else if(CanWalljump && !CanJumpNow() && _collisionState.Right && moveDir.X > 0 && _jumpInput.IsPressed) {
                     _rigidBody.velocity.X = -WalljumpStrength;
                     _rigidBody.velocity.Y = -Mathf.Sqrt(2f * JumpHeight * WalljumpStrength);
                 }
-                else if ((CanJump() && _jumpInput.IsDown) || (jumpCount > 0 && _jumpInput.IsPressed))
+                else if ((CanJumpNow() && _jumpInput.IsDown) || (jumpCount > 0 && _jumpInput.IsPressed))
                 {
                     _coyote = 0;
                     cachedJump = false;
