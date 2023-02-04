@@ -351,10 +351,11 @@ namespace FGJ23.Entities
 
         public Vector2? Hits(bool pressed) {
             foreach (var e in Input.Touch.CurrentTouches) {
-                if(pressed && e.State == TouchLocationState.Pressed && hit.Contains(e.Position)) {
+                var position = Input.ScalePosition(e.Position);
+                if(pressed && e.State == TouchLocationState.Pressed && hit.Contains(position)) {
                     return e.Position;
                 }
-                if(!pressed && e.State != TouchLocationState.Released && hit.Contains(e.Position)) {
+                if(!pressed && e.State != TouchLocationState.Released && hit.Contains(position)) {
                     return e.Position;
                 }
             }
