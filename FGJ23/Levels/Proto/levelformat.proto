@@ -7,6 +7,8 @@ message Level {
 	repeated Layer layers = 1;
 	repeated Tileset tilesets = 2;
 	uint32 SpriteLayer = 3;
+	string Title = 4;
+	string Name = 5;
 }
 
 message Layer {

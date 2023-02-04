@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FGJ23.Core;
 using FGJ23.Support;
 
 namespace FGJ23.Levels
@@ -28,6 +29,8 @@ namespace FGJ23.Levels
         {
             var lev = new Proto.Level
             {
+                Title = "Level 1",
+                Name = "level1",
                 SpriteLayer = 0
             };
             var protoLayer = new Proto.Layer()
@@ -92,6 +95,8 @@ namespace FGJ23.Levels
         {
             var lev = new Proto.Level
             {
+                Title = "Level 2",
+                Name = "level2",
                 SpriteLayer = 0
             };
             var protoLayer = new Proto.Layer()
@@ -151,6 +156,45 @@ namespace FGJ23.Levels
             lev.Tilesets.Add(protoTileset);
 
             return lev;
+        }
+
+
+        public static StoryComponent getStartStory(string name) {
+            return name switch
+            {
+                "level1" => 
+                    new StoryBuilder()
+                    .Exposition("Only expo here")
+                    .Exposition("No characters")
+                    .GoToLevel(),
+
+                    "level2" => 
+                        new StoryBuilder()
+                        .Exposition("lev2 start story")
+                        .Exposition("blah")
+                        .GoToLevel(),
+
+                    _ => throw new Exception("Unknown level name: " + name),
+
+            };
+        }
+
+        public static StoryComponent getEndStory(string name) {
+            return name switch
+            {
+                "level1" => 
+                    new StoryBuilder()
+                    .Exposition("lev1 end story")
+                    .Exposition("blah")
+                    .GoToLevel(),
+                    "level2" =>
+                        new StoryBuilder()
+                        .Exposition("lev2 end story")
+                        .Exposition("blah")
+                        .GoToLevel(),
+
+                    _ => throw new Exception("Unknown level name: " + name),
+            };
         }
     }
 }

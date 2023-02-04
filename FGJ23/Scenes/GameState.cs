@@ -44,5 +44,14 @@ namespace FGJ23
                 this.Transitioning = false;
             };
         }
+
+        public static Action OnStoryComplete;
+
+        public void StoryComplete() {
+            if(OnStoryComplete != null) {
+                OnStoryComplete();
+                OnStoryComplete = null;
+            }
+        }
     }
 }

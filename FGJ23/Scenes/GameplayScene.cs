@@ -30,6 +30,16 @@ namespace FGJ23
             return new GameplayScene();
         }
 
+        public static void prepare(FGJ23.Levels.Proto.Level lev)
+        {
+            NextProtoLevel = lev;
+        }
+
+        public static GameplayScene getPreset()
+        {
+            return new GameplayScene();
+        }
+
         public override void Initialize()
         {
             base.Initialize();
@@ -123,6 +133,12 @@ namespace FGJ23
             playerEntity.AddComponent(new Levels.Mover(this.level.SpriteLayer));
 
             Camera.Entity.AddComponent(new FollowCamera(playerEntity)).FollowLerp = 1;
+
+            playerInstance.PreventActions = true;
+
+            var storyEntity = CreateEntity("startStory", new Vector2(0, 0));
+            storyEntity.AddComponent(LevelBank.getStartStory(NextProtoLevel.Name));
+            GameState.OnStoryComplete += () => playerInstance.PreventActions = false;
         }
 
 #if !ANDROID

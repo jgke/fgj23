@@ -31,20 +31,21 @@ namespace FGJ23.Entities.AreaEvents
 
         private bool HandleCollision(Player player, bool hadContactOnPreviousFrame)
         {
-            GameState.Instance.DoTransition(() =>
-            {
-                var lev = LevelBank.GetLevel(next);
-                if (lev != null)
-                {
-                    Log.Information("new GS {A}", lev);
-                    return GameplayScene.construct(lev);
-                }
-                else
-                {
-                    Log.Information("goto menu");
-                    return new MenuScene();
-                }
-            });
+            player.PreventActions = true;
+            var storyEntity = player.Entity.Scene.CreateEntity("endStory", new Vector2(0, 0));
+            storyEntity.AddComponent(LevelBank.getEndStory(GameplayScene.NextProtoLevel.Name));
+            GameState.OnStoryComplete += () => {
+                GameState.Instance.DoTransition(() => {
+                    var lev = LevelBank.GetLevel(next);
+                    if (lev != null) {
+                        Log.Information("new GS {A}", lev);
+                        return GameplayScene.construct(lev);
+                    } else {
+                        Log.Information("goto menu");
+                        return new MenuScene();
+                    }
+                });
+            };
             Entity.Destroy();
             return true;
         }

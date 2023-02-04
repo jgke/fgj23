@@ -53,6 +53,7 @@ namespace FGJ23.Entities
         Button _rightInput;
 
         private float ControlsLocked = 0;
+        public bool PreventActions = false;
 
         public float IgnoreCollisionsFor
         {
@@ -190,7 +191,7 @@ namespace FGJ23.Entities
                 dashCount = 1;
             }
 
-            if (ControlsLocked == 0)
+            if (ControlsLocked == 0 && !PreventActions)
             {
                 if (moveDir.X < 0)
                 {
