@@ -82,7 +82,7 @@ namespace FGJ23.Entities
         public override void Initialize()
         {
             base.Initialize();
-            Entity.AddComponent(new BoxCollider(0, 0, size.X, size.Y));
+            Entity.AddComponent(new BoxCollider(-size.X/2, -size.Y/2, size.X/2, size.Y/2));
         }
         public override void Draw(Batcher batcher, Vector2 topLeft, Level level)
         {

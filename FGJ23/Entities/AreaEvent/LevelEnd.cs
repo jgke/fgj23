@@ -10,23 +10,36 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework.Graphics;
+using Nez.Sprites;
+using Nez.Textures;
 
 namespace FGJ23.Entities.AreaEvents
 {
     internal class LevelEnd : AreaEvent, ILoggable
     {
+        private string image;
         private string next;
 
         public LevelEnd(ByteString data) : base("goto next")
         {
-            this.next = data.ToStringUtf8();
+            string[] d = data.ToStringUtf8().Split(";");
+
+            image = d[0];
+            next = d[1];
         }
 
         public override void OnAddedToEntity()
         {
             base.OnAddedToEntity();
             Entity.AddComponent(new CollideWithPlayer(this.HandleCollision));
-            Entity.AddComponent(new DrawRectangle((int)size.X, (int)size.Y, new Color(30, 30, 150, 150)));
+
+            var texture = Entity.Scene.Content.LoadTexture("Content/Files/" + image);
+            var sprites = Sprite.SpritesFromAtlas(texture, 32, 32);
+
+            SpriteAnimator animator = Entity.AddComponent(new SpriteAnimator(sprites[0]));;
+            animator.AddAnimation("Idle", new[] { sprites[0] });
+            animator.Play("Idle");
         }
 
         private bool HandleCollision(Player player, bool hadContactOnPreviousFrame)
