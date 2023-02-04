@@ -365,7 +365,8 @@ namespace FGJ23.Core
         Table table;
         private VirtualButton StoryAdvanceButton;
 
-        public StoryComponent(StoryBuilder builder) {
+        public StoryComponent(StoryBuilder builder)
+        {
             this.storyBuilder = builder;
         }
 
@@ -402,7 +403,7 @@ namespace FGJ23.Core
 
 
 
-        void IUpdatable.DrawUpdate() {}
+        void IUpdatable.DrawUpdate() { }
         void IUpdatable.FixedUpdate()
         {
             if (StoryAdvanceButton.IsPressed && !GameState.Instance.Transitioning)

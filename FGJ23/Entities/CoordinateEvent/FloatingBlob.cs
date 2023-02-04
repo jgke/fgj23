@@ -10,14 +10,14 @@ namespace FGJ23.Entities.CoordinateEvents
         int width = 32;
         int height = 32;
 
-        public FloatingBlob(ByteString data) : base("blob") {}
+        public FloatingBlob(ByteString data) : base("blob") { }
 
         public override void OnAddedToEntity()
         {
             var texture = Entity.Scene.Content.LoadTexture(Content.Files.FloatingBlob);
             Entity.AddComponent(new Enemy());
             Entity.AddComponent(new SpriteRenderer(texture));
-            Entity.AddComponent(new BoxCollider(-width/2, -height/2, width, height));
+            Entity.AddComponent(new BoxCollider(-width / 2, -height / 2, width, height));
             Entity.AddComponent(new CollideWithPlayer(this.OnCollide));
             Entity.AddComponent(new Health(2));
         }
@@ -43,11 +43,14 @@ namespace FGJ23.Entities.CoordinateEvents
             Log.Information("Colliding line ({A}->{B}) with ({C}->{D}))", prevPlayerBL, curPlayerBL + bld, curETL, curETR);
             Log.Information("Colliding line ({A}->{B}) with ({C}->{D}))", prevPlayerBR, curPlayerBR + brd, curETL, curETR);
 
-            if( Collisions.LineToLine(prevPlayerBL, curPlayerBL + bld, curETL, curETR)
-                    || Collisions.LineToLine(prevPlayerBR, curPlayerBR + bld, curETL, curETR)) {
+            if (Collisions.LineToLine(prevPlayerBL, curPlayerBL + bld, curETL, curETR)
+                    || Collisions.LineToLine(prevPlayerBR, curPlayerBR + bld, curETL, curETR))
+            {
                 Log.Information("Collided! Jumping...");
                 player._rigidBody.velocity = new Vector2(player._rigidBody.velocity.X, -500);
-            } else {
+            }
+            else
+            {
                 Log.Information("Missed");
                 player.GetComponent<Health>().Hit(1);
             }

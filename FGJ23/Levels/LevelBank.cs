@@ -159,41 +159,44 @@ namespace FGJ23.Levels
         }
 
 
-        public static StoryComponent getStartStory(string name) {
+        public static StoryComponent getStartStory(string name)
+        {
             return name switch
             {
-                "level1" => 
+                "level1" =>
                     new StoryBuilder()
                     .Exposition("Only expo here")
                     .Exposition("No characters")
                     .GoToLevel(),
 
-                    "level2" => 
-                        new StoryBuilder()
-                        .Exposition("lev2 start story")
-                        .Exposition("blah")
-                        .GoToLevel(),
+                "level2" =>
+                    new StoryBuilder()
+                    .Exposition("lev2 start story")
+                    .Exposition("blah")
+                    .GoToLevel(),
 
-                    _ => throw new Exception("Unknown level name: " + name),
+                _ => throw new Exception("Unknown level name: " + name),
 
             };
         }
 
-        public static StoryComponent getEndStory(string name) {
+        public static StoryComponent getEndStory(string name)
+        {
             return name switch
             {
-                "level1" => 
+                "level1" =>
                     new StoryBuilder()
                     .Exposition("lev1 end story")
                     .Exposition("blah")
                     .GoToLevel(),
-                    "level2" =>
-                        new StoryBuilder()
-                        .Exposition("lev2 end story")
-                        .Exposition("blah")
-                        .GoToLevel(),
 
-                    _ => throw new Exception("Unknown level name: " + name),
+                "level2" =>
+                    new StoryBuilder()
+                    .Exposition("lev2 end story")
+                    .Exposition("blah")
+                    .GoToLevel(),
+
+                _ => throw new Exception("Unknown level name: " + name),
             };
         }
     }

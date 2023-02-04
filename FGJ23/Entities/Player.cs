@@ -38,7 +38,8 @@ namespace FGJ23.Entities
         public int Width;
         public int Height;
 
-        public Player(int width, int height) {
+        public Player(int width, int height)
+        {
             Width = width;
             Height = height;
         }

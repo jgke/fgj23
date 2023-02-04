@@ -47,8 +47,10 @@ namespace FGJ23
 
         public static Action OnStoryComplete;
 
-        public void StoryComplete() {
-            if(OnStoryComplete != null) {
+        public void StoryComplete()
+        {
+            if (OnStoryComplete != null)
+            {
                 OnStoryComplete();
                 OnStoryComplete = null;
             }

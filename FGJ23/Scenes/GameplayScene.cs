@@ -45,7 +45,8 @@ namespace FGJ23
             base.Initialize();
             ColliderSystem.Reset();
 
-            if(!bgmPlaying) {
+            if (!bgmPlaying)
+            {
                 bgmPlaying = true;
                 FmodWrapper.PlaySound("event:/bgm");
             }
