@@ -31,6 +31,9 @@ namespace FGJ23.Entities.AreaEvents
 
         private bool HandleCollision(Player player, bool hadContactOnPreviousFrame)
         {
+            if(player.PreventActions) {
+                return true;
+            }
             player.PreventActions = true;
             var storyEntity = player.Entity.Scene.CreateEntity("endStory", new Vector2(0, 0));
             storyEntity.AddComponent(LevelBank.getEndStory(GameplayScene.NextProtoLevel.Name));

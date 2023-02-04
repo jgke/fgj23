@@ -21,11 +21,22 @@ namespace FGJ23.Levels
             {
                 "level1" => Level1(),
                 "level2" => Level2(),
+                "level3" => Level3(),
+                "level4" => Level4(),
+                "level5" => Level5(),
+                "level6" => Level6(),
+                "level7" => Level7(),
+                "level8" => Level8(),
+                "level9" => Level9(),
+                "level10" => Level10(),
+                "level11" => Level11(),
+                "level12" => Level12(),
                 "" => null,
                 _ => throw new Exception("Unknown level name: " + name),
             };
         }
 
+#pragma warning disable format
         public static Proto.Level Level1()
         {
             var lev = new Proto.Level
@@ -44,7 +55,6 @@ namespace FGJ23.Levels
                 XSpeed = 1,
                 YSpeed = 1,
             };
-#pragma warning disable format
             protoLayer.Tiles.AddRange(new List<int>() {
                     3, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,  4,
                     7, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,  5,
@@ -62,7 +72,6 @@ namespace FGJ23.Levels
                     7, 14, 14, 14, 14, 14,  5,  6,  6,  6,  7, 14, 14, 14, 14, 14, 14, 14, 14,  5,
                     8,  1,  1,  1,  1,  1,  9,  6,  6,  6,  8,  1,  1,  1,  1,  1,  1,  1,  1,  9,
                     });
-#pragma warning restore format
 
             protoLayer.AreaEvents.Add(new Proto.AreaEvent()
             {
@@ -110,7 +119,6 @@ namespace FGJ23.Levels
                 XSpeed = 1,
                 YSpeed = 1,
             };
-#pragma warning disable format
             protoLayer.Tiles.AddRange(new List<int>() {
                     3, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 4,
                     7, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 5,
@@ -128,7 +136,6 @@ namespace FGJ23.Levels
                     7, 14, 14, 14, 14, 14, 2, 2, 2, 2, 2, 2, 2, 14, 14, 14, 14, 14, 14, 5,
                     8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 9,
                     });
-#pragma warning restore format
 
             protoLayer.AreaEvents.Add(new Proto.AreaEvent()
             {
@@ -137,7 +144,7 @@ namespace FGJ23.Levels
                 Y = 13 * 16,
                 Width = 64,
                 Height = 64,
-                Data = ByteString.CopyFromUtf8("level1")
+                Data = ByteString.CopyFromUtf8("level3")
             });
 
 
@@ -159,7 +166,250 @@ namespace FGJ23.Levels
             return lev;
         }
 
+        public static Proto.Level Level3()
+        {
+            var lev = new Proto.Level { Title = "level3", Name = "level3", SpriteLayer = 0 };
+            var protoLayer = new Proto.Layer() { TilesetIndex = 0, Height = 5, Width = 5, LoopX = false, LoopY = false, XSpeed = 1, YSpeed = 1, };
+            protoLayer.Tiles.AddRange(new List<int>() {
+                    3, 11, 11, 11,   4,
+                    7, 14, 14, 14,   5,
+                    7, 14, 14, 14,   5,
+                    7, 14, 14, 14,   5,
+                    8,  1,  1,  1,   9,
+                    });
 
+            protoLayer.AreaEvents.Add(new Proto.AreaEvent() { Id = Proto.AreaEvent.Types.AreaEventId.LevelEnd, X = 2 * 16, Y = 2 * 16, Width = 64, Height = 64, Data = ByteString.CopyFromUtf8("level4") });
+
+            protoLayer.CoordinateEvents.Add(new Proto.CoordinateEvent() { Id = Proto.CoordinateEvent.Types.CoordinateEventId.Enemy, X = 10 * 16, Y = 10 * 16, });
+
+            lev.Layers.Add(protoLayer);
+            
+            var protoTileset = new Proto.Tileset() { Image = "MB_maa.png", Mask = "MB_maa.png", };
+            lev.Tilesets.Add(protoTileset);
+
+            return lev;
+        }
+
+        public static Proto.Level Level4()
+        {
+            var lev = new Proto.Level { Title = "level4", Name = "level4", SpriteLayer = 0 };
+            var protoLayer = new Proto.Layer() { TilesetIndex = 0, Height = 5, Width = 5, LoopX = false, LoopY = false, XSpeed = 1, YSpeed = 1, };
+            protoLayer.Tiles.AddRange(new List<int>() {
+                    3, 11, 11, 11,   4,
+                    7, 14, 14, 14,   5,
+                    7, 14, 14, 14,   5,
+                    7, 14, 14, 14,   5,
+                    8,  1,  1,  1,   9,
+                    });
+
+            protoLayer.AreaEvents.Add(new Proto.AreaEvent() { Id = Proto.AreaEvent.Types.AreaEventId.LevelEnd, X = 2 * 16, Y = 2 * 16, Width = 64, Height = 64, Data = ByteString.CopyFromUtf8("level5") });
+
+            protoLayer.CoordinateEvents.Add(new Proto.CoordinateEvent() { Id = Proto.CoordinateEvent.Types.CoordinateEventId.Enemy, X = 10 * 16, Y = 10 * 16, });
+
+            lev.Layers.Add(protoLayer);
+            
+            var protoTileset = new Proto.Tileset() { Image = "MB_maa.png", Mask = "MB_maa.png", };
+            lev.Tilesets.Add(protoTileset);
+
+            return lev;
+        }
+
+        public static Proto.Level Level5()
+        {
+            var lev = new Proto.Level { Title = "level5", Name = "level5", SpriteLayer = 0 };
+            var protoLayer = new Proto.Layer() { TilesetIndex = 0, Height = 5, Width = 5, LoopX = false, LoopY = false, XSpeed = 1, YSpeed = 1, };
+            protoLayer.Tiles.AddRange(new List<int>() {
+                    3, 11, 11, 11,   4,
+                    7, 14, 14, 14,   5,
+                    7, 14, 14, 14,   5,
+                    7, 14, 14, 14,   5,
+                    8,  1,  1,  1,   9,
+                    });
+
+            protoLayer.AreaEvents.Add(new Proto.AreaEvent() { Id = Proto.AreaEvent.Types.AreaEventId.LevelEnd, X = 2 * 16, Y = 2 * 16, Width = 64, Height = 64, Data = ByteString.CopyFromUtf8("level6") });
+
+            protoLayer.CoordinateEvents.Add(new Proto.CoordinateEvent() { Id = Proto.CoordinateEvent.Types.CoordinateEventId.Enemy, X = 10 * 16, Y = 10 * 16, });
+
+            lev.Layers.Add(protoLayer);
+            
+            var protoTileset = new Proto.Tileset() { Image = "MB_maa.png", Mask = "MB_maa.png", };
+            lev.Tilesets.Add(protoTileset);
+
+            return lev;
+        }
+
+
+        public static Proto.Level Level6()
+        {
+            var lev = new Proto.Level { Title = "level6", Name = "level6", SpriteLayer = 0 };
+            var protoLayer = new Proto.Layer() { TilesetIndex = 0, Height = 5, Width = 5, LoopX = false, LoopY = false, XSpeed = 1, YSpeed = 1, };
+            protoLayer.Tiles.AddRange(new List<int>() {
+                    3, 11, 11, 11,   4,
+                    7, 14, 14, 14,   5,
+                    7, 14, 14, 14,   5,
+                    7, 14, 14, 14,   5,
+                    8,  1,  1,  1,   9,
+                    });
+
+            protoLayer.AreaEvents.Add(new Proto.AreaEvent() { Id = Proto.AreaEvent.Types.AreaEventId.LevelEnd, X = 2 * 16, Y = 2 * 16, Width = 64, Height = 64, Data = ByteString.CopyFromUtf8("level7") });
+
+            protoLayer.CoordinateEvents.Add(new Proto.CoordinateEvent() { Id = Proto.CoordinateEvent.Types.CoordinateEventId.Enemy, X = 10 * 16, Y = 10 * 16, });
+
+            lev.Layers.Add(protoLayer);
+            
+            var protoTileset = new Proto.Tileset() { Image = "MB_maa.png", Mask = "MB_maa.png", };
+            lev.Tilesets.Add(protoTileset);
+
+            return lev;
+        }
+
+
+        public static Proto.Level Level7()
+        {
+            var lev = new Proto.Level { Title = "level6", Name = "level7", SpriteLayer = 0 };
+            var protoLayer = new Proto.Layer() { TilesetIndex = 0, Height = 5, Width = 5, LoopX = false, LoopY = false, XSpeed = 1, YSpeed = 1, };
+            protoLayer.Tiles.AddRange(new List<int>() {
+                    3, 11, 11, 11,   4,
+                    7, 14, 14, 14,   5,
+                    7, 14, 14, 14,   5,
+                    7, 14, 14, 14,   5,
+                    8,  1,  1,  1,   9,
+                    });
+
+            protoLayer.AreaEvents.Add(new Proto.AreaEvent() { Id = Proto.AreaEvent.Types.AreaEventId.LevelEnd, X = 2 * 16, Y = 2 * 16, Width = 64, Height = 64, Data = ByteString.CopyFromUtf8("level8") });
+
+            protoLayer.CoordinateEvents.Add(new Proto.CoordinateEvent() { Id = Proto.CoordinateEvent.Types.CoordinateEventId.Enemy, X = 10 * 16, Y = 10 * 16, });
+
+            lev.Layers.Add(protoLayer);
+            
+            var protoTileset = new Proto.Tileset() { Image = "MB_maa.png", Mask = "MB_maa.png", };
+            lev.Tilesets.Add(protoTileset);
+
+            return lev;
+        }
+
+        public static Proto.Level Level8()
+        {
+            var lev = new Proto.Level { Title = "level8", Name = "level8", SpriteLayer = 0 };
+            var protoLayer = new Proto.Layer() { TilesetIndex = 0, Height = 5, Width = 5, LoopX = false, LoopY = false, XSpeed = 1, YSpeed = 1, };
+            protoLayer.Tiles.AddRange(new List<int>() {
+                    3, 11, 11, 11,   4,
+                    7, 14, 14, 14,   5,
+                    7, 14, 14, 14,   5,
+                    7, 14, 14, 14,   5,
+                    8,  1,  1,  1,   9,
+                    });
+
+            protoLayer.AreaEvents.Add(new Proto.AreaEvent() { Id = Proto.AreaEvent.Types.AreaEventId.LevelEnd, X = 2 * 16, Y = 2 * 16, Width = 64, Height = 64, Data = ByteString.CopyFromUtf8("level9") });
+
+            protoLayer.CoordinateEvents.Add(new Proto.CoordinateEvent() { Id = Proto.CoordinateEvent.Types.CoordinateEventId.Enemy, X = 10 * 16, Y = 10 * 16, });
+
+            lev.Layers.Add(protoLayer);
+            
+            var protoTileset = new Proto.Tileset() { Image = "MB_maa.png", Mask = "MB_maa.png", };
+            lev.Tilesets.Add(protoTileset);
+
+            return lev;
+        }
+
+        public static Proto.Level Level9()
+        {
+            var lev = new Proto.Level { Title = "level9", Name = "level9", SpriteLayer = 0 };
+            var protoLayer = new Proto.Layer() { TilesetIndex = 0, Height = 5, Width = 5, LoopX = false, LoopY = false, XSpeed = 1, YSpeed = 1, };
+            protoLayer.Tiles.AddRange(new List<int>() {
+                    3, 11, 11, 11,   4,
+                    7, 14, 14, 14,   5,
+                    7, 14, 14, 14,   5,
+                    7, 14, 14, 14,   5,
+                    8,  1,  1,  1,   9,
+                    });
+
+            protoLayer.AreaEvents.Add(new Proto.AreaEvent() { Id = Proto.AreaEvent.Types.AreaEventId.LevelEnd, X = 2 * 16, Y = 2 * 16, Width = 64, Height = 64, Data = ByteString.CopyFromUtf8("level10") });
+
+            protoLayer.CoordinateEvents.Add(new Proto.CoordinateEvent() { Id = Proto.CoordinateEvent.Types.CoordinateEventId.Enemy, X = 10 * 16, Y = 10 * 16, });
+
+            lev.Layers.Add(protoLayer);
+            
+            var protoTileset = new Proto.Tileset() { Image = "MB_maa.png", Mask = "MB_maa.png", };
+            lev.Tilesets.Add(protoTileset);
+
+            return lev;
+        }
+
+
+        public static Proto.Level Level10()
+        {
+            var lev = new Proto.Level { Title = "level10", Name = "level10", SpriteLayer = 0 };
+            var protoLayer = new Proto.Layer() { TilesetIndex = 0, Height = 5, Width = 5, LoopX = false, LoopY = false, XSpeed = 1, YSpeed = 1, };
+            protoLayer.Tiles.AddRange(new List<int>() {
+                    3, 11, 11, 11,   4,
+                    7, 14, 14, 14,   5,
+                    7, 14, 14, 14,   5,
+                    7, 14, 14, 14,   5,
+                    8,  1,  1,  1,   9,
+                    });
+
+            protoLayer.AreaEvents.Add(new Proto.AreaEvent() { Id = Proto.AreaEvent.Types.AreaEventId.LevelEnd, X = 2 * 16, Y = 2 * 16, Width = 64, Height = 64, Data = ByteString.CopyFromUtf8("level11") });
+
+            protoLayer.CoordinateEvents.Add(new Proto.CoordinateEvent() { Id = Proto.CoordinateEvent.Types.CoordinateEventId.Enemy, X = 10 * 16, Y = 10 * 16, });
+
+            lev.Layers.Add(protoLayer);
+            
+            var protoTileset = new Proto.Tileset() { Image = "MB_maa.png", Mask = "MB_maa.png", };
+            lev.Tilesets.Add(protoTileset);
+
+            return lev;
+        }
+
+        public static Proto.Level Level11()
+        {
+            var lev = new Proto.Level { Title = "level11", Name = "level11", SpriteLayer = 0 };
+            var protoLayer = new Proto.Layer() { TilesetIndex = 0, Height = 5, Width = 5, LoopX = false, LoopY = false, XSpeed = 1, YSpeed = 1, };
+            protoLayer.Tiles.AddRange(new List<int>() {
+                    3, 11, 11, 11,   4,
+                    7, 14, 14, 14,   5,
+                    7, 14, 14, 14,   5,
+                    7, 14, 14, 14,   5,
+                    8,  1,  1,  1,   9,
+                    });
+
+            protoLayer.AreaEvents.Add(new Proto.AreaEvent() { Id = Proto.AreaEvent.Types.AreaEventId.LevelEnd, X = 2 * 16, Y = 2 * 16, Width = 64, Height = 64, Data = ByteString.CopyFromUtf8("level12") });
+
+            protoLayer.CoordinateEvents.Add(new Proto.CoordinateEvent() { Id = Proto.CoordinateEvent.Types.CoordinateEventId.Enemy, X = 10 * 16, Y = 10 * 16, });
+
+            lev.Layers.Add(protoLayer);
+            
+            var protoTileset = new Proto.Tileset() { Image = "MB_maa.png", Mask = "MB_maa.png", };
+            lev.Tilesets.Add(protoTileset);
+
+            return lev;
+        }
+
+        public static Proto.Level Level12()
+        {
+            var lev = new Proto.Level { Title = "level12", Name = "level12", SpriteLayer = 0 };
+            var protoLayer = new Proto.Layer() { TilesetIndex = 0, Height = 5, Width = 5, LoopX = false, LoopY = false, XSpeed = 1, YSpeed = 1, };
+            protoLayer.Tiles.AddRange(new List<int>() {
+                    3, 11, 11, 11,   4,
+                    7, 14, 14, 14,   5,
+                    7, 14, 14, 14,   5,
+                    7, 14, 14, 14,   5,
+                    8,  1,  1,  1,   9,
+                    });
+
+            protoLayer.AreaEvents.Add(new Proto.AreaEvent() { Id = Proto.AreaEvent.Types.AreaEventId.LevelEnd, X = 2 * 16, Y = 2 * 16, Width = 64, Height = 64, Data = ByteString.CopyFromUtf8("") });
+
+            protoLayer.CoordinateEvents.Add(new Proto.CoordinateEvent() { Id = Proto.CoordinateEvent.Types.CoordinateEventId.Enemy, X = 10 * 16, Y = 10 * 16, });
+
+            lev.Layers.Add(protoLayer);
+            
+            var protoTileset = new Proto.Tileset() { Image = "MB_maa.png", Mask = "MB_maa.png", };
+            lev.Tilesets.Add(protoTileset);
+
+            return lev;
+        }
+
+#pragma warning restore format
         public static StoryComponent getStartStory(string name)
         {
             return name switch
@@ -209,6 +459,22 @@ namespace FGJ23.Levels
                     new StoryBuilder()
                     .Exposition("Back in my day, every mechanic was necessary. No useless frills.\r\n")
                     .Exposition("You jump higher if you jump on an enemy. That's a clue. You need it somewhere. Use it.")
+                    .GoToLevel(),
+
+                "level9" =>
+                    new StoryBuilder()
+                    .GoToLevel(),
+
+                "level10" =>
+                    new StoryBuilder()
+                    .GoToLevel(),
+
+                "level11" =>
+                    new StoryBuilder()
+                    .GoToLevel(),
+
+                "level12" =>
+                    new StoryBuilder()
                     .GoToLevel(),
 
                 _ => throw new Exception("Unknown level name: " + name),
@@ -261,7 +527,21 @@ namespace FGJ23.Levels
                     .Exposition("This is perfect form, that requires perfect execution of the player. Exquisite.")
                     .GoToLevel(),
 
+                "level9" =>
+                    new StoryBuilder()
+                    .GoToLevel(),
 
+                "level10" =>
+                    new StoryBuilder()
+                    .GoToLevel(),
+
+                "level11" =>
+                    new StoryBuilder()
+                    .GoToLevel(),
+
+                "level12" =>
+                    new StoryBuilder()
+                    .GoToLevel(),
 
                 _ => throw new Exception("Unknown level name: " + name),
             };
@@ -282,6 +562,23 @@ namespace FGJ23.Levels
                     player.CanWalljump = false;
                     player.CanShoot = false;
                     player.ExtraJumps = 0;
+                    break;
+
+
+                case "level3":
+                case "level4":
+                case "level5":
+                case "level6":
+                case "level7":
+                case "level8":
+                case "level9":
+                case "level10":
+                case "level11":
+                case "level12":
+                    player.CanJump = true;
+                    player.CanWalljump = true;
+                    player.CanShoot = true;
+                    player.ExtraJumps = 1;
                     break;
 
                 default:

@@ -106,7 +106,7 @@ namespace FGJ23
             }
             if (spawns.Count == 0)
             {
-                playerEntity = CreateEntity("player", new Vector2(100, 100));
+                playerEntity = CreateEntity("player", new Vector2(50, 50));
             }
             else
             {
