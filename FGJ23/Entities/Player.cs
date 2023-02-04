@@ -270,9 +270,9 @@ namespace FGJ23.Entities
         void IUpdatable.FixedUpdate()
         {
             Vector2 moveDir;
-            if(_leftInput.Hits(false)) {
+            if(_leftInput.Hits(false) != null) {
                 moveDir = new Vector2(-1, 0);
-            } else if(_rightInput.Hits(false)) {
+            } else if(_rightInput.Hits(false) != null) {
                 moveDir = new Vector2(1, 0);
             } else {
                 moveDir = new Vector2(_xAxisInput.Value, 0);
@@ -326,9 +326,9 @@ namespace FGJ23.Entities
     public class ButtonNode : VirtualButton.Node {
         Button button;
 
-        public override bool IsDown => button.Hits(false);
+        public override bool IsDown => button.Hits(false) != null;
 
-        public override bool IsPressed => button.Hits(true);
+        public override bool IsPressed => button.Hits(true) != null;
 
         public override bool IsReleased => false;
         public ButtonNode(Button button) {
@@ -349,22 +349,22 @@ namespace FGJ23.Entities
             batcher.DrawRect(hit.X + Bounds.X, hit.Y + Bounds.Y, hit.Width, hit.Height, Color.DarkGray);
         }
 
-        public bool Hits(bool pressed) {
+        public Vector2? Hits(bool pressed) {
             foreach (var e in Input.Touch.CurrentTouches) {
                 if(pressed && e.State == TouchLocationState.Pressed && hit.Contains(e.Position)) {
-                    return true;
+                    return e.Position;
                 }
                 if(!pressed && e.State != TouchLocationState.Released && hit.Contains(e.Position)) {
-                    return true;
+                    return e.Position;
                 }
             }
             if(Input.LeftMouseButtonPressed && hit.Contains(Input.ScaledMousePosition)) {
-                return true;
+                return Input.ScaledMousePosition;
             }
             if(!pressed && Input.LeftMouseButtonDown && hit.Contains(Input.ScaledMousePosition)) {
-                return true;
+                return Input.ScaledMousePosition;
             }
-            return false;
+            return null;
         }
     }
 
