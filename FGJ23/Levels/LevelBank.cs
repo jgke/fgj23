@@ -133,12 +133,13 @@ namespace FGJ23.Levels
             };
         }
 
-        public static Proto.CoordinateEvent enemy(int x, int y) {
+        public static Proto.CoordinateEvent enemy(int x, int y, string sprites) {
             return new Proto.CoordinateEvent()
             {
                     Id = Proto.CoordinateEvent.Types.CoordinateEventId.Enemy,
-                    X = x * 16,
-                    Y = y * 16,
+                    X = x * 16 - 8,
+                    Y = y * 16 - 8,
+                    Data = ByteString.CopyFromUtf8(sprites)
             };
         }
 
@@ -188,7 +189,7 @@ namespace FGJ23.Levels
 
                 protoLayer.AreaEvents.Add(levelEnd(31, 2, "Eka_voittolinna.png;level2"));
 
-                protoLayer.CoordinateEvents.Add(enemy(10, 14));
+                protoLayer.CoordinateEvents.Add(enemy(23, 11, "Eka_hahmot.png"));
 
                 lev.Layers.Add(protoLayer);
             }

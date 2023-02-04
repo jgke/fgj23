@@ -65,7 +65,7 @@ namespace FGJ23.Entities
         public override Rectangle GetRect(Vector2 topLeft, Level level)
         {
             var tsHalf = new Point(level.TileSize.X / 2, level.TileSize.Y / 2);
-            return new Rectangle((this.position + topLeft).RoundToPoint() - tsHalf, level.TileSize);
+            return new Rectangle((Entity.Transform.Position + topLeft).RoundToPoint() - tsHalf, level.TileSize);
 
         }
     }

@@ -53,8 +53,8 @@ namespace FGJ23
 
             Log.Information("Initializing new GameplayScene with l={A}", NextProtoLevel);
             // setup a pixel perfect screen that fits our map
-            int x = 400;
-            int y = 300;
+            int x = 200;
+            int y = 150;
             SetDesignResolution(x, y, SceneResolutionPolicy.ShowAllPixelPerfect);
 
             CreateEntity("forceMovementSystem")
@@ -113,7 +113,7 @@ namespace FGJ23
                 var r = new System.Random();
                 playerEntity = CreateEntity("player", spawns[r.Next(spawns.Count)].Transform.Position);
             }
-            playerInstance = playerEntity.AddComponent(new Player(14, 14));
+            playerInstance = playerEntity.AddComponent(new Player(14, 14, "Eka_hahmot.png"));
             var playerWidth = playerInstance.Width;
             var playerHeight = playerInstance.Height;
             playerEntity.AddComponent(new BoxCollider(-playerWidth / 2, -playerHeight / 2, playerWidth, playerHeight));

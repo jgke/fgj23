@@ -44,10 +44,12 @@ namespace FGJ23.Entities
         public int Width;
         public int Height;
 
-        public Player(int width, int height)
+        string spritepath;
+        public Player(int width, int height, string sprites)
         {
             Width = width;
             Height = height;
+            spritepath = sprites;
         }
 
         internal void LockControls(float v)
@@ -69,7 +71,7 @@ namespace FGJ23.Entities
 
         public override void OnAddedToEntity()
         {
-            var texture = Entity.Scene.Content.LoadTexture(FGJ23.Content.Files.Player);
+            var texture = Entity.Scene.Content.LoadTexture("Content/Files/" + spritepath);
             var sprites = Sprite.SpritesFromAtlas(texture, 16, 16);
 
             _boxCollider = Entity.GetComponent<BoxCollider>();
@@ -80,9 +82,8 @@ namespace FGJ23.Entities
             Entity.AddComponent(new Health(5));
 
             _animator.AddAnimation("Idle", new[] { sprites[0] });
-            _animator.AddAnimation("Run", new[] { sprites[1] });
-            _animator.AddAnimation("Falling", new[] { sprites[2] });
-            _animator.AddAnimation("Jumping", new[] { sprites[3] });
+            _animator.AddAnimation("Run", new[] { sprites[0],sprites[1],sprites[2],sprites[3],sprites[4], });
+            _animator.AddAnimation("Shooting", new[] { sprites[5], sprites[6] });
 
             SetupInput();
             ColliderSystem.RegisterCollider(Entity);
@@ -140,14 +141,9 @@ namespace FGJ23.Entities
                 _animator.FlipX = false;
             }
 
-            if (_jumpInput.IsDown && jumpLength > 0)
+            if (CanShoot && _fireInput.IsDown)
             {
-                animation = "Jumping";
-            }
-
-            if (!_collisionState.Below && _rigidBody.velocity.Y > 0)
-            {
-                animation = "Falling";
+                animation = "Shooting";
             }
 
             if (!_animator.IsAnimationActive(animation))
