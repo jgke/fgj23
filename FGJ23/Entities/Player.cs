@@ -16,10 +16,15 @@ namespace FGJ23.Entities
 {
     public class Player : Component, ITriggerListener, IUpdatable
     {
+        public int ExtraJumps = 1;
+        public bool CanShoot = true;
+        public bool CanWalljump = true;
+
         public float JumpHeight = 16 * 6;
+        public float WalljumpStrength = 300;
         float jumpLength = 0;
         float wallclimbLength = 0;
-        int dashCount = 1;
+        int jumpCount = 1;
         bool cachedJump = false;
 
         SpriteAnimator _animator;
@@ -27,8 +32,8 @@ namespace FGJ23.Entities
         FGJ23.Levels.Mover _mover;
         BoxCollider _boxCollider;
         readonly Levels.CollisionState _collisionState = new Levels.CollisionState();
-        readonly float groundAccel = 1000;
-        readonly float airAccel = 750;
+        readonly float groundAccel = 800;
+        readonly float airAccel = 650;
         public RigidBody _rigidBody;
         int _coyote = 0;
 
@@ -69,7 +74,7 @@ namespace FGJ23.Entities
             _boxCollider = Entity.GetComponent<BoxCollider>();
             _mover = Entity.GetComponent<FGJ23.Levels.Mover>();
             _animator = Entity.AddComponent(new SpriteAnimator(sprites[0]));
-            _rigidBody = Entity.AddComponent(new RigidBody(600, groundAccel, airAccel));
+            _rigidBody = Entity.AddComponent(new RigidBody(300, groundAccel, airAccel));
 
             Entity.AddComponent(new Health(5));
 
@@ -150,11 +155,6 @@ namespace FGJ23.Entities
             }
         }
 
-        bool CanDash()
-        {
-            return !_collisionState.Below && dashCount > 0;
-        }
-
         bool OnSlope()
         {
             return _collisionState.Below &&
@@ -189,7 +189,7 @@ namespace FGJ23.Entities
             UpdateCoyote();
             if (_collisionState.Below)
             {
-                dashCount = 1;
+                jumpCount = 0;
             }
 
             if (ControlsLocked == 0 && !PreventActions)
@@ -207,27 +207,27 @@ namespace FGJ23.Entities
                     _rigidBody.SlowDown(_collisionState);
                 }
 
-                if (CanDash() && moveDir != Vector2.Zero && _jumpInput.IsPressed)
-                {
-                    dashCount -= 1;
-                    var direction = Vector2.Normalize(new Vector2(Math.Sign(moveDir.X), Math.Sign(moveDir.Y)));
-                    var speed = _rigidBody.velocity.Length();
-                    if (Math.Abs(speed) < 400)
-                    {
-                        speed = Math.Sign(speed) * 400;
-                    }
-                    _rigidBody.velocity = direction * speed;
-
-                }
-                else if (OnSlope() && _jumpInput.IsDown)
+                if (OnSlope() && _jumpInput.IsDown)
                 {
                     cachedJump = true;
                 }
-                else if (CanJump() && _jumpInput.IsDown)
+                else if(CanWalljump && !CanJump() && _collisionState.Left && moveDir.X < 0 && _jumpInput.IsPressed) {
+                    _rigidBody.velocity.X = WalljumpStrength;
+                    _rigidBody.velocity.Y = -Mathf.Sqrt(2f * JumpHeight * WalljumpStrength);
+                }
+                else if(CanWalljump && !CanJump() && _collisionState.Right && moveDir.X > 0 && _jumpInput.IsPressed) {
+                    _rigidBody.velocity.X = -WalljumpStrength;
+                    _rigidBody.velocity.Y = -Mathf.Sqrt(2f * JumpHeight * WalljumpStrength);
+                }
+                else if ((CanJump() && _jumpInput.IsDown) || (jumpCount > 0 && _jumpInput.IsPressed))
                 {
                     _coyote = 0;
                     cachedJump = false;
-                    dashCount = 1;
+                    if(jumpCount > 0) {
+                        jumpCount -= 1;
+                    } else {
+                        jumpCount = ExtraJumps;
+                    }
                     if (_rigidBody.velocityLockedFor > 0)
                     {
                         jumpLength = 0.4f;
@@ -237,11 +237,11 @@ namespace FGJ23.Entities
                         jumpLength = 0.25f;
                     }
                     wallclimbLength = 0.25f;
-                    _rigidBody.velocity.Y = -Mathf.Sqrt(2f * JumpHeight * 1000);
+                    _rigidBody.velocity.Y = -Mathf.Sqrt(2f * JumpHeight * 500);
                 }
                 else if (CanContinueJump() && _jumpInput.IsDown)
                 {
-                    _rigidBody.velocity.Y = -Mathf.Sqrt(2f * JumpHeight * 1000);
+                    _rigidBody.velocity.Y = -Mathf.Sqrt(2f * JumpHeight * 500);
                     jumpLength -= Time.DeltaTime;
                 }
                 else
