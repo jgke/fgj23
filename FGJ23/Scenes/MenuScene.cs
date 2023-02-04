@@ -98,8 +98,10 @@ namespace FGJ23
             menuEntity.AddComponent(new MenuComponent());
 
             Log.Information("Initializing new MenuScene");
-            int x = 800;
-            int y = 600;
+            int x = 200;
+            int y = 100;
+            //int x = 200;
+            //int y = 100;
             SetDesignResolution(x, y, SceneResolutionPolicy.ShowAllPixelPerfect);
             if (OperatingSystem.IsAndroid())
             {

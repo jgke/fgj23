@@ -36,8 +36,8 @@ namespace FGJ23
 
             Log.Information("Initializing new GameplayScene with l={A}", NextProtoLevel);
             // setup a pixel perfect screen that fits our map
-            int x = 800;
-            int y = 600;
+            int x = 400;
+            int y = 300;
             SetDesignResolution(x, y, SceneResolutionPolicy.ShowAllPixelPerfect);
             if (OperatingSystem.IsAndroid())
             {
@@ -109,7 +109,7 @@ namespace FGJ23
                 var r = new System.Random();
                 playerEntity = CreateEntity("player", spawns[r.Next(spawns.Count)].Transform.Position);
             }
-            playerInstance = playerEntity.AddComponent(new Player(20, 24));
+            playerInstance = playerEntity.AddComponent(new Player(14, 14));
             var playerWidth = playerInstance.Width;
             var playerHeight = playerInstance.Height;
             playerEntity.AddComponent(new BoxCollider(-playerWidth / 2, -playerHeight / 2, playerWidth, playerHeight));

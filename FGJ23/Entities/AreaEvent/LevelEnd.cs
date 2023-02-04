@@ -26,7 +26,7 @@ namespace FGJ23.Entities.AreaEvents
         {
             base.OnAddedToEntity();
             Entity.AddComponent(new CollideWithPlayer(this.HandleCollision));
-            Entity.AddComponent(new DrawRectangle((int)size.X, (int)size.Y, Color.Red));
+            Entity.AddComponent(new DrawRectangle((int)size.X, (int)size.Y, new Color(30, 30, 150, 150)));
         }
 
         private bool HandleCollision(Player player, bool hadContactOnPreviousFrame)

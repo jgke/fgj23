@@ -30,9 +30,9 @@ namespace FGJ23.Levels
         public Layer SpriteLayer { get => Layers[(int)SpriteLayerNum]; }
 
         [Loggable]
-        private int tileWidth = 32;
+        private int tileWidth = 16;
         [Loggable]
-        private int tileHeight = 32;
+        private int tileHeight = 16;
         public Point TileSize { get => new Point(tileWidth, tileHeight); }
         [Loggable]
         private int SpriteLayerWidthInTiles = 100;

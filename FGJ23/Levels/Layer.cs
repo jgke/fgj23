@@ -39,11 +39,11 @@ namespace FGJ23.Levels
         public int Height;
 
         [Loggable]
-        public int TileWidth = 32;
+        public int TileWidth = 16;
         [Loggable]
-        public int TileHeight = 32;
+        public int TileHeight = 16;
         [Loggable]
-        int TilesetWidth = 320;
+        int TilesetWidth = 16 * 5;
 
         public int TilesPerRow => TilesetWidth / TileWidth;
 
@@ -276,9 +276,9 @@ namespace FGJ23.Levels
                     int x = WorldToTilePositionX(point.X);
                     int y = WorldToTilePositionX(worldY);
                     Mask mask = GetMask(x, y);
-                    if (mask != null && (y != WorldToTilePositionY(point.Y) || 32 - (worldY % 32) > mask.DistanceFromBottom(point.X % 32)))
+                    if (mask != null && (y != WorldToTilePositionY(point.Y) || TileHeight - (worldY % TileHeight) > mask.DistanceFromBottom(point.X % TileWidth)))
                     {
-                        int dist = mask.DistanceFromTop(point.X % 32);
+                        int dist = mask.DistanceFromTop(point.X % TileWidth);
                         if (dist != 0)
                         {
                             var contact = y * TileHeight + dist - 1;
@@ -296,13 +296,13 @@ namespace FGJ23.Levels
                     int y = WorldToTilePositionX(worldY);
 
                     Mask mask = GetMask(x, y);
-                    if (mask != null && (y != WorldToTilePositionY(point.Y) || worldY % 32 > mask.DistanceFromTop(point.X % 32)))
+                    if (mask != null && (y != WorldToTilePositionY(point.Y) || worldY % TileHeight > mask.DistanceFromTop(point.X % TileWidth)))
                     {
                         if ((TileEffects[TileIndexSafe(x, y)] & TileEffect.OneWay) != 0)
                         {
                             return null;
                         }
-                        int dist = mask.DistanceFromBottom(point.X % 32);
+                        int dist = mask.DistanceFromBottom(point.X % TileWidth);
                         if (dist != 0)
                         {
                             var contact = (y + 1) * TileHeight - dist + 1;
@@ -319,9 +319,9 @@ namespace FGJ23.Levels
                     int x = WorldToTilePositionX(worldX);
                     int y = WorldToTilePositionX(point.Y);
                     Mask mask = GetMask(x, y);
-                    if (mask != null && (x != WorldToTilePositionX(point.X) || worldX % 32 > mask.DistanceFromLeft(point.Y % 32)))
+                    if (mask != null && (x != WorldToTilePositionX(point.X) || worldX % TileWidth > mask.DistanceFromLeft(point.Y % TileHeight)))
                     {
-                        int dist = mask.DistanceFromRight(point.Y % 32);
+                        int dist = mask.DistanceFromRight(point.Y % TileHeight);
                         if (dist != 0)
                         {
                             var contact = (x + 1) * TileWidth - dist + 1;
@@ -338,9 +338,9 @@ namespace FGJ23.Levels
                     int x = WorldToTilePositionX(worldX);
                     int y = WorldToTilePositionX(point.Y);
                     Mask mask = GetMask(x, y);
-                    if (mask != null && (x != WorldToTilePositionX(point.X) || 32 - (worldX % 32) > mask.DistanceFromRight(point.Y % 32)))
+                    if (mask != null && (x != WorldToTilePositionX(point.X) || TileWidth - (worldX % TileWidth) > mask.DistanceFromRight(point.Y % TileHeight)))
                     {
-                        int dist = mask.DistanceFromLeft(point.Y % 32);
+                        int dist = mask.DistanceFromLeft(point.Y % TileHeight);
                         if (dist != 0)
                         {
                             var contact = x * TileWidth + dist - 1;
@@ -452,7 +452,7 @@ namespace FGJ23.Levels
                     Mask mask = GetMask(x, y);
                     if (mask != null)
                     {
-                        for (int maskY = 0; maskY < 32; maskY++)
+                        for (int maskY = 0; maskY < TileHeight; maskY++)
                         {
                             int left = mask.DistanceFromLeft(maskY);
                             if (left != 0)
@@ -466,7 +466,7 @@ namespace FGJ23.Levels
                             }
                         }
 
-                        for (int maskX = 0; maskX < 32; maskX++)
+                        for (int maskX = 0; maskX < TileWidth; maskX++)
                         {
                             int top = mask.DistanceFromTop(maskX);
                             if (top != 0)
