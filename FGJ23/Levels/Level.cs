@@ -44,7 +44,7 @@ namespace FGJ23.Levels
         public List<string> MaskFileNames;
         public List<MemoryStream> Maskfiles;
 
-        public Color ResetColor = Color.Pink;
+        public Color ResetColor = Color.SkyBlue;
 
         public static Level CreateNew()
         {
