@@ -27,10 +27,11 @@ namespace FGJ23.Core
     {
         public static TextButton WrappingTextButton(string Text, Action act)
         {
-            var button1 = new TextButton(Text, TextButtonStyle.Create(Color.Black, Color.DarkGray, Color.Green));
+            var style = TextButtonStyle.Create(Color.Black, Color.DarkGray, Color.Green);
+            var button1 = new TextButton(Text, style);
             button1.GetLabel().SetWrap(true);
-            button1.PadLeft(10);
-            button1.PadRight(10);
+            button1.PadLeft(5);
+            button1.PadRight(5);
 
             button1.OnClicked += _ =>
             {

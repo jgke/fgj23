@@ -47,7 +47,10 @@ namespace FGJ23.Entities.AreaEvents
             if(player.PreventActions) {
                 return true;
             }
+            var e = player.Entity.Scene.CreateEntity("topLeftHack", new Vector2(0, 0));
             player.PreventActions = true;
+            player.Entity.Destroy();
+            e.AddComponent(new CameraBounds());
             var storyEntity = player.Entity.Scene.CreateEntity("endStory", new Vector2(0, 0));
             storyEntity.AddComponent(LevelBank.getEndStory(GameplayScene.NextProtoLevel.Name));
             GameState.OnStoryComplete += () =>

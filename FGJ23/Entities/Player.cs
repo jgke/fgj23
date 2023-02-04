@@ -21,7 +21,7 @@ namespace FGJ23.Entities
         public bool CanJump = true;
         public bool CanWalljump = true;
 
-        public float JumpHeight = 16 * 6;
+        public float JumpHeight = 8 * 6;
         public float WalljumpStrength = 300;
         float jumpLength = 0;
         float wallclimbLength = 0;
@@ -33,8 +33,8 @@ namespace FGJ23.Entities
         FGJ23.Levels.Mover _mover;
         BoxCollider _boxCollider;
         readonly Levels.CollisionState _collisionState = new Levels.CollisionState();
-        readonly float groundAccel = 800;
-        readonly float airAccel = 650;
+        readonly float groundAccel = 600;
+        readonly float airAccel = 450;
         public RigidBody _rigidBody;
         int _coyote = 0;
 
@@ -77,7 +77,7 @@ namespace FGJ23.Entities
             _boxCollider = Entity.GetComponent<BoxCollider>();
             _mover = Entity.GetComponent<FGJ23.Levels.Mover>();
             _animator = Entity.AddComponent(new SpriteAnimator(sprites[0]));
-            _rigidBody = Entity.AddComponent(new RigidBody(300, groundAccel, airAccel));
+            _rigidBody = Entity.AddComponent(new RigidBody(200, groundAccel, airAccel));
 
             Entity.AddComponent(new Health(5));
 
@@ -210,11 +210,11 @@ namespace FGJ23.Entities
                 }
                 else if(CanWalljump && !CanJumpNow() && _collisionState.Left && moveDir.X < 0 && _jumpInput.IsPressed) {
                     _rigidBody.velocity.X = WalljumpStrength;
-                    _rigidBody.velocity.Y = -Mathf.Sqrt(2f * JumpHeight * WalljumpStrength);
+                    _rigidBody.velocity.Y = -Mathf.Sqrt(4f * JumpHeight * WalljumpStrength);
                 }
                 else if(CanWalljump && !CanJumpNow() && _collisionState.Right && moveDir.X > 0 && _jumpInput.IsPressed) {
                     _rigidBody.velocity.X = -WalljumpStrength;
-                    _rigidBody.velocity.Y = -Mathf.Sqrt(2f * JumpHeight * WalljumpStrength);
+                    _rigidBody.velocity.Y = -Mathf.Sqrt(4f * JumpHeight * WalljumpStrength);
                 }
                 else if ((CanJumpNow() && _jumpInput.IsDown) || (jumpCount > 0 && _jumpInput.IsPressed))
                 {
