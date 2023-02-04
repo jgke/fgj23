@@ -35,6 +35,7 @@ namespace FGJ23
 
             Window.AllowUserResizing = true;
             Scene = new GameplayScene(null);
+            Nez.Input.Touch.EnableTouchSupport();
         }
 
         protected override void FixedUpdate(GameTime gameTime)
