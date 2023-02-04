@@ -34,7 +34,7 @@ namespace FGJ23
             DebugRenderEnabled = false;
 
             Window.AllowUserResizing = true;
-            Scene = new GameplayScene(null);
+            Scene = new MenuScene();
             Nez.Input.Touch.EnableTouchSupport();
         }
 

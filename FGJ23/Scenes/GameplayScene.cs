@@ -33,8 +33,20 @@ namespace FGJ23
 
             Log.Information("Initializing new GameplayScene with l={A}", this.level);
             // setup a pixel perfect screen that fits our map
-            SetDesignResolution(400, 300, SceneResolutionPolicy.ShowAllPixelPerfect);
-            Screen.SetSize(400 * 2, 300 * 2);
+            int x = 800;
+            int y = 600;
+            SetDesignResolution(x, y, SceneResolutionPolicy.ShowAllPixelPerfect);
+            if (OperatingSystem.IsAndroid())
+            {
+                    Nez.Screen.IsFullscreen = true;
+                    Nez.Screen.SetSize(
+                            Screen.MonitorWidth,
+                            Screen.MonitorHeight
+                    );
+                    Nez.Screen.SupportedOrientations = DisplayOrientation.LandscapeLeft;
+            } else {
+                Screen.SetSize(x * 2, y * 2);
+            }
 
             CreateEntity("forceMovementSystem")
                 .AddComponent(new ForceMovementSystem());

@@ -36,24 +36,32 @@ namespace FGJ23.Components
         {
             var cameraBounds = Entity.Scene.Camera.Bounds;
 
-            if (cameraBounds.Top < Min.Y)
-            {
-                Entity.Scene.Camera.Position += new Vector2(0, Min.Y - cameraBounds.Top);
+            if(Max.X - Min.X < cameraBounds.Width) {
+                Entity.Scene.Camera.Position -= new Vector2(cameraBounds.Left, 0);
+            } else {
+                if (cameraBounds.Left < Min.X)
+                {
+                    Entity.Scene.Camera.Position += new Vector2(Min.X - cameraBounds.Left, 0);
+                }
+
+                if (cameraBounds.Right > Max.X)
+                {
+                    Entity.Scene.Camera.Position += new Vector2(Max.X - cameraBounds.Right, 0);
+                }
             }
 
-            if (cameraBounds.Left < Min.X)
-            {
-                Entity.Scene.Camera.Position += new Vector2(Min.X - cameraBounds.Left, 0);
-            }
+            if(Max.Y - Min.Y < cameraBounds.Height) {
+                Entity.Scene.Camera.Position -= new Vector2(0, cameraBounds.Top);
+            } else {
+                if (cameraBounds.Top < Min.Y)
+                {
+                    Entity.Scene.Camera.Position += new Vector2(0, Min.Y - cameraBounds.Top);
+                }
 
-            if (cameraBounds.Bottom > Max.Y)
-            {
-                Entity.Scene.Camera.Position += new Vector2(0, Max.Y - cameraBounds.Bottom);
-            }
-
-            if (cameraBounds.Right > Max.X)
-            {
-                Entity.Scene.Camera.Position += new Vector2(Max.X - cameraBounds.Right, 0);
+                if (cameraBounds.Bottom > Max.Y)
+                {
+                    Entity.Scene.Camera.Position += new Vector2(0, Max.Y - cameraBounds.Bottom);
+                }
             }
         }
     }
