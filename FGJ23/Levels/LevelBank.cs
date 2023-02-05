@@ -528,32 +528,32 @@ namespace FGJ23.Levels
                 "level1" =>
                     new StoryBuilder()
                     .Line("Files/Eka_seta_selittaa.png", "", "I was born in 1982. Back in my day, games were about CONTENT. You'd walk around with the arrow keys. Jump by pressing up.")
-                    .Exposition("Maybe shoot some bad guys with the space bar. Double jump by jumping again in the air and wall jump by pointing towards a wall in mid-air and jumping. The good old days")
-                    .Exposition("Nowadays the kids can't stay focused for more than two seconds unless it's some virtual reality thirst trap.")
+                    .Line("Files/Eka_seta_selittaa.png", "", "Maybe shoot some bad guys with the space bar. Double jump by jumping again in the air and wall jump by pointing towards a wall in mid-air and jumping. The good old days")
+                    .Line("Files/Eka_seta_selittaa.png", "", "Nowadays the kids can't stay focused for more than two seconds unless it's some virtual reality thirst trap.")
                     .GoToLevel(),
 
                 "level2" =>
                     new StoryBuilder()
-                    .Exposition("2082. What a year this could've been for games. A century of evolution from the legends of yore.")
-                    .Exposition("Every first level should be easy, but showcase the main features without hand-holding.")
-                    .Exposition("There's an enemy. You can shoot it. You may need to jump over things to progress.")
+                    .Line("Files/Eka_seta_selittaa.png", "", "2082. What a year this could've been for games. A century of evolution from the legends of yore.")
+                    .Line("Files/Eka_seta_selittaa.png", "", "Every first level should be easy, but showcase the main features without hand-holding.")
+                    .Line("Files/Eka_seta_selittaa.png", "", "There's an enemy. You can shoot it. You may need to jump over things to progress.")
                     .GoToLevel(),
 
                 "level3" =>
                     new StoryBuilder()
-                    .Exposition("Sometimes just jumping is not enough. Sometimes an enemy is in your way. Sometimes, you have to make the right choices")
-                    .Exposition("And a grand finale, a true puzzle! Do I jump here or there?")
-                    .Exposition("Press R to restart a level.")
+                    .Line("Files/Eka_seta_selittaa.png", "", "Sometimes just jumping is not enough. Sometimes an enemy is in your way. Sometimes, you have to make the right choices")
+                    .Line("Files/Eka_seta_selittaa.png", "", "And a grand finale, a true puzzle! Do I jump here or there?")
+                    .Exposition("Pro tip: Press R to restart a level.")
                     .GoToLevel(),
 
                 "level4" =>
                     new StoryBuilder()
-                    .Exposition("That didn't feel right. It has to be rewarding! You have to use all your jumps to clear it!")
+                    .Line("Files/Eka_seta_selittaa.png", "", "That didn't feel right. It has to be rewarding! You have to use all your jumps to clear it!")
                     .GoToLevel(),
 
                 "level5" =>
                     new StoryBuilder()
-                    .Exposition("THERE we go! A proper, pure challenge! Hit it just right. Special jumps are for whippersnappers.")
+                    .Line("Files/Eka_seta_selittaa.png", "", "THERE we go! A proper, pure challenge! Hit it just right. Special jumps are for whippersnappers.")
                     .GoToLevel(),
 
                 "level6" =>
@@ -569,32 +569,41 @@ namespace FGJ23.Levels
 
                 "level8" =>
                     new StoryBuilder()
-                    .Exposition("Back in my day, every mechanic was necessary. No useless frills.\r\n")
+                    .Exposition("Back in my day, every mechanic was necessary. No useless frills.")
                     .Exposition("You jump higher if you jump on an enemy. That's a clue. You need it somewhere. Use it.")
                     .GoToLevel(),
 
                 "level9" =>
                     new StoryBuilder()
+                    .Exposition("Come to think of it, why should you need expressive graphics in a game?")
+                    .Exposition("If you don't have enough imagination, you can just as well sell your soul to D-corp and play that hyperverse nonsense.")
                     .GoToLevel(),
 
                 "level10" =>
                     new StoryBuilder()
+                    .Exposition("Enemies are just gratuitous violence that takes away from your self-actualization as the player!")
                     .GoToLevel(),
 
                 "level11" =>
                     new StoryBuilder()
+                    .Exposition("Puzzles. Mechanics. Frivolous! Is it not enough to decide which way the blocks move?"
                     .GoToLevel(),
 
                 "level12" =>
                     new StoryBuilder()
+                    .Exposition("Jumping is a mechanic. A waste of resources. A yoke on your own imagination. Shed it.")
+                    .Exposition("You don't need it")
                     .GoToLevel(),
 
                 "level13" =>
                     new StoryBuilder()
+                    .Exposition("You're controlling this text. Why would you need to control a character?")
+                    .Exposition("Can your attention-deficit mind not imagine a meaning for this?")
                     .GoToLevel(),
 
                 "level14" =>
                     new StoryBuilder()
+                    .Exposition("This is all you should need. Be free!")
                     .GoToLevel(),
 
                 _ => throw new Exception("Unknown level name: " + name),
@@ -608,15 +617,15 @@ namespace FGJ23.Levels
             {
                 "level1" =>
                     new StoryBuilder()
-                    .Exposition("Ever since the 2050's, kids have been unable to function without constantly tending to their retinal and cochlear implants.")
-                    .Exposition("Sharing four-dimensional memes. Living third lives on some D-Corporation Hyperverse.")
-                    .Exposition("I want none of that. I just want a challenge and to reach that castle on the far right.")
-                    .Exposition("I retired this year at the ripe old age of one hundred, and I intend to spend the rest of my days enjoying what games should always have been about!")
+                    .Line("Files/Eka_seta_selittaa.png", "", "Ever since the 2050's, kids have been unable to function without constantly tending to their retinal and cochlear implants.")
+                    .Line("Files/Eka_seta_selittaa.png", "", "Sharing four-dimensional memes. Living third lives on some D-Corporation Hyperverse.")
+                    .Line("Files/Eka_seta_selittaa.png", "", "I want none of that. I just want a challenge and to reach that castle on the far right.")
+                    .Line("Files/Eka_seta_selittaa.png", "", "I retired this year at the ripe old age of one hundred, and I intend to spend the rest of my days enjoying what games should always have been about!")
                     .GoToLevel(),
 
                 "level2" =>
                     new StoryBuilder()
-                    .Exposition("Simple. Pure. Beautiful.")
+                    .Line("Files/Eka_seta_selittaa.png", "", "Simple. Pure. Beautiful.")
                     .GoToLevel(),
 
                 "level3" =>
@@ -625,10 +634,12 @@ namespace FGJ23.Levels
 
                 "level4" =>
                     new StoryBuilder()
+                    .Line("Files/Eka_seta_selittaa.png", "", "Still, something's not right. Too much clutter.")
                     .GoToLevel(),
 
                 "level5" =>
                     new StoryBuilder()
+                    .Line("Files/Eka_seta_selittaa.png", "", "This is the epitome of platforming!")
                     .GoToLevel(),
 
                 "level6" =>
@@ -643,24 +654,29 @@ namespace FGJ23.Levels
 
                 "level8" =>
                      new StoryBuilder()
-                    .Exposition("Chekhov’s guns are sloppy writing.")
+                    .Exposition("Chekhov's guns are sloppy writing.")
                     .Exposition("This is perfect form, that requires perfect execution of the player. Exquisite.")
                     .GoToLevel(),
 
                 "level9" =>
                     new StoryBuilder()
+                    .Exposition("This isn't boring. It's pure and simple. You are the subject here. Fill it with your imagination!")
+                    .Exposition("You should be the sole source of meaning in this work! You should decide what color the character is!")
                     .GoToLevel(),
 
                 "level10" =>
                     new StoryBuilder()
+                    .Exposition("You should receive the absolute minimum input. Moving the character is enough!")
                     .GoToLevel(),
 
                 "level11" =>
                     new StoryBuilder()
+                    .Exposition("Are you not entertained? Imagine harder! ")
                     .GoToLevel(),
 
                 "level12" =>
                     new StoryBuilder()
+                    .Exposition("THIS is true quality. THIS is pure gameplay. THIS is PERFECTION!")
                     .GoToLevel(),
 
                 "level13" =>
