@@ -23,9 +23,15 @@ namespace FGJ23.Entities.CoordinateEvents
             var texture = Entity.Scene.Content.LoadTexture("Content/Files/" + spritepath);
             var sprites = Sprite.SpritesFromAtlas(texture, 16, 16);
 
-            SpriteAnimator animator = Entity.AddComponent(new SpriteAnimator(sprites[7]));;
-            animator.AddAnimation("Idle", new[] { sprites[7] });
-            animator.Play("Idle");
+            if(sprites.Count <= 4) {
+                SpriteAnimator animator = Entity.AddComponent(new SpriteAnimator(sprites[1]));;
+                animator.AddAnimation("Idle", new[] { sprites[1] });
+                animator.Play("Idle");
+            } else {
+                SpriteAnimator animator = Entity.AddComponent(new SpriteAnimator(sprites[7]));;
+                animator.AddAnimation("Idle", new[] { sprites[7] });
+                animator.Play("Idle");
+            }
             Entity.AddComponent(new Enemy());
             Entity.AddComponent(new BoxCollider(-width / 2, -height / 2, width, height));
             Entity.AddComponent(new CollideWithPlayer(this.OnCollide));

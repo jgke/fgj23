@@ -81,9 +81,15 @@ namespace FGJ23.Entities
 
             Entity.AddComponent(new Health(5));
 
-            _animator.AddAnimation("Idle", new[] { sprites[0] });
-            _animator.AddAnimation("Run", new[] { sprites[0],sprites[1],sprites[2],sprites[3],sprites[4], });
-            _animator.AddAnimation("Shooting", new[] { sprites[5], sprites[6] });
+            if(sprites.Count <= 4) {
+                _animator.AddAnimation("Idle", new[] { sprites[0] });
+                _animator.AddAnimation("Run", new[] { sprites[0] });
+                _animator.AddAnimation("Shooting", new[] { sprites[0] });
+            } else {
+                _animator.AddAnimation("Idle", new[] { sprites[0] });
+                _animator.AddAnimation("Run", new[] { sprites[0],sprites[1],sprites[2],sprites[3],sprites[4], });
+                _animator.AddAnimation("Shooting", new[] { sprites[5], sprites[6] });
+            }
 
             SetupInput();
             ColliderSystem.RegisterCollider(Entity);

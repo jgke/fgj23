@@ -9,6 +9,7 @@ message Level {
 	uint32 SpriteLayer = 3;
 	string Title = 4;
 	string Name = 5;
+	string Music = 6;
 }
 
 message Layer {

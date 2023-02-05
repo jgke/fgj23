@@ -25,31 +25,31 @@ namespace FGJ23.Levels.Proto {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CidHYW1lSW1wbC9MZXZlbHMvUHJvdG8vbGV2ZWxmb3JtYXQucHJvdG8SC2xl",
-            "dmVsZm9ybWF0IoUBCgVMZXZlbBIiCgZsYXllcnMYASADKAsyEi5sZXZlbGZv",
+            "dmVsZm9ybWF0IpQBCgVMZXZlbBIiCgZsYXllcnMYASADKAsyEi5sZXZlbGZv",
             "cm1hdC5MYXllchImCgh0aWxlc2V0cxgCIAMoCzIULmxldmVsZm9ybWF0LlRp",
             "bGVzZXQSEwoLU3ByaXRlTGF5ZXIYAyABKA0SDQoFVGl0bGUYBCABKAkSDAoE",
-            "TmFtZRgFIAEoCSLMAgoFTGF5ZXISDQoFd2lkdGgYASABKAUSDgoGaGVpZ2h0",
-            "GAIgASgFEhUKDXRpbGVzZXRfaW5kZXgYAyABKAUSEQoFdGlsZXMYBCADKAVC",
-            "AhABEioKCmFyZWFFdmVudHMYBiADKAsyFi5sZXZlbGZvcm1hdC5BcmVhRXZl",
-            "bnQSNgoQY29vcmRpbmF0ZUV2ZW50cxgHIAMoCzIcLmxldmVsZm9ybWF0LkNv",
-            "b3JkaW5hdGVFdmVudBINCgVsb29wWBgIIAEoCBINCgVsb29wWRgJIAEoCBIO",
-            "CgZ4U3BlZWQYCiABKAISDgoGeVNwZWVkGAsgASgCIlgKClRpbGVFZmZlY3QS",
-            "CAoETk9ORRAAEg0KBlZfRkxJUBCAgIAIEg0KBkhfRkxJUBCAgIAQEhIKC1RS",
-            "QU5TUEFSRU5UEICAgCASDgoHT05FX1dBWRCAgIBAIrsBCglBcmVhRXZlbnQS",
-            "CQoBeBgCIAEoBRIJCgF5GAMgASgFEg0KBXdpZHRoGAQgASgFEg4KBmhlaWdo",
-            "dBgFIAEoBRIuCgJpZBgGIAEoDjIiLmxldmVsZm9ybWF0LkFyZWFFdmVudC5B",
-            "cmVhRXZlbnRJZBIMCgRkYXRhGAcgASgMIjsKC0FyZWFFdmVudElkEggKBE5P",
-            "TkUQABITCg9GT1JDRURfTU9WRU1FTlQQARINCglMRVZFTF9FTkQQAiK5AQoP",
-            "Q29vcmRpbmF0ZUV2ZW50EgkKAXgYAiABKAUSCQoBeRgDIAEoBRI6CgJpZBgE",
-            "IAEoDjIuLmxldmVsZm9ybWF0LkNvb3JkaW5hdGVFdmVudC5Db29yZGluYXRl",
-            "RXZlbnRJZBIMCgRkYXRhGAUgASgMIkYKEUNvb3JkaW5hdGVFdmVudElkEggK",
-            "BE5PTkUQABIJCgVTUEFXThABEhEKDUhFQUxUSF9QSUNLVVAQAhIJCgVFTkVN",
-            "WRADIiYKB1RpbGVzZXQSDQoFaW1hZ2UYASABKAkSDAoEbWFzaxgCIAEoCUIV",
-            "qgISRkdKMjMuTGV2ZWxzLlByb3RvYgZwcm90bzM="));
+            "TmFtZRgFIAEoCRINCgVNdXNpYxgGIAEoCSLMAgoFTGF5ZXISDQoFd2lkdGgY",
+            "ASABKAUSDgoGaGVpZ2h0GAIgASgFEhUKDXRpbGVzZXRfaW5kZXgYAyABKAUS",
+            "EQoFdGlsZXMYBCADKAVCAhABEioKCmFyZWFFdmVudHMYBiADKAsyFi5sZXZl",
+            "bGZvcm1hdC5BcmVhRXZlbnQSNgoQY29vcmRpbmF0ZUV2ZW50cxgHIAMoCzIc",
+            "LmxldmVsZm9ybWF0LkNvb3JkaW5hdGVFdmVudBINCgVsb29wWBgIIAEoCBIN",
+            "CgVsb29wWRgJIAEoCBIOCgZ4U3BlZWQYCiABKAISDgoGeVNwZWVkGAsgASgC",
+            "IlgKClRpbGVFZmZlY3QSCAoETk9ORRAAEg0KBlZfRkxJUBCAgIAIEg0KBkhf",
+            "RkxJUBCAgIAQEhIKC1RSQU5TUEFSRU5UEICAgCASDgoHT05FX1dBWRCAgIBA",
+            "IrsBCglBcmVhRXZlbnQSCQoBeBgCIAEoBRIJCgF5GAMgASgFEg0KBXdpZHRo",
+            "GAQgASgFEg4KBmhlaWdodBgFIAEoBRIuCgJpZBgGIAEoDjIiLmxldmVsZm9y",
+            "bWF0LkFyZWFFdmVudC5BcmVhRXZlbnRJZBIMCgRkYXRhGAcgASgMIjsKC0Fy",
+            "ZWFFdmVudElkEggKBE5PTkUQABITCg9GT1JDRURfTU9WRU1FTlQQARINCglM",
+            "RVZFTF9FTkQQAiK5AQoPQ29vcmRpbmF0ZUV2ZW50EgkKAXgYAiABKAUSCQoB",
+            "eRgDIAEoBRI6CgJpZBgEIAEoDjIuLmxldmVsZm9ybWF0LkNvb3JkaW5hdGVF",
+            "dmVudC5Db29yZGluYXRlRXZlbnRJZBIMCgRkYXRhGAUgASgMIkYKEUNvb3Jk",
+            "aW5hdGVFdmVudElkEggKBE5PTkUQABIJCgVTUEFXThABEhEKDUhFQUxUSF9Q",
+            "SUNLVVAQAhIJCgVFTkVNWRADIiYKB1RpbGVzZXQSDQoFaW1hZ2UYASABKAkS",
+            "DAoEbWFzaxgCIAEoCUIVqgISRkdKMjMuTGV2ZWxzLlByb3RvYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::FGJ23.Levels.Proto.Level), global::FGJ23.Levels.Proto.Level.Parser, new[]{ "Layers", "Tilesets", "SpriteLayer", "Title", "Name" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::FGJ23.Levels.Proto.Level), global::FGJ23.Levels.Proto.Level.Parser, new[]{ "Layers", "Tilesets", "SpriteLayer", "Title", "Name", "Music" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::FGJ23.Levels.Proto.Layer), global::FGJ23.Levels.Proto.Layer.Parser, new[]{ "Width", "Height", "TilesetIndex", "Tiles", "AreaEvents", "CoordinateEvents", "LoopX", "LoopY", "XSpeed", "YSpeed" }, null, new[]{ typeof(global::FGJ23.Levels.Proto.Layer.Types.TileEffect) }, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::FGJ23.Levels.Proto.AreaEvent), global::FGJ23.Levels.Proto.AreaEvent.Parser, new[]{ "X", "Y", "Width", "Height", "Id", "Data" }, null, new[]{ typeof(global::FGJ23.Levels.Proto.AreaEvent.Types.AreaEventId) }, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::FGJ23.Levels.Proto.CoordinateEvent), global::FGJ23.Levels.Proto.CoordinateEvent.Parser, new[]{ "X", "Y", "Id", "Data" }, null, new[]{ typeof(global::FGJ23.Levels.Proto.CoordinateEvent.Types.CoordinateEventId) }, null, null),
@@ -90,6 +90,7 @@ namespace FGJ23.Levels.Proto {
       spriteLayer_ = other.spriteLayer_;
       title_ = other.title_;
       name_ = other.name_;
+      music_ = other.music_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -151,6 +152,17 @@ namespace FGJ23.Levels.Proto {
       }
     }
 
+    /// <summary>Field number for the "Music" field.</summary>
+    public const int MusicFieldNumber = 6;
+    private string music_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Music {
+      get { return music_; }
+      set {
+        music_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as Level);
@@ -169,6 +181,7 @@ namespace FGJ23.Levels.Proto {
       if (SpriteLayer != other.SpriteLayer) return false;
       if (Title != other.Title) return false;
       if (Name != other.Name) return false;
+      if (Music != other.Music) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -180,6 +193,7 @@ namespace FGJ23.Levels.Proto {
       if (SpriteLayer != 0) hash ^= SpriteLayer.GetHashCode();
       if (Title.Length != 0) hash ^= Title.GetHashCode();
       if (Name.Length != 0) hash ^= Name.GetHashCode();
+      if (Music.Length != 0) hash ^= Music.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -207,6 +221,10 @@ namespace FGJ23.Levels.Proto {
         output.WriteRawTag(42);
         output.WriteString(Name);
       }
+      if (Music.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(Music);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -225,6 +243,9 @@ namespace FGJ23.Levels.Proto {
       }
       if (Name.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
+      }
+      if (Music.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Music);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -247,6 +268,9 @@ namespace FGJ23.Levels.Proto {
       }
       if (other.Name.Length != 0) {
         Name = other.Name;
+      }
+      if (other.Music.Length != 0) {
+        Music = other.Music;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -277,6 +301,10 @@ namespace FGJ23.Levels.Proto {
           }
           case 42: {
             Name = input.ReadString();
+            break;
+          }
+          case 50: {
+            Music = input.ReadString();
             break;
           }
         }

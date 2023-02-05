@@ -75,7 +75,7 @@ namespace FGJ23
             button1.OnClicked += _ =>
             {
                 Log.Information("menu to lev1");
-                GameState.Instance.DoTransition(() => GameplayScene.construct(LevelBank.GetLevel("level1")));
+                GameState.Instance.DoTransition(() => GameplayScene.construct(LevelBank.GetLevel("level6")));
             };
             var button2 = new TouchableButton("Quit game", TextButtonStyle.Create(Color.Black, Color.DarkGray, Color.Green));
             Entity.AddComponent(button2.ToTouchableComponent());
