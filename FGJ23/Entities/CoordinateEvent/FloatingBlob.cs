@@ -8,21 +8,30 @@ using FGJ23.Support;
 
 namespace FGJ23.Entities.CoordinateEvents
 {
-    internal class FloatingBlob : CoordinateEvent
+    internal class FloatingBlob : CoordinateEvent, IUpdatable
     {
         int width = 16;
         int height = 16;
 
         string spritepath;
+        private FMOD.Studio.EventInstance puhe;
 
         public FloatingBlob(ByteString data) : base("blob") {
             spritepath = data.ToStringUtf8();
         }
 
+        void IUpdatable.FixedUpdate() {
+            var dist = 100/Vector2.Distance(Entity.Transform.Position, GameplayScene.playerInstance.Entity.Transform.Position);
+            puhe.setParameterByName("parameter:/Etaisyys", dist);
+        }
+        void IUpdatable.DrawUpdate() {}
+
         public override void OnAddedToEntity()
         {
             var texture = Entity.Scene.Content.LoadTexture("Content/Files/" + spritepath);
             var sprites = Sprite.SpritesFromAtlas(texture, 16, 16);
+            puhe = FmodWrapper.GetSound("event:/Vihollinen");
+            FmodWrapper.HandleError(puhe.start(), "Failed to start audio instance");
 
             if(sprites.Count <= 4) {
                 SpriteAnimator animator = Entity.AddComponent(new SpriteAnimator(sprites[1]));;
@@ -76,6 +85,11 @@ namespace FGJ23.Entities.CoordinateEvents
             Entity.Destroy();
 
             return false;
+        }
+
+        public override void OnRemovedFromEntity() {
+            base.OnRemovedFromEntity();
+            FmodWrapper.HandleError(puhe.stop(FMOD.Studio.STOP_MODE.IMMEDIATE), "Failed to start audio instance");
         }
     }
 }
