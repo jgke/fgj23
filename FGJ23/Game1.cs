@@ -36,7 +36,7 @@ namespace FGJ23
 
             Window.AllowUserResizing = true;
             //Scene = new MenuScene();
-            //Scene = GameplayScene.construct(LevelBank.GetLevel("level1"));
+            //Scene = GameplayScene.construct(LevelBank.GetLevel("level8"));
             Scene = new SplashScene();
             Nez.Input.Touch.EnableTouchSupport();
         }
