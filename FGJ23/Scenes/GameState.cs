@@ -31,14 +31,14 @@ namespace FGJ23
                 FmodWrapper.HandleError(evInst.start(), "Failed to start audio instance");
             }
 
-            FmodWrapper.HandleError(evInst.setParameterByName("parameter:/Musa1", 0), "Failed to update parameter");
-            FmodWrapper.HandleError(evInst.setParameterByName("parameter:/Musa2", 0), "Failed to update parameter");
-            FmodWrapper.HandleError(evInst.setParameterByName("parameter:/Musa3", 0), "Failed to update parameter");
-            FmodWrapper.HandleError(evInst.setParameterByName("parameter:/Musa4", 0), "Failed to update parameter");
-            FmodWrapper.HandleError(evInst.setParameterByName("parameter:/Musa5", 0), "Failed to update parameter");
+            FmodWrapper.SetParameter("parameter:/Musa1", 0);
+            FmodWrapper.SetParameter("parameter:/Musa2", 0);
+            FmodWrapper.SetParameter("parameter:/Musa3", 0);
+            FmodWrapper.SetParameter("parameter:/Musa4", 0);
+            FmodWrapper.SetParameter("parameter:/Musa5", 0);
 
             if(parameter != "") {
-                FmodWrapper.HandleError(evInst.setParameterByName("parameter:/" + parameter, 1), "Failed to update parameter " + parameter);
+                FmodWrapper.SetParameter("parameter:/" + parameter, 1);
             }
         }
 
