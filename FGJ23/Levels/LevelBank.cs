@@ -252,6 +252,26 @@ namespace FGJ23.Levels
         {
             var lev = Base("level2", "eka_maa&tausta.png", "Musa2");
             var layer = createLayer(0, new string[] {
+                "##########",
+                "#........#",
+                "#........#",
+                "#........#",
+                "#........#",
+                "#........#",
+                "##########",
+            });
+
+            layer.AreaEvents.Add(levelEnd(8, 6, "Eka_voittolinna.png;level3"));
+            layer.CoordinateEvents.Add(enemy(6, 6, "Eka_hahmot.png"));
+            lev.Layers.Add(layer);
+            return lev;
+        }
+
+
+        public static Proto.Level Level3()
+        {
+            var lev = Base("level3", "eka_maa&tausta.png", "Musa2");
+            var layer = createLayer(0, new string[] {
                 "#######################",
                 "#.......##............#",
                 "#.......##............#",
@@ -274,27 +294,8 @@ namespace FGJ23.Levels
                 "#######################",
             });
 
-            layer.AreaEvents.Add(levelEnd(11, 4, "Eka_voittolinna.png;level3"));
+            layer.AreaEvents.Add(levelEnd(11, 4, "Eka_voittolinna.png;level4"));
             layer.CoordinateEvents.Add(enemy(17, 19, "Eka_hahmot.png"));
-            lev.Layers.Add(layer);
-            return lev;
-        }
-
-        public static Proto.Level Level3()
-        {
-            var lev = Base("level3", "eka_maa&tausta.png", "Musa2");
-            var layer = createLayer(0, new string[] {
-                "##########",
-                "#........#",
-                "#........#",
-                "#........#",
-                "#........#",
-                "#........#",
-                "##########",
-            });
-
-            layer.AreaEvents.Add(levelEnd(8, 6, "Eka_voittolinna.png;level4"));
-            layer.CoordinateEvents.Add(enemy(6, 6, "Eka_hahmot.png"));
             lev.Layers.Add(layer);
             return lev;
         }
@@ -525,13 +526,13 @@ namespace FGJ23.Levels
                     .Exposition("2082. What a year this could've been for games. A century of evolution from the legends of yore.")
                     .Exposition("Every first level should be easy, but showcase the main features without hand-holding.")
                     .Exposition("There's an enemy. You can shoot it. You may need to jump over things to progress.")
-                    .Exposition("Press R to restart a level.")
                     .GoToLevel(),
 
                 "level3" =>
                     new StoryBuilder()
                     .Exposition("Sometimes just jumping is not enough. Sometimes an enemy is in your way. Sometimes, you have to make the right choices")
                     .Exposition("And a grand finale, a true puzzle! Do I jump here or there?")
+                    .Exposition("Press R to restart a level.")
                     .GoToLevel(),
 
                 "level4" =>
