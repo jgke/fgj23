@@ -209,6 +209,8 @@ namespace FGJ23
         public static void ResetLevel() {
             if(!playerInstance.PreventActions) {
                 GameState.Instance.DoTransition(() => {
+
+                    FmodWrapper.PlaySound("event:/Pappakuolee");
                 return new GameplayScene();
                 });
             }

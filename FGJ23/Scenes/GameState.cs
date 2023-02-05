@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System;
 using Nez;
 using FGJ23.Support;
+using FMOD.Studio;
 
 namespace FGJ23
 {
@@ -23,33 +24,65 @@ namespace FGJ23
 
         private static bool musicLoaded = false;
         private static FMOD.Studio.EventInstance evInst;
+        private static FMOD.Studio.EventInstance foots;
+        private static FMOD.Studio.EventInstance selitys;
 
-        public static void SetMusic(string parameter) {
+        private static void DoLoad() {
             if(!musicLoaded) {
                 musicLoaded = true;
                 evInst = FmodWrapper.GetSound("event:/Pelimusat");
+                foots = FmodWrapper.GetSound("event:/Kavely");
+                selitys = FmodWrapper.GetSound("event:/Setaselittaa");
                 FmodWrapper.HandleError(evInst.start(), "Failed to start audio instance");
             }
-            
-            FmodWrapper.HandleError(evInst.setParameterByName("parameter:/Musa1", 0), "Failed to set parameter");
-            FmodWrapper.HandleError(evInst.setParameterByName("parameter:/Musa2", 0), "Failed to set parameter");
-            FmodWrapper.HandleError(evInst.setParameterByName("parameter:/Musa3", 0), "Failed to set parameter");
-            FmodWrapper.HandleError(evInst.setParameterByName("parameter:/Musa4", 0), "Failed to set parameter");
-            FmodWrapper.HandleError(evInst.setParameterByName("parameter:/Musa5", 0), "Failed to set parameter");
+        }
+
+        public static void SetMusic(string parameter) {
+            DoLoad();
+
+            FmodWrapper.SetParameter("parameter:/Musa1", 0);
+            FmodWrapper.SetParameter("parameter:/Musa2", 0);
+            FmodWrapper.SetParameter("parameter:/Musa3", 0);
+            FmodWrapper.SetParameter("parameter:/Musa4", 0);
+            FmodWrapper.SetParameter("parameter:/Musa5", 0);
 
             if(parameter != "") {
-                FmodWrapper.HandleError(evInst.setParameterByName("parameter:/" + parameter, 1), "Failed to set parameter");
+                FmodWrapper.SetParameter("parameter:/" + parameter, 1);
             }
+        }
 
-            //FmodWrapper.SetParameter("parameter:/Musa1", 0);
-            //FmodWrapper.SetParameter("parameter:/Musa2", 0);
-            //FmodWrapper.SetParameter("parameter:/Musa3", 0);
-            //FmodWrapper.SetParameter("parameter:/Musa4", 0);
-            //FmodWrapper.SetParameter("parameter:/Musa5", 0);
 
-            //if(parameter != "") {
-            //    FmodWrapper.SetParameter("parameter:/" + parameter, 1);
-            //}
+
+        public static void PlayFoot() {
+            DoLoad();
+            FmodWrapper.HandleError(foots.getPlaybackState(out var state), "Failed to start audio instance");
+            if(state == PLAYBACK_STATE.STOPPED) {
+                FmodWrapper.HandleError(foots.start(), "Failed to start audio instance");
+            }
+        }
+
+        public static void StopFoot() {
+            DoLoad();
+            FmodWrapper.HandleError(foots.getPlaybackState(out var state), "Failed to start audio instance");
+            if(state ==  PLAYBACK_STATE.PLAYING) {
+                FmodWrapper.HandleError(foots.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT), "Failed to stop audio instance");
+            }
+        }
+
+        public static void PlaySeta() {
+            DoLoad();
+            FmodWrapper.HandleError(selitys.getPlaybackState(out var state), "Failed to start audio instance");
+            if(state == PLAYBACK_STATE.STOPPED) {
+                FmodWrapper.HandleError(selitys.start(), "Failed to start audio instance");
+            }
+        }
+
+        public static void StopSeta() {
+            DoLoad();
+            FmodWrapper.HandleError(selitys.getPlaybackState(out var state), "Failed to start audio instance");
+            if(state ==  PLAYBACK_STATE.PLAYING) {
+                FmodWrapper.HandleError(selitys.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT), "Failed to stop audio instance");
+            }
         }
 
         [Loggable]

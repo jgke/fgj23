@@ -3,6 +3,7 @@ using FGJ23.Components;
 using Nez.Sprites;
 using Nez.Textures;
 using Microsoft.Xna.Framework;
+using FGJ23.Support;
 
 
 namespace FGJ23.Entities.CoordinateEvents
@@ -64,6 +65,7 @@ namespace FGJ23.Entities.CoordinateEvents
                     || Collisions.LineToLine(prevPlayerBR, curPlayerBR + bld, curETL, curETR))
             {
                 Log.Information("Collided! Jumping...");
+                    FmodWrapper.PlaySound("event:/Vihollinenlitistyy");
                 player._rigidBody.velocity = new Vector2(player._rigidBody.velocity.X, -500);
             }
             else

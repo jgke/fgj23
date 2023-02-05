@@ -221,10 +221,12 @@ namespace FGJ23.Entities
                 }
                 else if(CanWalljump && !CanJumpNow() && _collisionState.Left && moveDir.X < 0 && _jumpInput.IsPressed) {
 
+                    FmodWrapper.PlaySound("event:/Seinahyppy");
                     _rigidBody.velocity.X = WalljumpStrength;
                     _rigidBody.velocity.Y = -Mathf.Sqrt(4f * JumpHeight * WalljumpStrength);
                 }
                 else if(CanWalljump && !CanJumpNow() && _collisionState.Right && moveDir.X > 0 && _jumpInput.IsPressed) {
+                    FmodWrapper.PlaySound("event:/Seinahyppy");
                     _rigidBody.velocity.X = -WalljumpStrength;
                     _rigidBody.velocity.Y = -Mathf.Sqrt(4f * JumpHeight * WalljumpStrength);
                 }
@@ -246,6 +248,7 @@ namespace FGJ23.Entities
                         jumpLength = 0.25f;
                     }
                     wallclimbLength = 0.25f;
+                    FmodWrapper.PlaySound("event:/Hyppy");
                     _rigidBody.velocity.Y = -Mathf.Sqrt(2f * JumpHeight * 500);
                 }
                 else if (CanJump && CanContinueJump() && _jumpInput.IsDown)
@@ -266,6 +269,12 @@ namespace FGJ23.Entities
                 {
                     ControlsLocked = 0;
                 }
+            }
+
+            if(_rigidBody.velocity.X != 0 && _collisionState.Below) {
+                GameState.PlayFoot();
+            } else {
+                GameState.StopFoot();
             }
 
             if (_rigidBody.IgnoreCollisionsFor > 0)

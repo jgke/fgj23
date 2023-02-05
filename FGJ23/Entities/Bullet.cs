@@ -77,15 +77,13 @@ namespace FGJ23.Entities
 
             Entity.AddComponent(new CollideWithEnemy(this.OnCollide));
 
-            var evInst = FmodWrapper.GetSound("event:/shoot_1");
-            FmodWrapper.HandleError(evInst.start(), "Failed to start audio instance");
-            FmodWrapper.HandleError(evInst.setParameterByName("parameter:/gun_pitch", Nez.Random.NextFloat(1)), "Failed to update parameter");
-            FmodWrapper.HandleError(evInst.release(), "Failed to release audio instance");
+                    FmodWrapper.PlaySound("event:/Ampuminen");
         }
 
         private bool OnCollide(Enemy enemy, bool hadContactOnPreviousFrame)
         {
             enemy.GetComponent<Health>().Hit(1);
+                    FmodWrapper.PlaySound("event:/Vihollinenkuolee");
             return false;
         }
 

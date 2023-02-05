@@ -236,6 +236,7 @@ namespace FGJ23.Core
         public void CreateUI(Table table, Entity entity, Action cycleStory)
         {
             Log.Information("GoToLevel {@A}", this);
+            GameState.StopSeta();
             GameState.Instance.StoryComplete();
         }
     }
@@ -385,6 +386,7 @@ namespace FGJ23.Core
             table = canvas.Stage.AddElement(new Table());
             table.SetFillParent(true);
 
+            GameState.PlaySeta();
             RenderUI();
         }
 
