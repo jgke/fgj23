@@ -714,5 +714,33 @@ namespace FGJ23.Levels
                     throw new Exception("Unknown level name: " + name);
             }
         }
+
+
+        public static string getSprites(string name)
+        {
+            switch(name) {
+                case "level1":
+                case "level2":
+                case "level3":
+                case "level4":
+                case "level5":
+                    return "Eka_hahmot.png";
+                case "level6":
+                case "level7":
+                    return "MB_hahmot.png";
+                case "level8":
+                    return "parineliota_hahmot.png";
+                case "level9":
+                    return "LN_hahmot_color.png";
+                case "level10":
+                case "level11":
+                case "level12":
+                case "level13":
+                case "level14":
+                    return "LN_hahmot_BW.png";
+                default:
+                    throw new Exception("Unknown level name: " + name);
+            }
+        }
     }
 }

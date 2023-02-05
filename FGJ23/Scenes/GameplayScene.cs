@@ -115,7 +115,7 @@ namespace FGJ23
                 var r = new System.Random();
                 playerEntity = CreateEntity("player", spawns[r.Next(spawns.Count)].Transform.Position);
             }
-            playerInstance = playerEntity.AddComponent(new Player(14, 14, "Eka_hahmot.png"));
+            playerInstance = playerEntity.AddComponent(new Player(14, 14, LevelBank.getSprites(NextProtoLevel.Name)));
             var playerWidth = playerInstance.Width;
             var playerHeight = playerInstance.Height;
             playerEntity.AddComponent(new BoxCollider(-playerWidth / 2, -playerHeight / 2, playerWidth, playerHeight));
