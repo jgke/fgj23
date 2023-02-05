@@ -69,7 +69,7 @@ namespace FGJ23.Entities.CoordinateEvents
             else
             {
                 Log.Information("Missed");
-                player.GetComponent<Health>().Hit(1);
+                GameplayScene.ResetLevel();
             }
             Entity.Destroy();
 

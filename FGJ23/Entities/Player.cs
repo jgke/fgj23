@@ -313,9 +313,9 @@ namespace FGJ23.Entities
                 bullet.AddComponent(_mover);
             }
 
-            Console.WriteLine("Phys {0} {1}",
-                    Entity.PreviousTransform.Position,
-                    Entity.Transform.Position);
+            //Console.WriteLine("Phys {0} {1}",
+            //        Entity.PreviousTransform.Position,
+            //        Entity.Transform.Position);
 
         }
 

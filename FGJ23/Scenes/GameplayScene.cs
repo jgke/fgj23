@@ -201,10 +201,16 @@ namespace FGJ23
         public override void FixedUpdate() {
             base.FixedUpdate();
 
-            if(!playerInstance.PreventActions && _restartLevel.IsPressed) {
+            if(_restartLevel.IsPressed) {
+                ResetLevel();
+            }
+        }
+
+        public static void ResetLevel() {
+            if(!playerInstance.PreventActions) {
                 GameState.Instance.DoTransition(() => {
-                        return new GameplayScene();
-                        });
+                return new GameplayScene();
+                });
             }
         }
         
