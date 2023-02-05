@@ -586,7 +586,7 @@ namespace FGJ23.Levels
 
                 "level11" =>
                     new StoryBuilder()
-                    .Exposition("Puzzles. Mechanics. Frivolous! Is it not enough to decide which way the blocks move?"
+                    .Exposition("Puzzles. Mechanics. Frivolous! Is it not enough to decide which way the blocks move?")
                     .GoToLevel(),
 
                 "level12" =>
