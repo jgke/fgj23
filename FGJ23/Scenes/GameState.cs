@@ -25,22 +25,31 @@ namespace FGJ23
         private static FMOD.Studio.EventInstance evInst;
 
         public static void SetMusic(string parameter) {
-            return;
             if(!musicLoaded) {
                 musicLoaded = true;
                 evInst = FmodWrapper.GetSound("event:/Pelimusat");
                 FmodWrapper.HandleError(evInst.start(), "Failed to start audio instance");
             }
-
-            FmodWrapper.SetParameter("parameter:/Musa1", 0);
-            FmodWrapper.SetParameter("parameter:/Musa2", 0);
-            FmodWrapper.SetParameter("parameter:/Musa3", 0);
-            FmodWrapper.SetParameter("parameter:/Musa4", 0);
-            FmodWrapper.SetParameter("parameter:/Musa5", 0);
+            
+            FmodWrapper.HandleError(evInst.setParameterByName("parameter:/Musa1", 0), "Failed to set parameter");
+            FmodWrapper.HandleError(evInst.setParameterByName("parameter:/Musa2", 0), "Failed to set parameter");
+            FmodWrapper.HandleError(evInst.setParameterByName("parameter:/Musa3", 0), "Failed to set parameter");
+            FmodWrapper.HandleError(evInst.setParameterByName("parameter:/Musa4", 0), "Failed to set parameter");
+            FmodWrapper.HandleError(evInst.setParameterByName("parameter:/Musa5", 0), "Failed to set parameter");
 
             if(parameter != "") {
-                FmodWrapper.SetParameter("parameter:/" + parameter, 1);
+                FmodWrapper.HandleError(evInst.setParameterByName("parameter:/" + parameter, 1), "Failed to set parameter");
             }
+
+            //FmodWrapper.SetParameter("parameter:/Musa1", 0);
+            //FmodWrapper.SetParameter("parameter:/Musa2", 0);
+            //FmodWrapper.SetParameter("parameter:/Musa3", 0);
+            //FmodWrapper.SetParameter("parameter:/Musa4", 0);
+            //FmodWrapper.SetParameter("parameter:/Musa5", 0);
+
+            //if(parameter != "") {
+            //    FmodWrapper.SetParameter("parameter:/" + parameter, 1);
+            //}
         }
 
         [Loggable]

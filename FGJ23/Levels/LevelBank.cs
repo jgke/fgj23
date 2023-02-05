@@ -447,17 +447,16 @@ namespace FGJ23.Levels
         {
             var lev = Base("level11", "literallynelio_maa&tausta_BW.png", "Musa5");
             var layer = createLayer(0, new string[] {
-                "##########",
-                "#........#",
-                "#........#",
-                "#........#",
-                "#........#",
-                "#........#",
-                "##########",
+                "##################################################",
+                "#................................................#",
+                "#................................................#",
+                "#................................................#",
+                "##############################################...#",
+                "##############################################...#",
+                "##################################################",
             });
 
-            layer.AreaEvents.Add(levelEnd(8, 6, "LN_voittolinna_BW.png;level12"));
-            layer.CoordinateEvents.Add(enemy(6, 6, "LN_hahmot_BW.png"));
+            layer.AreaEvents.Add(levelEnd(47, 6, "LN_voittolinna_BW.png;level12"));
             lev.Layers.Add(layer);
             return lev;
         }
