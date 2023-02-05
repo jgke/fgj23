@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
+using Microsoft.Xna.Framework.Input;
 
 namespace FGJ23
 {
@@ -39,10 +40,16 @@ namespace FGJ23
             return new GameplayScene();
         }
 
+        VirtualButton _restartLevel;
+
         public override void Initialize()
         {
             base.Initialize();
             ColliderSystem.Reset();
+
+            _restartLevel = new VirtualButton();
+            _restartLevel.Nodes.Add(new VirtualButton.KeyboardKey(Keys.R));
+            _restartLevel.Nodes.Add(new VirtualButton.GamePadButton(0, Buttons.Y));
 
             Log.Information("Initializing new GameplayScene with l={A}", NextProtoLevel);
             // setup a pixel perfect screen that fits our map
@@ -124,6 +131,21 @@ namespace FGJ23
             var storyEntity = CreateEntity("startStory", new Vector2(0, 0));
             storyEntity.AddComponent(LevelBank.getStartStory(NextProtoLevel.Name));
             GameState.OnStoryComplete += () => playerInstance.PreventActions = false;
+        }
+
+        public override void Unload() {
+            base.Unload();
+            _restartLevel.Deregister();
+        }
+
+        public override void FixedUpdate() {
+            base.FixedUpdate();
+
+            if(!playerInstance.PreventActions && _restartLevel.IsPressed) {
+                GameState.Instance.DoTransition(() => {
+                    return new GameplayScene();
+                });
+            }
         }
 
 #if !ANDROID
