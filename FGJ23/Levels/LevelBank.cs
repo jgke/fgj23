@@ -556,7 +556,7 @@ namespace FGJ23.Levels
 
                 "level6" =>
                     new StoryBuilder()
-                    .Exposition("Graphics became frivolous much too early. You don’'t need more than a suggestion. A hint to jump-start your own imagination. No spoon-fed high-definition dreamscapes")
+                    .Exposition("Graphics became frivolous much too early. You don't need more than a suggestion. A hint to jump-start your own imagination. No spoon-fed high-definition dreamscapes")
                     .Exposition("Change of pace. Enemies in the way. More of them. A challenge of a different kind. A satisfying contrast.")
                     .GoToLevel(),
 
