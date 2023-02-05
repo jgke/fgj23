@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="ParameterPreset" id="{a00b2d33-8d33-472b-8e7f-192feacab1af}">
+		<property name="name">
+			<value>Musa5</value>
+		</property>
+		<relationship name="folder">
+			<destination>{690175b9-afca-45d6-833f-549dd8af3252}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{d52e8bdf-cb4a-40c8-b6cb-8f23d298d582}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{d52e8bdf-cb4a-40c8-b6cb-8f23d298d582}">
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+		<property name="seekSpeed">
+			<value>0.19999998807907104</value>
+		</property>
+		<property name="seekSpeedDescending">
+			<value>0.099999994039535522</value>
+		</property>
+	</object>
+</objects>
