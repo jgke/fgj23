@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{c4b347e1-f54f-4282-b78e-4825472a3a0f}">
+		<property name="assetPath">
+			<value>Hyppy1FGJ23.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>0.46154195011337867</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{44514578-b243-4d08-a664-9783e0a7516a}</destination>
+		</relationship>
+	</object>
+</objects>

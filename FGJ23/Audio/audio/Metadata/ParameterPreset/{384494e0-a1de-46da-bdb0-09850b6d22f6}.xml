@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="ParameterPreset" id="{384494e0-a1de-46da-bdb0-09850b6d22f6}">
+		<property name="name">
+			<value>Etaisyys</value>
+		</property>
+		<relationship name="folder">
+			<destination>{690175b9-afca-45d6-833f-549dd8af3252}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{3eabeac7-f848-4422-b528-d5ad9507ffde}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{3eabeac7-f848-4422-b528-d5ad9507ffde}">
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+	</object>
+</objects>

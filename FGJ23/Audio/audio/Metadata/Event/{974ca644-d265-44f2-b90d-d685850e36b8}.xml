@@ -112,9 +112,6 @@
 			<destination>{384dcc50-b994-439c-a399-1a6e72ac5f35}</destination>
 			<destination>{3fe75009-c248-4a51-98db-d5ed6d0ef91d}</destination>
 		</relationship>
-		<relationship name="markers">
-			<destination>{0c0964fe-762a-4299-9b3a-2dfa7a07e6f1}</destination>
-		</relationship>
 	</object>
 	<object class="EventMixerMaster" id="{38664332-c647-4838-9573-ee88bda27cc6}">
 		<relationship name="effectChain">
@@ -139,14 +136,8 @@
 		</relationship>
 	</object>
 	<object class="SingleSound" id="{3fe75009-c248-4a51-98db-d5ed6d0ef91d}">
-		<property name="isAsync">
-			<value>true</value>
-		</property>
 		<property name="length">
 			<value>0.33333333333333331</value>
-		</property>
-		<property name="looping">
-			<value>true</value>
 		</property>
 		<relationship name="automators">
 			<destination>{d04cd0c9-6614-4203-a67c-23452b89dfaa}</destination>
@@ -156,6 +147,9 @@
 		</relationship>
 	</object>
 	<object class="EventMixerGroup" id="{cefd007c-5098-4140-b6d2-340051c2c83d}">
+		<property name="volume">
+			<value>-15</value>
+		</property>
 		<property name="name">
 			<value>EKA</value>
 		</property>
@@ -175,14 +169,8 @@
 		</relationship>
 	</object>
 	<object class="SingleSound" id="{384dcc50-b994-439c-a399-1a6e72ac5f35}">
-		<property name="isAsync">
-			<value>true</value>
-		</property>
 		<property name="length">
 			<value>0.33333333333333331</value>
-		</property>
-		<property name="looping">
-			<value>true</value>
 		</property>
 		<relationship name="automators">
 			<destination>{d181092d-f1ee-448a-b951-571bb20b0091}</destination>
@@ -192,6 +180,9 @@
 		</relationship>
 	</object>
 	<object class="EventMixerGroup" id="{6276c6a6-e28b-4049-8285-b2f4f0c0ffe2}">
+		<property name="volume">
+			<value>-14.5</value>
+		</property>
 		<property name="name">
 			<value>MB</value>
 		</property>
@@ -211,14 +202,8 @@
 		</relationship>
 	</object>
 	<object class="SingleSound" id="{b2a54844-dfb1-40a5-a856-8667bfe46df2}">
-		<property name="isAsync">
-			<value>true</value>
-		</property>
 		<property name="length">
 			<value>0.46154195011337867</value>
-		</property>
-		<property name="looping">
-			<value>true</value>
 		</property>
 		<relationship name="automators">
 			<destination>{78f63f1f-1323-411a-a824-ed85bf406736}</destination>
@@ -228,6 +213,9 @@
 		</relationship>
 	</object>
 	<object class="EventMixerGroup" id="{3093dff5-c92f-44c5-9153-5d3102073c39}">
+		<property name="volume">
+			<value>-18.5</value>
+		</property>
 		<property name="name">
 			<value>PN</value>
 		</property>
@@ -247,14 +235,8 @@
 		</relationship>
 	</object>
 	<object class="SingleSound" id="{0c74d470-c406-4b71-910c-69c716b209d3}">
-		<property name="isAsync">
-			<value>true</value>
-		</property>
 		<property name="length">
 			<value>0.46154195011337867</value>
-		</property>
-		<property name="looping">
-			<value>true</value>
 		</property>
 		<relationship name="automators">
 			<destination>{de1a0df3-91dc-42f9-8fe2-9e7ba8d14aab}</destination>
@@ -264,6 +246,9 @@
 		</relationship>
 	</object>
 	<object class="EventMixerGroup" id="{6699a827-d34e-43c4-9bf6-29fc2854c313}">
+		<property name="volume">
+			<value>-18.5</value>
+		</property>
 		<property name="name">
 			<value>LN(color)</value>
 		</property>
@@ -275,20 +260,6 @@
 		</relationship>
 		<relationship name="output">
 			<destination>{38664332-c647-4838-9573-ee88bda27cc6}</destination>
-		</relationship>
-	</object>
-	<object class="LoopRegion" id="{0c0964fe-762a-4299-9b3a-2dfa7a07e6f1}">
-		<property name="position">
-			<value>0</value>
-		</property>
-		<property name="length">
-			<value>0.016656064099279874</value>
-		</property>
-		<relationship name="timeline">
-			<destination>{3a1c5e6c-b0df-4e4b-a050-d9b86bb366f1}</destination>
-		</relationship>
-		<relationship name="markerTrack">
-			<destination>{4cffdfc3-1645-488a-b737-3b16f2a6f7b0}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusEffectChain" id="{af23163d-d30a-4ae9-ae2e-5bbb882f76b8}">
