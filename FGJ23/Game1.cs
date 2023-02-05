@@ -6,6 +6,7 @@ using System;
 using System.Diagnostics;
 using Nez;
 using FGJ23.Support;
+using FGJ23.Levels;
 
 namespace FGJ23
 {
@@ -35,6 +36,7 @@ namespace FGJ23
 
             Window.AllowUserResizing = true;
             //Scene = new MenuScene();
+            //Scene = GameplayScene.construct(LevelBank.GetLevel("level1"));
             Scene = new SplashScene();
             Nez.Input.Touch.EnableTouchSupport();
         }
