@@ -25,6 +25,7 @@ namespace FGJ23
         private static FMOD.Studio.EventInstance evInst;
 
         public static void SetMusic(string parameter) {
+            return;
             if(!musicLoaded) {
                 musicLoaded = true;
                 evInst = FmodWrapper.GetSound("event:/Pelimusat");
