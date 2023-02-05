@@ -407,10 +407,10 @@ namespace FGJ23.Core
         void IUpdatable.DrawUpdate() { }
         void IUpdatable.FixedUpdate()
         {
-            if (StoryAdvanceButton.IsPressed && !GameState.Instance.Transitioning)
-            {
-                RenderUI();
-            }
+            //if (StoryAdvanceButton.IsPressed && !GameState.Instance.Transitioning)
+            //{
+            //    RenderUI();
+            //}
         }
     }
 }
