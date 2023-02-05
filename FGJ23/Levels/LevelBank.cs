@@ -169,6 +169,26 @@ namespace FGJ23.Levels
         public static Proto.Level Level1()
         {
             var lev = Base("level1", "eka_maa&tausta.png", "Musa2");
+            var layer = createLayer(0, new string[] {
+                "##################################################",
+                "#............##########..........................#",
+                "#............##########....####..................#",
+                "#............##########....####......####........#",
+                "###########..........................####........#",
+                "###########......................................#",
+                "##############################################...#",
+                "##############################################...#",
+                "##################################################",
+            });
+
+            layer.AreaEvents.Add(levelEnd(47, 7, "Eka_voittolinna.png;level2"));
+            lev.Layers.Add(layer);
+            return lev;
+        }
+
+        public static Proto.Level Level2()
+        {
+            var lev = Base("level2", "eka_maa&tausta.png", "Musa2");
             {
                 var protoLayer = createLayer(0, new string[] {
                     "########################################",
@@ -203,7 +223,7 @@ namespace FGJ23.Levels
                     "########################################",
                 });
 
-                protoLayer.AreaEvents.Add(levelEnd(31, 2, "Eka_voittolinna.png;level2"));
+                protoLayer.AreaEvents.Add(levelEnd(31, 2, "Eka_voittolinna.png;level3"));
                 protoLayer.CoordinateEvents.Add(enemy(23, 11, "Eka_hahmot.png"));
                 lev.Layers.Add(protoLayer);
             }
@@ -247,36 +267,6 @@ namespace FGJ23.Levels
 
             return lev;
         }
-
-        public static Proto.Level Level2()
-        {
-            var lev = Base("level2", "eka_maa&tausta.png", "Musa2");
-            var layer = createLayer(0, new string[] {
-                "##########################",
-                "#........................#",
-                "#........................#",
-                "#........................#",
-                "#........................#",
-                "#........................#",
-                "#........................#",
-                "#........................#",
-                "#........................#",
-                "#........................#",
-                "#........................#",
-                "#........................#",
-                "#........................#",
-                "#........................#",
-                "#........................#",
-                "#........................#",
-                "##########################",
-            });
-
-            layer.AreaEvents.Add(levelEnd(8, 6, "Eka_voittolinna.png;level3"));
-            layer.CoordinateEvents.Add(enemy(6, 6, "Eka_hahmot.png"));
-            lev.Layers.Add(layer);
-            return lev;
-        }
-
 
         public static Proto.Level Level3()
         {
@@ -390,17 +380,30 @@ namespace FGJ23.Levels
         {
             var lev = Base("level8", "parineliota_maa&tausta.png", "Musa4");
             var layer = createLayer(0, new string[] {
-                "##########",
-                "#........#",
-                "#........#",
-                "#........#",
-                "#........#",
-                "#........#",
-                "##########",
+                "#######################",
+                "#.......##............#",
+                "#.......##............#",
+                "#.......##............#",
+                "#####...##............#",
+                "#####...#####.........#",
+                "#......########.......#",
+                "#......########.......#",
+                "#...#####.............#",
+                "#...#####.............#",
+                "#....####.............#",
+                "#......##.............#",
+                "#......##.............#",
+                "#......##.............#",
+                "#.....................#",
+                "####..................#",
+                "####..................#",
+                "########..............#",
+                "###########........####",
+                "#######################",
             });
 
-            layer.AreaEvents.Add(levelEnd(8, 6, "parineliota_voittolinna.png;level9"));
-            layer.CoordinateEvents.Add(enemy(6, 6, "parineliota_hahmot.png"));
+            layer.AreaEvents.Add(levelEnd(11, 4, "parineliota_voittolinna.png;level9"));
+            layer.CoordinateEvents.Add(enemy(17, 19, "Eka_hahmot.png"));
             lev.Layers.Add(layer);
             return lev;
         }
