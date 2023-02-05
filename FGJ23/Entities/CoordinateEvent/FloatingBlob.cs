@@ -21,8 +21,10 @@ namespace FGJ23.Entities.CoordinateEvents
         }
 
         void IUpdatable.FixedUpdate() {
-            var dist = 100/Vector2.Distance(Entity.Transform.Position, GameplayScene.playerInstance.Entity.Transform.Position);
-            puhe.setParameterByName("parameter:/Etaisyys", dist);
+            if(Entity != null && GameplayScene.playerInstance != null &&  GameplayScene.playerInstance.Entity != null) {
+                var dist = 100/Vector2.Distance(Entity.Transform.Position, GameplayScene.playerInstance.Entity.Transform.Position);
+                puhe.setParameterByName("parameter:/Etaisyys", dist);
+            }
         }
         void IUpdatable.DrawUpdate() {}
 
