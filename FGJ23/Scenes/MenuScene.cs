@@ -59,7 +59,7 @@ namespace FGJ23
             var table = canvas.Stage.AddElement(new Table());
             table.SetFillParent(true);
 
-            var titleLabel = new Label("FGJ 23", new LabelStyle()
+            var titleLabel = new Label("Back In My Day", new LabelStyle()
             {
                 FontColor = Color.Black,
                 FontScaleX = 3,

@@ -665,35 +665,35 @@ namespace FGJ23.Levels
 
                 "level6" =>
                     new StoryBuilder()
-                    .Exposition("Graphics became frivolous much too early. You don't need more than a suggestion. A hint to jump-start your own imagination. No spoon-fed high-definition dreamscapes")
+                    .Line("Files/MB_seta_selittaa.png", "", "Graphics became frivolous much too early. You don't need more than a suggestion. A hint to jump-start your own imagination. No spoon-fed high-definition dreamscapes")
                     .Exposition("Change of pace. Enemies in the way. More of them. A challenge of a different kind. A satisfying contrast.")
                     .GoToLevel(),
 
                 "level7" =>
                     new StoryBuilder()
-                    .Exposition("Shooting from afar is cowardly. You have to make it personal. Look losing your only life right in the eye to clear every single monster. ")
+                    .Line("Files/MB_seta_selittaa.png", "", "Shooting from afar is cowardly. You have to make it personal. Look losing your only life right in the eye to clear every single monster. ")
                     .GoToLevel(),
 
                 "level8" =>
                     new StoryBuilder()
-                    .Exposition("Back in my day, every mechanic was necessary. No useless frills.")
+                    .Line("Files/parineliota_seta_selittaa.png", "", "Back in my day, every mechanic was necessary. No useless frills.")
                     .Exposition("You jump higher if you jump on an enemy. That's a clue. You need it somewhere. Use it.")
                     .GoToLevel(),
 
                 "level9" =>
                     new StoryBuilder()
-                    .Exposition("Come to think of it, why should you need expressive graphics in a game?")
+                    .Line("Files/LN_seta_selittaa.png", "", "Come to think of it, why should you need expressive graphics in a game?")
                     .Exposition("If you don't have enough imagination, you can just as well sell your soul to D-corp and play that hyperverse nonsense.")
                     .GoToLevel(),
 
                 "level10" =>
                     new StoryBuilder()
-                    .Exposition("Enemies are just gratuitous violence that takes away from your self-actualization as the player!")
+                    .Line("Files/Strippi_seta.png", "", "Enemies are just gratuitous violence that takes away from your self-actualization as the player!")
                     .GoToLevel(),
 
                 "level11" =>
                     new StoryBuilder()
-                    .Exposition("Puzzles. Mechanics. Frivolous! Is it not enough to decide which way the blocks move?")
+                    .Line("Files/Strippi_seta.png", "", "Puzzles. Mechanics. Frivolous! Is it not enough to decide which way the blocks move?")
                     .GoToLevel(),
 
                 "level12" =>
