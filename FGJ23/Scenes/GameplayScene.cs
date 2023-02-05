@@ -1,4 +1,5 @@
-﻿using FGJ23.Components;
+﻿using Google.Protobuf;
+using FGJ23.Components;
 using FGJ23.Core;
 using FGJ23.Entities;
 using FGJ23.Entities.CoordinateEvents;
@@ -15,9 +16,57 @@ using Microsoft.Xna.Framework.Input;
 
 namespace FGJ23
 {
+    public class Level13Component : Component, IUpdatable {
+        int ticks = 70 * 5;
+        void IUpdatable.DrawUpdate() {}
+        void IUpdatable.FixedUpdate() {
+            ticks -= 1;
+            if(ticks < 0 && !GameState.Instance.Transitioning) {
+                GameplayScene.playerInstance.PreventActions = false;
+                var end = Entity.Scene.CreateEntity("lev13hack", new Vector2(0, 0));
+                end.AddComponent(Event.AreaEventFromProto(
+                            new FGJ23.Levels.Proto.AreaEvent()
+                            {
+                            Id = FGJ23.Levels.Proto.AreaEvent.Types.AreaEventId.LevelEnd,
+                            X = 50,
+                            Y = 65,
+                            Width = 32,
+                            Height = 32,
+                            Data = ByteString.CopyFromUtf8("LN_voittolinna_BW.png;level14")
+                            }
+                            ));
+                Entity.Destroy();
+            }
+        }
+    }
+
+    public class Level14Component : Component, IUpdatable {
+        int ticks = 70 * 10;
+        void IUpdatable.DrawUpdate() {}
+        void IUpdatable.FixedUpdate() {
+            ticks -= 1;
+            if(ticks < 0 && !GameState.Instance.Transitioning) {
+                GameplayScene.playerInstance.PreventActions = false;
+                var end = Entity.Scene.CreateEntity("lev13hack", new Vector2(0, 0));
+                end.AddComponent(Event.AreaEventFromProto(
+                            new FGJ23.Levels.Proto.AreaEvent()
+                            {
+                            Id = FGJ23.Levels.Proto.AreaEvent.Types.AreaEventId.LevelEnd,
+                            X = 50,
+                            Y = 1,
+                            Width = 32,
+                            Height = 32,
+                            Data = ByteString.CopyFromUtf8("LN_voittolinna_BW.png;")
+                            }
+                            ));
+                Entity.Destroy();
+            }
+        }
+    }
+
     public class GameplayScene : SceneBase
     {
-        static Player playerInstance;
+        public static Player playerInstance;
 
         public Level level { get; set; }
         public static FGJ23.Levels.Proto.Level NextProtoLevel { get; set; }
@@ -127,10 +176,21 @@ namespace FGJ23
             playerInstance.PreventActions = true;
 
             LevelBank.setPlayerAttributes(playerInstance, NextProtoLevel.Name);
+            Log.Information("Player attributes: {A}", playerInstance.CanJump);
 
             var storyEntity = CreateEntity("startStory", new Vector2(0, 0));
             storyEntity.AddComponent(LevelBank.getStartStory(NextProtoLevel.Name));
-            GameState.OnStoryComplete += () => playerInstance.PreventActions = false;
+            GameState.OnStoryComplete += () => {
+                if(NextProtoLevel.Name == "level13") {
+                    var ent = CreateEntity("level13component", new Vector2(0, 0));
+                    ent.AddComponent(new Level13Component());
+                } else if (NextProtoLevel.Name == "level14") {
+                    var ent = CreateEntity("level13component", new Vector2(0, 0));
+                    ent.AddComponent(new Level14Component());
+                } else {
+                    playerInstance.PreventActions = false;
+                }
+            };
         }
 
         public override void Unload() {
@@ -143,17 +203,17 @@ namespace FGJ23
 
             if(!playerInstance.PreventActions && _restartLevel.IsPressed) {
                 GameState.Instance.DoTransition(() => {
-                    return new GameplayScene();
-                });
+                        return new GameplayScene();
+                        });
             }
         }
-
+        
 #if !ANDROID
-        [Command("warp", "Warp player to (x, y)")]
-        static void WarpPlayer(int x = 0, int y = 0)
-        {
-            ColliderSystem.SetPosition(playerInstance.GetComponent<Collider>(), new Vector2(x, y));
-        }
+            [Command("warp", "Warp player to (x, y)")]
+            static void WarpPlayer(int x = 0, int y = 0)
+            {
+                ColliderSystem.SetPosition(playerInstance.GetComponent<Collider>(), new Vector2(x, y));
+            }
 #endif
     }
 }

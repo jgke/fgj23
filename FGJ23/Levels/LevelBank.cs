@@ -409,17 +409,24 @@ namespace FGJ23.Levels
         {
             var lev = Base("level9", "literallynelio_maa&tausta_color.png", "Musa5");
             var layer = createLayer(0, new string[] {
-                "##########",
-                "#........#",
-                "#........#",
-                "#........#",
-                "#........#",
-                "#........#",
-                "##########",
+                "################",
+                "#...############",
+                "#...############",
+                "###.############",
+                "###.##.........#",
+                "#...##.........#",
+                "#...#########..#",
+                "#...#########..#",
+                "#..............#",
+                "#..............#",
+                "#...##.........#",
+                "################",
             });
 
             layer.AreaEvents.Add(levelEnd(8, 6, "LN_voittolinna_color.png;level10"));
-            layer.CoordinateEvents.Add(enemy(6, 6, "LN_hahmot_color.png"));
+            layer.CoordinateEvents.Add(enemy(10, 6, "LN_hahmot_color.png"));
+            layer.CoordinateEvents.Add(enemy(8, 11, "LN_hahmot_color.png"));
+            layer.CoordinateEvents.Add(enemy(12, 11, "LN_hahmot_color.png"));
             lev.Layers.Add(layer);
             return lev;
         }
@@ -428,17 +435,17 @@ namespace FGJ23.Levels
         {
             var lev = Base("level10", "literallynelio_maa&tausta_BW.png", "Musa5");
             var layer = createLayer(0, new string[] {
-                "##########",
-                "#........#",
-                "#........#",
-                "#........#",
-                "#........#",
-                "#........#",
-                "##########",
+                "##############################################",
+                "#.......##................##.................#",
+                "#.......##................##.................#",
+                "#.......##.......##................##........#",
+                "#................##................##........#",
+                "#................##.......##.......##........#",
+                "#................##.......##.......##........#",
+                "##############################################",
             });
 
-            layer.AreaEvents.Add(levelEnd(8, 6, "LN_voittolinna_BW.png;level11"));
-            layer.CoordinateEvents.Add(enemy(6, 6, "LN_hahmot_BW.png"));
+            layer.AreaEvents.Add(levelEnd(42, 7, "LN_voittolinna_BW.png;level11"));
             lev.Layers.Add(layer);
             return lev;
         }
@@ -467,36 +474,46 @@ namespace FGJ23.Levels
         {
             var lev = Base("level12", "literallynelio_maa&tausta_BW.png", "Musa5");
             var layer = createLayer(0, new string[] {
-                "##########",
-                "#........#",
-                "#........#",
-                "#........#",
-                "#........#",
-                "#........#",
-                "##########",
+                "##################################################",
+                "#............##########..........................#",
+                "#............##########....####..................#",
+                "#............##########....####......####........#",
+                "###########..........................####........#",
+                "###########......................................#",
+                "##############################################...#",
+                "##############################################...#",
+                "##################################################",
             });
 
-            layer.AreaEvents.Add(levelEnd(8, 6, "LN_voittolinna_BW.png;level13"));
-            layer.CoordinateEvents.Add(enemy(6, 6, "LN_hahmot_BW.png"));
+            layer.AreaEvents.Add(levelEnd(47, 8, "LN_voittolinna_BW.png;level13"));
             lev.Layers.Add(layer);
             return lev;
         }
 
         public static Proto.Level Level13()
         {
-            var lev = Base("level13", "literallynelio_maa&tausta_BW.png", "");
+            var lev = Base("level13", "literallynelio_maa&tausta_BW.png", "Musa5");
             var layer = createLayer(0, new string[] {
-                "##########",
-                "#........#",
-                "#........#",
-                "#........#",
-                "#........#",
-                "#........#",
-                "##########",
+                "#######################",
+                "##.....################",
+                "##.....################",
+                "##.....################",
+                "#######################",
+                "#######################",
+                "#######################",
+                "#######################",
+                "#######################",
+                "#######################",
+                "#######################",
+                "#######################",
+                "#######################",
+                "#######################",
+                "#######################",
+                "#######################",
+                "#######################",
             });
 
-            layer.AreaEvents.Add(levelEnd(8, 6, "LN_voittolinna_BW.png;level14"));
-            layer.CoordinateEvents.Add(enemy(6, 6, "LN_hahmot_BW.png"));
+            layer.AreaEvents.Add(levelEnd(47, 8, "LN_voittolinna_BW.png;level14"));
             lev.Layers.Add(layer);
             return lev;
         }
@@ -505,17 +522,22 @@ namespace FGJ23.Levels
         {
             var lev = Base("level14", "literallynelio_maa&tausta_BW.png", "");
             var layer = createLayer(0, new string[] {
-                "##########",
-                "#........#",
-                "#........#",
-                "#........#",
-                "#........#",
-                "#........#",
-                "##########",
+                "##############################",
+                "##############################",
+                "##############################",
+                "##############################",
+                "##############################",
+                "##############################",
+                "##############################",
+                "##############################",
+                "##############################",
+                "##############################",
+                "##############################",
+                "##############################",
+                "##############################",
+                "##############################",
             });
 
-            layer.AreaEvents.Add(levelEnd(8, 6, "LN_voittolinna_BW.png;"));
-            layer.CoordinateEvents.Add(enemy(6, 6, "LN_hahmot_BW.png"));
             lev.Layers.Add(layer);
             return lev;
         }
@@ -711,13 +733,13 @@ namespace FGJ23.Levels
                 case "level9":
                 case "level10":
                 case "level11":
-                case "level12":
                     player.CanJump = true;
                     player.CanWalljump = false;
                     player.CanShoot = false;
                     player.ExtraJumps = 0;
                     break;
 
+                case "level12":
                 case "level13":
                 case "level14":
                     player.CanJump = false;
