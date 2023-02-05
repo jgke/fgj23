@@ -11,14 +11,19 @@ using Nez.Sprites;
 using Nez.Textures;
 using Nez.Tiled;
 using System;
+using FGJ23.Support;
 
 namespace FGJ23.Entities
 {
     public class Player : Component, ITriggerListener, IUpdatable
     {
+        [Loggable]
         public int ExtraJumps = 1;
+        [Loggable]
         public bool CanShoot = true;
+        [Loggable]
         public bool CanJump = true;
+        [Loggable]
         public bool CanWalljump = true;
 
         public float JumpHeight = 8 * 6;
@@ -167,7 +172,7 @@ namespace FGJ23.Entities
 
         bool CanJumpNow()
         {
-            return CanJump && _collisionState.Below || cachedJump || _coyote > 0;
+            return CanJump && (_collisionState.Below || cachedJump || _coyote > 0);
         }
 
         bool CanContinueJump()
@@ -215,6 +220,7 @@ namespace FGJ23.Entities
                     cachedJump = true;
                 }
                 else if(CanWalljump && !CanJumpNow() && _collisionState.Left && moveDir.X < 0 && _jumpInput.IsPressed) {
+
                     _rigidBody.velocity.X = WalljumpStrength;
                     _rigidBody.velocity.Y = -Mathf.Sqrt(4f * JumpHeight * WalljumpStrength);
                 }
@@ -222,7 +228,7 @@ namespace FGJ23.Entities
                     _rigidBody.velocity.X = -WalljumpStrength;
                     _rigidBody.velocity.Y = -Mathf.Sqrt(4f * JumpHeight * WalljumpStrength);
                 }
-                else if ((CanJumpNow() && _jumpInput.IsDown) || (jumpCount > 0 && _jumpInput.IsPressed))
+                else if ((CanJump && CanJumpNow() && _jumpInput.IsDown) || (CanJump && jumpCount > 0 && _jumpInput.IsPressed))
                 {
                     _coyote = 0;
                     cachedJump = false;
@@ -242,7 +248,7 @@ namespace FGJ23.Entities
                     wallclimbLength = 0.25f;
                     _rigidBody.velocity.Y = -Mathf.Sqrt(2f * JumpHeight * 500);
                 }
-                else if (CanContinueJump() && _jumpInput.IsDown)
+                else if (CanJump && CanContinueJump() && _jumpInput.IsDown)
                 {
                     _rigidBody.velocity.Y = -Mathf.Sqrt(2f * JumpHeight * 500);
                     jumpLength -= Time.DeltaTime;
