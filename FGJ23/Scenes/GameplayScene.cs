@@ -18,7 +18,6 @@ namespace FGJ23
     {
         static Player playerInstance;
 
-        static bool bgmPlaying = false;
         public Level level { get; set; }
         public static FGJ23.Levels.Proto.Level NextProtoLevel { get; set; }
 
@@ -45,12 +44,6 @@ namespace FGJ23
             base.Initialize();
             ColliderSystem.Reset();
 
-            if (!bgmPlaying)
-            {
-                bgmPlaying = true;
-                FmodWrapper.PlaySound("event:/bgm");
-            }
-
             Log.Information("Initializing new GameplayScene with l={A}", NextProtoLevel);
             // setup a pixel perfect screen that fits our map
             int x = 200;
@@ -63,6 +56,8 @@ namespace FGJ23
             var realMapEntity = CreateEntity("real-map-entity");
             var levelTuple = LevelLoader.LoadLevel(NextProtoLevel, file => "Content/Files/" + file);
             this.level = levelTuple.Item1;
+
+            GameState.SetMusic(levelTuple.Item2.Music);
 
             foreach (var layer in level.Layers)
             {

@@ -8,6 +8,7 @@ namespace FGJ23
     public class GameState : ILoggable
     {
         static GameState _instance;
+
         public static GameState Instance
         {
             get
@@ -17,6 +18,27 @@ namespace FGJ23
                     _instance = new GameState(0);
                 }
                 return _instance;
+            }
+        }
+
+        private static bool musicLoaded = false;
+        private static FMOD.Studio.EventInstance evInst;
+
+        public static void SetMusic(string parameter) {
+            if(!musicLoaded) {
+                musicLoaded = true;
+                evInst = FmodWrapper.GetSound("event:/Pelimusat");
+                FmodWrapper.HandleError(evInst.start(), "Failed to start audio instance");
+            }
+
+            FmodWrapper.HandleError(evInst.setParameterByName("parameter:/Musa1", 0), "Failed to update parameter");
+            FmodWrapper.HandleError(evInst.setParameterByName("parameter:/Musa2", 0), "Failed to update parameter");
+            FmodWrapper.HandleError(evInst.setParameterByName("parameter:/Musa3", 0), "Failed to update parameter");
+            FmodWrapper.HandleError(evInst.setParameterByName("parameter:/Musa4", 0), "Failed to update parameter");
+            FmodWrapper.HandleError(evInst.setParameterByName("parameter:/Musa5", 0), "Failed to update parameter");
+
+            if(parameter != "") {
+                FmodWrapper.HandleError(evInst.setParameterByName("parameter/:" + parameter, 1), "Failed to update parameter");
             }
         }
 

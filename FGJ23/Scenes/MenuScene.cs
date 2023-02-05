@@ -75,7 +75,7 @@ namespace FGJ23
             button1.OnClicked += _ =>
             {
                 Log.Information("menu to lev1");
-                GameState.Instance.DoTransition(() => GameplayScene.construct(LevelBank.GetLevel("level6")));
+                GameState.Instance.DoTransition(() => GameplayScene.construct(LevelBank.GetLevel("level1")));
             };
             var button2 = new TouchableButton("Quit game", TextButtonStyle.Create(Color.Black, Color.DarkGray, Color.Green));
             Entity.AddComponent(button2.ToTouchableComponent());
@@ -93,6 +93,8 @@ namespace FGJ23
         public override void Initialize()
         {
             base.Initialize();
+
+            GameState.SetMusic("Musa1");
 
             var menuEntity = CreateEntity("menu", new Vector2(0, 0));
             menuEntity.AddComponent(new MenuComponent());

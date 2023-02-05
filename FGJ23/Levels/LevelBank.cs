@@ -168,7 +168,7 @@ namespace FGJ23.Levels
 #pragma warning disable format
         public static Proto.Level Level1()
         {
-            var lev = Base("level1", "eka_maa&tausta.png", "event:/bgm");
+            var lev = Base("level1", "eka_maa&tausta.png", "Musa2");
             {
                 var protoLayer = createLayer(0, new string[] {
                     "########################################",
@@ -250,7 +250,7 @@ namespace FGJ23.Levels
 
         public static Proto.Level Level2()
         {
-            var lev = Base("level2", "eka_maa&tausta.png", "event:/bgm");
+            var lev = Base("level2", "eka_maa&tausta.png", "Musa2");
             var layer = createLayer(0, new string[] {
                 "##########",
                 "#........#",
@@ -269,7 +269,7 @@ namespace FGJ23.Levels
 
         public static Proto.Level Level3()
         {
-            var lev = Base("level3", "eka_maa&tausta.png", "event:/bgm");
+            var lev = Base("level3", "eka_maa&tausta.png", "Musa2");
             var layer = createLayer(0, new string[] {
                 "##########",
                 "#........#",
@@ -288,7 +288,7 @@ namespace FGJ23.Levels
 
         public static Proto.Level Level4()
         {
-            var lev = Base("level4", "eka_maa&tausta.png", "event:/bgm");
+            var lev = Base("level4", "eka_maa&tausta.png", "Musa2");
             var layer = createLayer(0, new string[] {
                 "##########",
                 "#........#",
@@ -307,7 +307,7 @@ namespace FGJ23.Levels
 
         public static Proto.Level Level5()
         {
-            var lev = Base("level5", "eka_maa&tausta.png", "event:/bgm");
+            var lev = Base("level5", "eka_maa&tausta.png", "Musa2");
             var layer = createLayer(0, new string[] {
                 "##########",
                 "#........#",
@@ -326,7 +326,7 @@ namespace FGJ23.Levels
 
         public static Proto.Level Level6()
         {
-            var lev = Base("level6", "MB_maa&tausta.png", "event:/bgm");
+            var lev = Base("level6", "MB_maa&tausta.png", "Musa3");
             var layer = createLayer(0, new string[] {
                 "##########",
                 "#........#",
@@ -345,7 +345,7 @@ namespace FGJ23.Levels
 
         public static Proto.Level Level7()
         {
-            var lev = Base("level7", "MB_maa&tausta.png", "event:/bgm");
+            var lev = Base("level7", "MB_maa&tausta.png", "Musa3");
             var layer = createLayer(0, new string[] {
                 "##########",
                 "#........#",
@@ -364,7 +364,7 @@ namespace FGJ23.Levels
 
         public static Proto.Level Level8()
         {
-            var lev = Base("level8", "parineliota_maa&tausta.png", "event:/bgm");
+            var lev = Base("level8", "parineliota_maa&tausta.png", "Musa4");
             var layer = createLayer(0, new string[] {
                 "##########",
                 "#........#",
@@ -383,7 +383,7 @@ namespace FGJ23.Levels
 
         public static Proto.Level Level9()
         {
-            var lev = Base("level9", "literallynelio_maa&tausta_color.png", "event:/bgm");
+            var lev = Base("level9", "literallynelio_maa&tausta_color.png", "Musa5");
             var layer = createLayer(0, new string[] {
                 "##########",
                 "#........#",
@@ -402,7 +402,7 @@ namespace FGJ23.Levels
 
         public static Proto.Level Level10()
         {
-            var lev = Base("level10", "literallynelio_maa&tausta_BW.png", "event:/bgm");
+            var lev = Base("level10", "literallynelio_maa&tausta_BW.png", "Musa5");
             var layer = createLayer(0, new string[] {
                 "##########",
                 "#........#",
@@ -421,7 +421,7 @@ namespace FGJ23.Levels
 
         public static Proto.Level Level11()
         {
-            var lev = Base("level11", "literallynelio_maa&tausta_BW.png", "event:/bgm");
+            var lev = Base("level11", "literallynelio_maa&tausta_BW.png", "Musa5");
             var layer = createLayer(0, new string[] {
                 "##########",
                 "#........#",
@@ -440,7 +440,7 @@ namespace FGJ23.Levels
 
         public static Proto.Level Level12()
         {
-            var lev = Base("level12", "literallynelio_maa&tausta_BW.png", "event:/bgm");
+            var lev = Base("level12", "literallynelio_maa&tausta_BW.png", "Musa5");
             var layer = createLayer(0, new string[] {
                 "##########",
                 "#........#",
@@ -459,7 +459,7 @@ namespace FGJ23.Levels
 
         public static Proto.Level Level13()
         {
-            var lev = Base("level13", "literallynelio_maa&tausta_BW.png", "event:/bgm");
+            var lev = Base("level13", "literallynelio_maa&tausta_BW.png", "");
             var layer = createLayer(0, new string[] {
                 "##########",
                 "#........#",
@@ -478,7 +478,7 @@ namespace FGJ23.Levels
 
         public static Proto.Level Level14()
         {
-            var lev = Base("level14", "literallynelio_maa&tausta_BW.png", "event:/bgm");
+            var lev = Base("level14", "literallynelio_maa&tausta_BW.png", "");
             var layer = createLayer(0, new string[] {
                 "##########",
                 "#........#",
@@ -637,23 +637,16 @@ namespace FGJ23.Levels
         {
             switch (name) {
                 case "level1":
+                case "level2":
+                case "level3":
+                case "level4":
+                case "level5":
                     player.CanJump = true;
                     player.CanWalljump = true;
                     player.CanShoot = true;
                     player.ExtraJumps = 1;
                     break;
 
-                case "level2":
-                    player.CanJump = true;
-                    player.CanWalljump = false;
-                    player.CanShoot = false;
-                    player.ExtraJumps = 0;
-                    break;
-
-
-                case "level3":
-                case "level4":
-                case "level5":
                 case "level6":
                 case "level7":
                 case "level8":
@@ -662,9 +655,17 @@ namespace FGJ23.Levels
                 case "level11":
                 case "level12":
                     player.CanJump = true;
-                    player.CanWalljump = true;
-                    player.CanShoot = true;
-                    player.ExtraJumps = 1;
+                    player.CanWalljump = false;
+                    player.CanShoot = false;
+                    player.ExtraJumps = 0;
+                    break;
+
+                case "level13":
+                case "level14":
+                    player.CanJump = false;
+                    player.CanWalljump = false;
+                    player.CanShoot = false;
+                    player.ExtraJumps = 0;
                     break;
 
                 default:
